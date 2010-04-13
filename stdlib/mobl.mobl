@@ -9,6 +9,9 @@ external type void {}
 external type String : Object { }
 
 external type Int : Object { }
+
+external type Float : Object { }
+
 external type Bool : Object { }
 external type List<T> {
   sync function get(n : Int) : T
@@ -94,6 +97,7 @@ external sync function remove(e : Object) : void
 external function resetDatabase() : void
 external sync function formatDate(d : DateTime) : String
 external sync function range(from : Int, to : Int) : List<Int>
+external sync function random(max : Int) : Int
 
 @doc "Internal use only"
 external sync function updateScrollers() : void
@@ -269,6 +273,10 @@ mobl.resetDatabase = function(_, callback) {
 mobl.updateScrollers = function() {
     mobl.delayedUpdateScrollers();
 };
+
+mobl.random = function(max) {
+  return Math.round(Math.random()*max);
+}
 
 mobl.scrollTop = function() {
   var scrollers = $("div#scrollwrapper div#content");
