@@ -10,7 +10,7 @@ builders
 
 builders
 
-  provider : include/mobl.ctree
+  provider : include/mobl.jar
   provider : include/acoda.jar
  
   observer : editor-analyze

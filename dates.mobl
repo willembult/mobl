@@ -76,7 +76,7 @@ function daysUntil(daysOld : Num, persons : Collection<Person>) : Num {
   return (daysOld - sum)/3;
 }
 
-screen allDates() {
+screen allDates() { 
   header("Group")
   backButton("Back", onclick={ screen return; })
   table {

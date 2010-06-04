@@ -8,10 +8,10 @@ rules
     innermost(normalize)
 
   normalize :
-    FunctionNoReturnType(manno*, name, farg*, stat*) -> Function(manno*, name, farg*, SimpleType("void"), stat*)
+    FunctionNoReturnType(manno*, name, farg*, stat*) -> Function(manno*, name, farg*, SimpleType(QId("mobl", "void")), stat*)
 
   normalize :
-    SyncFunctionNoReturnType(manno*, name, farg*, stat*) -> SyncFunction(manno*, name, farg*, SimpleType("void"), stat*)
+    SyncFunctionNoReturnType(manno*, name, farg*, stat*) -> SyncFunction(manno*, name, farg*, SimpleType(QId("mobl", "void")), stat*)
 
   normalize :
     IfNoElse(e, stat*) -> If(e, stat*, [])
@@ -29,7 +29,7 @@ rules
     PropertyNoAnnos(manno*, x, t) -> Property(manno*, x, t, [])
 
   normalize :
-    ScreenNoReturnType(manno*, name, farg*, body) -> Screen(manno*, name, farg*, SimpleType("void"), body)
+    ScreenNoReturnType(manno*, name, farg*, body) -> Screen(manno*, name, farg*, SimpleType(QId("mobl", "void")), body)
 
   normalize :
     TemplateCallNoArgs(e, body) -> TemplateCall(e, [], body)

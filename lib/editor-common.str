@@ -34,7 +34,7 @@ strategies
    */
   open-import(resolve-path, parse-file, externalize):
     import -> defs
-    with
+    where
       if not(!import => COMPLETION(_)) then
         path       := <resolve-path> import;
         cache-path := <import-cache-path> path;

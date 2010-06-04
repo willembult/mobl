@@ -21,7 +21,7 @@ strategies
   analyze-sync-function :
     SyncFunction(anno*, qid, arg*, rt, stat*) -> Function(anno*, qid, arg*, rt, stat*)
     where not([] := <collect(async-exp)> stat*)
-        ; <debug(!"Function is async: ")> qid
+        //; <debug(!"Function is async: ")> qid
 
   async-exp :
     Call(_, _) -> <not(is-sync)>

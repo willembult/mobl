@@ -54,7 +54,7 @@ rules
       )
 
   compile-import-module =
-    ?Import(qid)
+    ?QId(qid, _)
     ; where(path := <resolve-file> <concat-strings> [<qid-to-path> qid, ".mobl"]
         ; if not(<Compiled> qid <+ <is-newer> (<concat-strings; guarantee-extension(|"js")> [<OutputPath>, "/", <qid-to-path> qid], path)) then
             <parse-file> path

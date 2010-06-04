@@ -53,7 +53,7 @@ strategies
 
 strategies
 
-   qid-to-path =
+  qid-to-path =
     is-string
 
   qid-to-path :
