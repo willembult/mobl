@@ -60,6 +60,7 @@ exports
     "callback" -> ID {reject}
     "sync" -> ID {reject}
     "null" -> ID {reject}
+    "return" -> ID {reject}
     "true" -> ID {reject}
     "false" -> ID {reject}
     "if" -> ID {reject}

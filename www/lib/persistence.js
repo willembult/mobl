@@ -1776,8 +1776,8 @@ Array.prototype.remove = function(el) {
 //    JSON.stringify(value, replacer, space)
 //    JSON.parse(text, reviver)
 
-if (!this.JSON) {
-  this.JSON = {};
+var JSON = (window && window.JSON) ? window.JSON : {};
+if (!JSON.stringify) {
   (function () {
       function f(n) {
         return n < 10 ? '0' + n : n;

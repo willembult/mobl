@@ -1,12 +1,23 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.0"?>
 
 <plugin>
-       <extension point="org.eclipse.imp.runtime.languageDescription">
-          <language extensions="mobl" description="MoBL" language="MoBL" derivedFrom="DynamicRoot" validator="mobl.MoBLValidator" validatorClass="mobl.MoBLValidator"></language>
-       </extension>
-       <extension id="mobl.parser" name="MoBL Parser" point="org.eclipse.imp.runtime.parser">
-          <parser class="mobl.MoBLParseController" language="MoBL">
-          </parser>
-       </extension>    
-    </plugin>
+    <extension point="org.eclipse.imp.runtime.languageDescription">
+        <language extensions="mobl" description="MoBL" language="MoBL" derivedFrom="DynamicRoot" validator="mobl.MoBLValidator" validatorClass="mobl.MoBLValidator">
+        </language>
+    </extension>
+    <extension id="mobl.parser" name="MoBL Parser" point="org.eclipse.imp.runtime.parser">
+        <parser class="mobl.MoBLParseController" language="MoBL">
+        </parser>
+    </extension>
+    <extension point="org.eclipse.ui.newWizards">
+        <primaryWizard id="mobl.EditorWizard"/>
+        <wizard
+         class="mobl.MoblEditorWizard"
+         icon="icons/webdsl.gif"
+         id="mobl.EditorWizard"
+         name="mobl project"
+         project="true">
+        </wizard>
+    </extension>
+</plugin>

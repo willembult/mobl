@@ -9,6 +9,7 @@ entity Task {
   name        : String (searchable)
   description : Text   (searchable)
   done        : Bool
+  date        : DateTime
 }
 
 screen addTask() {

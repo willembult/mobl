@@ -35,6 +35,16 @@ mobl.loadingSpan = function() {
     return $("<span>Loading... <img src=\"lib/img/loading.gif\"/></span>");
 };
 
+function op(operator, e1, e2, callback) {
+    switch(operator) {
+    case '+': callback(e1 + e2); break;
+    case '-': callback(e1 - e2); break;
+    case '*': callback(e1 * e2); break;
+    case '/': callback(e1 / e2); break;
+    case '%': callback(e1 % e2); break;
+    }
+}
+
 mobl.proxyUrl = function(url, user, password) {
     if(user && password) {
         return '/proxy.php?user=' + user + '&pwd=' + password + '&proxy_url=' + escape(url);

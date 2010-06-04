@@ -29,6 +29,13 @@ template showMonth(n : Num, d : DateTime) {
   }
 }
 
+function displayLocationAndReturn() : mobl::location::Coordinates {
+  var position = mobl::location::getPosition();
+  alert("Lat: "  + position.latitude);
+  alert("Long: " + position.longitude);
+  return position;
+}
+
 screen root() {
   header("People")
   topRightButton("Add", onclick={ addPerson(); })
@@ -36,6 +43,7 @@ screen root() {
     list(p in Person.all()) {
       itemArrow(onclick={personDates(p); }) { label(p.name) }
     }
+    itemArrow(onclick={allDates();}) { "All" }
   }
 }
 
@@ -54,17 +62,37 @@ screen addPerson() {
   }
 }
 
-function countDays(since : DateTime) : Num {
+function countDaysOld(since : DateTime) : Num {
   var factor = 1000*60*60*24;
   var sinceEpoch = (now().getTime() - since.getTime()) / factor;
   return sinceEpoch;
 }
 
+function daysUntil(daysOld : Num, persons : Collection<Person>) : Num {
+  var sum = 0;
+  for(p in persons) {
+    sum = sum + countDaysOld(p.birthday);
+  }
+  return (daysOld - sum)/3;
+}
+
+screen allDates() {
+  header("Group")
+  backButton("Back", onclick={ screen return; })
+  table {
+    row {
+      cell{ <b>"Days"</b> }
+      cell { <b>"Date"</b> }
+    }
+    row {
+      cell { "1000" }
+      cell { label(addDays(now(), daysUntil(1000, Person.all())))}
+    }
+  }
+}
+
 screen personDates(p : Person) {
   var birthday : DateTime = p.birthday // shortcut
-  init {
-    alert(countDays(birthday));
-  }
   header("Birthdays")
   backButton("Back", onclick={ screen return; })
   group {
