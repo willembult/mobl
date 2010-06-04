@@ -140,7 +140,7 @@ rules // Main editor interface (defined by editor/MoBL-Builders and -References.
     proposals
     where
       all-types := <get-all-types>;
-      proposals    := <map(type-name-to-proposal)> all-types
+      proposals    := <map(type-name-to-proposal); flatten-list> all-types
 
   editor-complete:
     (FieldAccess(_, COMPLETION(prefix)), position, ast, path, project-path) -> [prop*, method*]
@@ -160,6 +160,9 @@ rules // Main editor interface (defined by editor/MoBL-Builders and -References.
 
   type-name-to-proposal:
     x -> ([x], "")
+
+  type-name-to-proposal:
+    qid@QId(_, x) -> [([x], ""), ([<pp-mobl-qid> qid], "")]
 
   editor-desugar :
     (selected, position, ast, path, project-path) -> (filename, <desugar-all; pp-mobl> <ResultingAST>)

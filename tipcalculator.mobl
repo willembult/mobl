@@ -6,6 +6,7 @@ screen root() {
   var amount : Num = 10
   var percentage : Num = 10
   var total = amount * (1 + percentage/100)
+  // formula total <- amount * (1 + percentage/100)
 
   header("Tip calculator")
   group {
