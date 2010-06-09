@@ -154,7 +154,7 @@ rules // Main editor interface (defined by editor/MoBL-Builders and -References.
         ; method* := <get-all-methods; map(\ meth@c#([_, x, args|_]) -> (<concat> [[x, "("], <filter(?FArg(<id>, _)); separate-by(!", ")> args, [")"]], <get-doc> meth) \)> t
 
   editor-complete:
-    (Var(COMPLETION(prefix)), position, ast, path, project-path) -> [type*, var*]//prop*, method*]
+    (Var(COMPLETION(prefix)), position, ast, path, project-path) -> [type*, var*, function*]//prop*, method*]
     where {| CompletionVars
            : ast' := <analyze; store-result> ast
            ; position' := <desugar-position(normalize|ast)> position
@@ -162,6 +162,7 @@ rules // Main editor interface (defined by editor/MoBL-Builders and -References.
            |}
     where Var(qid) := <term-at-position(|position')> ast'
     where type* := <get-all-types; map(type-name-to-proposal); flatten-list>
+        ; function* := <get-all-functions; map(type-name-to-proposal)>
 
   editor-complete:
     (MethodCall(_, COMPLETION(prefix), _), position, ast, path, project-path) -> method*

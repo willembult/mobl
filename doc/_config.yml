@@ -1,0 +1,3 @@
+auto: false
+exclude: www
+destination: www

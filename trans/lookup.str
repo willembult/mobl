@@ -98,7 +98,7 @@ strategies
         ; farg2* := <alltd(add-namespace)> farg*
 
   get-all-functions =
-    dr-all-keys(|"GetFunction")
+    dr-all-keys(|"GetFunction"); debug(!"All functions: ")
 
   lookup-method :
     (t, x) -> ExternalSyncMethod(manno*, x, farg2*, rt2)
