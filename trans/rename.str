@@ -6,6 +6,7 @@ imports
   type
   util
   resolve
+  lib/editor-common
 
 strategies
 
@@ -96,6 +97,11 @@ strategies
           |}
 
   rename = RenameType
+
+  rename :
+    COMPLETION(_) -> <id>
+    where vars := <dr-all-keys(|"RenameId")>
+        ; rules ( CompletionVars := vars )
 
   rename :
     Template(manno*, qid, farg*, body) -> Template(manno*, qid, farg2*, body2)

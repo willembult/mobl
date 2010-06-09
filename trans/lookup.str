@@ -36,6 +36,11 @@ strategies
            ; method2* := <alltd(RenameGenericType)> method*
            |}
 
+  get-all-types =
+    entities := <dr-all-keys(|"GetEntity")>
+    ; types := <dr-all-keys(|"GetType")>
+    ; <concat> [entities, types]
+
   lookup-property :
     (type, prop) -> p
     where decl := <lookup-type> type
@@ -91,6 +96,9 @@ strategies
     where ExternalSyncFunction(manno*, _, farg*, rt) := <GetFunction> qid
         ; rt2 := <alltd(add-namespace)> rt
         ; farg2* := <alltd(add-namespace)> farg*
+
+  get-all-functions =
+    dr-all-keys(|"GetFunction")
 
   lookup-method :
     (t, x) -> ExternalSyncMethod(manno*, x, farg2*, rt2)
