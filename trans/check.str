@@ -78,7 +78,7 @@ rules
         ; [t|_] := invalid-args
 
   constraint-error :
-    t@FieldAccess(e, x) -> (t, $[Field [x] not defined])
+    t@FieldAccess(e, x) -> (t, $[Property [x] not defined])
     where <type-of> e
     where not(type-of)
 

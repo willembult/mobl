@@ -2,6 +2,9 @@ module mobl
 
 load "lib/iphone.css"
 
+/**
+ * Built-in types
+ */
 @doc "A value representing nothing"
 external type void {}
 
@@ -12,6 +15,8 @@ external type String : Object { }
 external type Num : Object { }
 
 external type Bool : Object { }
+
+external type Dynamic : Object { }
 
 external type List<T> {
   sync function get(n : Num) : T

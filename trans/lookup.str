@@ -51,6 +51,9 @@ strategies
                 p := <lookup-property> (super, prop)
              end)
 
+  lookup-property :
+    (SimpleType(QId("mobl", "Dynamic")), x) -> Property([], x, SimpleType(QId("mobl", "Dynamic")), [])
+
   get-all-properties :
     type -> props
     where c#([_, _, super, members]) := <lookup-type> type
@@ -144,6 +147,8 @@ strategies
         ; rt2 := <alltd(add-namespace)> rt
         ; farg2* := <alltd(add-namespace)> farg*
 
+  lookup-method :
+    (SimpleType(QId("mobl", "Dynamic")), x) -> ExternalSyncMethod([], x, [], SimpleType(QId("mobl", "Dynamic")))
 
   get-all-methods :
     type -> methods
