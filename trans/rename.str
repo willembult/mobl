@@ -190,6 +190,12 @@ strategies
     where "template" := <RenameScope>
 
   rename :
+    DeriveDecl(name, t, e) -> DeriveDecl(<rename-ref-var> (name, t), t, <rename-all> e)
+
+  rename :
+    DeriveDeclInferred(name, e) -> DeriveDeclInferred(<rename-ref-var> (name, <type-of> e), <rename-all> e)
+
+  rename :
     List(x, t, e, body) -> List(x2, t, e2, body2)
     where <is-string> x
     with rename-scope(

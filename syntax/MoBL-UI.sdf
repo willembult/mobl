@@ -27,8 +27,8 @@ exports
     "var" ID ":" Type "=" Exp                                        -> ScreenElem {cons("VarDecl")}
     "var" ID "=" Exp                                                 -> ScreenElem {cons("VarDeclInferred")}
 
-    "derive" ID ":" Type "<-" Exp                                   -> ScreenElem {cons("DeriveDecl")}
-    "derive" ID "<-" Exp                                            -> ScreenElem {cons("DeriveDeclInferred")}
+    "var" ID ":" Type "<-" Exp                                   -> ScreenElem {cons("DeriveDecl")}
+    "var" ID "<-" Exp                                            -> ScreenElem {cons("DeriveDeclInferred")}
 
     FunctionDef                                                       -> ScreenElem
 

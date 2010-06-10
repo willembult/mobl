@@ -123,6 +123,12 @@ strategies // UI
     VarDeclInferred(x, e) -> $[var [x] = [<pp-mobl-exp> e]]
 
   pp-mobl-elem :
+    DeriveDecl(x, t, e) -> $[derive [x] : [<pp-mobl-type> t] <- [<pp-mobl-exp> e]]
+
+  pp-mobl-elem :
+    DeriveDeclInferred(x, e) -> $[derive [x] <- [<pp-mobl-exp> e]]
+
+  pp-mobl-elem :
     Init(stat*) ->
     $[init {
         [<map(pp-mobl-stat); separate-by(|"\n"); concat-strings> stat*]

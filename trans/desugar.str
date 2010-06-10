@@ -28,3 +28,6 @@ strategies
   desugar :
     ForInferred(lvalue, e, elem*) -> For(lvalue, t, e, elem*)
     where GenericType(_, [t]) := <type-of> e
+
+  desugar :
+    DeriveDeclInferred(x, e) -> DeriveDecl(x, <type-of> e, e)
