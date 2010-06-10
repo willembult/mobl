@@ -14,7 +14,15 @@ strategies
     where <is-string> x
 
   add-tl-namespace :
+    ExternalScreen(manno*, x, farg*, rt) -> ExternalScreen(manno*, QId(<ModuleName>, x), farg*, rt)
+    where <is-string> x
+
+  add-tl-namespace :
     Entity(manno*, x, super, prop*) -> Entity(manno*, QId(<ModuleName>, x), super, prop*)
+    where <is-string> x
+
+  add-tl-namespace :
+    ExternalEntity(manno*, x, super, prop*) -> ExternalEntity(manno*, QId(<ModuleName>, x), super, prop*)
     where <is-string> x
 
   add-tl-namespace :
@@ -43,6 +51,10 @@ strategies
 
   add-tl-namespace :
     Template(manno*, x, farg*, elem*) -> Template(manno*, QId(<ModuleName>, x), farg*, elem*)
+    where <is-string> x
+
+  add-tl-namespace :
+    ExternalTemplate(manno*, x, farg*) -> ExternalTemplate(manno*, QId(<ModuleName>, x), farg*)
     where <is-string> x
 
 rules

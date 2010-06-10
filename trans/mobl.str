@@ -173,6 +173,9 @@ rules // Main editor interface (defined by editor/MoBL-Builders and -References.
     where t := <type-of> e
         ; method* := <get-all-methods; map(\ meth@c#([_, x|_]) -> ([x], <get-doc> meth) \)> t
 
+  editor-complete:
+    (Javascript(COMPLETION(_)), _, _, _, _) -> []
+
   type-name-to-proposal:
     x -> ([x], "")
     where is-string
