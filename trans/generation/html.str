@@ -36,8 +36,6 @@ strategies
         </script>
         <script src="lib/mobl.orientation.js" type="application/x-javascript" charset="utf-8">
         </script>
-        <script src="lib/mobl.view.js" type="application/x-javascript" charset="utf-8">
-        </script>
         <script src="lib/mobl.event.js" type="application/x-javascript" charset="utf-8">
         </script>
         <script src="lib/mobl.load.js" type="application/x-javascript" charset="utf-8">

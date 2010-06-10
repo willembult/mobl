@@ -399,8 +399,7 @@ Date.prototype.toDateString = function() {
   return "" + (this.getMonth()+1) + "/" + this.getDate() + "/" + this.getFullYear();
 };
 
-mobl.formatDate = function(timestamp) {
-  var date = new Date(timestamp);
+mobl.formatDate = function(date) {
   var diff = (((new Date()).getTime() - date.getTime()) / 1000);
   var day_diff = Math.floor(diff / 86400);
   if ( isNaN(day_diff) || day_diff < 0 || day_diff >= 31 )

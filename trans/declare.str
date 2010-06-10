@@ -3,6 +3,7 @@ module declare
 imports
   include/MoBL
   normalize
+  lib/editor-common
 
 strategies
 
@@ -16,7 +17,7 @@ strategies
   declare:
     Entity(_, qid, super, body) -> <fail>
     with
-      extern := <definition-to-external>
+      extern := <origin-track-forced(definition-to-external)>
       ; rules(
           GetEntity : qid -> extern
         )
@@ -24,7 +25,7 @@ strategies
   declare:
     extern@ExternalType(manno*, qid, super, method*) -> <fail>
     with rules (
-           GetType : qid -> ExternalType(manno*, qid, super, method*)
+           GetType : qid -> extern
          )
 
   declare:
