@@ -74,6 +74,10 @@ strategies
         ; ?ExternalTemplate(manno*, _, farg*)
         ; farg2* := <alltd(add-namespace)> farg*
 
+  get-all-templates =
+    dr-all-keys(|"GetTemplate")
+    ; map(GetTemplate)
+
   lookup-screen =
       lookup-screen-aux
    <+ import-and-retry(lookup-screen-aux|<id>)

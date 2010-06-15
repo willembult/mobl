@@ -178,6 +178,11 @@ rules // Main editor interface (defined by editor/MoBL-Builders and -References.
     where t := <type-of> e
         ; method* := <get-all-methods; map(\ meth@c#([_, x|_]) -> ([x], <get-doc> meth) \)> t
 
+  // My guess is template call
+  editor-complete:
+    (NOCONTEXT(COMPLETION(prefix)), position, ast, path, project-path) -> []
+    where template* := <get-all-templates; map(\ tpl@ExternalTemplate(_, qid, args) -> (<concat> [[<pp-mobl-qid> qid, "("], <filter(?FArg(<id>, _)); separate-by(!", ")> args, [")"]], <get-doc> tpl) \)>
+
   editor-complete:
     (Javascript(COMPLETION(_)), _, _, _, _) -> []
 

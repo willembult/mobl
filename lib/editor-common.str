@@ -183,5 +183,6 @@ strategies
 signature constructors
 
   COMPLETION : String -> Term
+  NOCONTEXT  : Term -> Term
   UNKNOWN    : Term   -> Term
   MARKER     : Term
