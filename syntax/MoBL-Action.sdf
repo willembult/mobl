@@ -71,7 +71,7 @@ exports
     "(" Exp "," {Exp ","}* ")"   -> Exp {cons("Tuple")}
 
     "{" Statement* "}"             -> Exp {cons("Callback")}
-    "template" "{" ScreenElem* "}" -> Exp {cons("AnonymousTemplate")}
+    "control" "{" ScreenElem* "}" -> Exp {cons("AnonymousControl")}
 
     ID "=" Exp                  -> PropVal {cons("PropVal")}
 

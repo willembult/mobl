@@ -11,7 +11,7 @@ rules
   constraint-error :
     t@SimpleType(_) -> (t, $[Type is not defined: [<write-to-string> t]])
     where not(<lookup-type> t) // no entity for this type
-        ; not(_{"TemplateType"} := t)
+        ; not(_{"ControlType"} := t)
 
   constraint-error :
     t@GenericType(_, _) -> (t, $[Type is not defined: [<write-to-string> t]])
@@ -55,14 +55,14 @@ rules
     where not(type-of)
 
   constraint-error :
-    TemplateCall(e, e*, elem*) -> (e, $[Expression does not return a template type])
+    ControlCall(e, e*, elem*) -> (e, $[Expression does not return a control type])
     where t := <type-of> e
-    where not(<is-template-type> t)
+    where not(<is-control-type> t)
 
   constraint-error :
-    TemplateCall(e@Var(qid@QId(_, _)), e*, _) -> (e, $[Wrong number of arguments, expected [length2] but got [length1].
+    ControlCall(e@Var(qid@QId(_, _)), e*, _) -> (e, $[Wrong number of arguments, expected [length2] but got [length1].
                                                        Expected arguments are: [<separate-by(!", "); concat-strings> regular-fargs]])
-    where ExternalTemplate(_, _, farg*) := <lookup-template> qid
+    where ExternalControl(_, _, farg*) := <lookup-control> qid
         ; regular-args := <filter(not(?NamedExp(_, _)))> e*
         ; regular-fargs := <filter(?FArg(<id>, _))> farg*
         ; length1 := <length> regular-args
@@ -70,9 +70,9 @@ rules
         ; not(length1 := length2)
 
   constraint-error :
-    TemplateCall(e@Var(qid@QId(_, _)), e*, _) -> (t, $[Invalid named arguments: [<separate-by(!", "); concat-strings> invalid-args].
+    ControlCall(e@Var(qid@QId(_, _)), e*, _) -> (t, $[Invalid named arguments: [<separate-by(!", "); concat-strings> invalid-args].
                                                        Valid named arguments: [<separate-by(!", "); concat-strings> named-fargs]])
-    where ExternalTemplate(_, _, farg*) := <lookup-template> qid
+    where ExternalControl(_, _, farg*) := <lookup-control> qid
         ; named-fargs := <filter(?FArgOptional(<id>, _, _)); strip-annos> farg*
         ; invalid-args := <filter(\ NamedExp(x, _) -> x where not(<fetch(?x)> named-fargs) \)> e*
         ; [t|_] := invalid-args

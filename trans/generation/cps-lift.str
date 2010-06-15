@@ -224,7 +224,7 @@ strategies
   is-sync = ?String(_)
   is-sync = ?Var(_)
   is-sync = ?Callback(_)
-  is-sync = ?AnonymousTemplate(_)
+  is-sync = ?AnonymousControl(_)
 
   is-sync =
     ?BinMethodCall(e1, _, e2)

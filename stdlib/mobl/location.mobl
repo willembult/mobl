@@ -3,8 +3,8 @@ module mobl::location
 import mobl
 
 external type Coordinates {
-  latitude  : Float
-  longitude : Float
+  latitude  : Num
+  longitude : Num
   accuracy  : Num
 }
 

@@ -5,7 +5,7 @@ database "questions"
 
 import mobl
 
-template toolbar() {
+control toolbar() {
   "Hello"
 }
 
@@ -21,6 +21,5 @@ screen root() {
     altButton("Ask for age", onclick={
       message = "You are " + promptString("How old are you?") + " years old";
     })
-    al
   }
 }

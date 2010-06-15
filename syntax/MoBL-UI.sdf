@@ -11,18 +11,21 @@ exports
     MetaAnno* "screen" QId "(" {FArg ","}* ")" "{" ScreenElem* "}" -> Definition {cons("ScreenNoReturnType")}
     MetaAnno* "screen" QId "(" {FArg ","}* ")" ":" Type "{" ScreenElem* "}" -> Definition {cons("Screen")}
 
-    MetaAnno* "template" QId "(" {FArg ","}* ")" "{" ScreenElem* "}" -> TemplateDefinition {cons("Template")}
+    MetaAnno* "control" QId "(" {FArg ","}* ")" "{" ScreenElem* "}" -> ControlDefinition {cons("Control")}
 
-    ID "(" {FArg ","}* ")" -> TemplateSig {cons("TemplateSig")}
+    %% Legacy
+    MetaAnno* "template" QId "(" {FArg ","}* ")" "{" ScreenElem* "}" -> ControlDefinition {deprecated("the 'template' keyword has been replaced with 'control'."),cons("Control")}
 
-    TemplateDefinition      -> Definition
+    ID "(" {FArg ","}* ")" -> ControlSig {cons("ControlSig")}
+
+    ControlDefinition      -> Definition
 
     "<" ID HtmlArg* ">" ScreenElem* "</" ID ">"   -> ScreenElem {cons("Html")}
     "<" ID HtmlArg* "/"">" -> ScreenElem {cons("HtmlShort")}
     ID "=" Exp                     -> HtmlArg    {cons("HtmlArg")}
     "databind" "=" Exp             -> HtmlArg    {cons("HtmlDatabindArg")}
 
-    TemplateDefinition                                                -> ScreenElem
+    ControlDefinition                                                -> ScreenElem
 
     "var" ID ":" Type "=" Exp                                        -> ScreenElem {cons("VarDecl")}
     "var" ID "=" Exp                                                 -> ScreenElem {cons("VarDeclInferred")}
@@ -43,7 +46,7 @@ exports
 
     "var" ID ":" Type "=" Exp                                         -> ScreenElem {cons("ScreenVarDecl")}
 
-    LimitedExp "(" {NamedExp ","}* ")" "{" ScreenElem* "}"   -> ScreenElem {prefer, cons("TemplateCall")}
-    LimitedExp "(" {NamedExp ","}* ")"                       -> ScreenElem {cons("TemplateCallNoBody")}
-    LimitedExp "{" ScreenElem* "}"                           -> ScreenElem {cons("TemplateCallNoArgs")}
-    %%QId                                               -> ScreenElem {cons("TemplateCallNoArgsNoBody")}
+    LimitedExp "(" {NamedExp ","}* ")" "{" ScreenElem* "}"   -> ScreenElem {prefer, cons("ControlCall")}
+    LimitedExp "(" {NamedExp ","}* ")"                       -> ScreenElem {cons("ControlCallNoBody")}
+    LimitedExp "{" ScreenElem* "}"                           -> ScreenElem {cons("ControlCallNoArgs")}
+    %%QId                                               -> ScreenElem {cons("ControlCallNoArgsNoBody")}

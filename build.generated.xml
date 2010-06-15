@@ -21,6 +21,9 @@
         <condition property="externaljarflags" value="${externaljarflags}" else="">
             <isset property="externaljarflags"/>
         </condition>
+        <condition property="metasdfmodule.available" value="1">
+            <available file="${syntax}/${metasdfmodule}.sdf"/>
+        </condition>
         <mkdir dir="${build}"/>
         <mkdir dir="${src-gen}"/>
         <mkdir dir="${dist}"/>
@@ -31,14 +34,14 @@
         <target name="sdf2imp" depends="sdf2table,sdf2imp.eclipse,sdf2imp.standalone"/>
         
         <target name="sdf2imp.eclipse" if="eclipse.running" depends="sdf2rtg">
-            <java classname="org.strategoxt.imp.metatooling.building.AntDescriptorBuilder">
+            <java classname="org.strategoxt.imp.metatooling.building.AntDescriptorBuilder" failonerror="true">
                 <arg value="${include}/${esvmodule}.packed.esv"/>
             </java>
         </target>
         
         <target name="refresh" if="eclipse.running">
             <eclipse.convertPath fileSystemPath="${basedir}" property="projectdir"/>
-            <eclipse.refreshLocal resource="${projectdir}/include" depth="infinite"/>
+            <eclipse.refreshLocal resource="${projectdir}/lib" depth="infinite"/>
             <eclipse.refreshLocal resource="${projectdir}/syntax/${sdfmodule}.pp.generated" depth="infinite"/>
             <eclipse.refreshLocal resource="${projectdir}/lib/editor-common.generated.str" depth="infinite"/>
             <eclipse.refreshLocal resource="${projectdir}/build.generated.xml" depth="infinite"/>
@@ -52,6 +55,7 @@
             <eclipse.refreshLocal resource="${eclipse.path.src-gen}" depth="infinite"/>
             <eclipse.convertPath fileSystemPath="${build}" property="eclipse.path.build"/>
             <eclipse.refreshLocal resource="${eclipse.path.build}" depth="infinite"/>
+            <eclipse.refreshLocal resource="${projectdir}/include" depth="infinite"/>
         </target>
         
         <target name="sdf2imp.standalone" unless="eclipse.running" depends="sdf2rtg">
@@ -77,7 +81,7 @@
             </apply>
         </target>
         
-        <target name="meta-sdf2table">
+        <target name="meta-sdf2table" if="metasdfmodule.available">
             <fail unless="eclipse.spoofaximp.jars" message="Property eclipse.spoofaximp.jars must point to the directory containing StrategoMix.def"/>
             <antcall target="sdf2table">
                 <param name="sdfmodule" value="${metasdfmodule}"/>
@@ -124,6 +128,9 @@
         </target>
     
         <target name="pack-sdf.helper" unless="pack-sdf.available">
+            <condition property="utils-include" value="-I ${utils}" else="">
+                <available file="${utils}"/>
+            </condition>
             <java classname="run" failonerror="true">
                 <arg value="org.strategoxt.tools.main-pack-sdf"/>
                 <arg value="-i"/>
@@ -133,9 +140,8 @@
                 <arg value="-I"/>
                 <arg value="${syntax}"/>
                 <arg value="-I"/>
-                <arg value="${utils}"/>
-                <arg value="-I"/>
                 <arg value="${lib}"/>
+                <arg line="${utils-include}"/>
                 <arg line="${build.sdf.imports}"/>
             </java>
         </target>
@@ -306,7 +312,7 @@
         </target>
     
         <!-- Stratego to Java compiler -->
-        <target name="stratego.jar" depends="rtg2sig">
+        <target name="stratego.jar" depends="rtg2sig,utils-files">
             <dependset>
                 <srcfileset dir="${basedir}">
                     <include name="**/*.str"/>
@@ -328,7 +334,8 @@
             <copy todir="${build}/trans">
                 <fileset dir="${src-gen}/trans" excludes="**/*.java"/>
             </copy>
-            <jar basedir="${build}" includes="trans/**" destfile="${include}/${strmodule}.jar"/>
+            <jar basedir="${build}" includes="trans/**" destfile="${include}/${strmodule}.tmp.jar"/>
+            <move file="${include}/${strmodule}.tmp.jar" tofile="${include}/${strmodule}.jar"/>
             <delete><fileset dir="${build}" includes="trans/**"/></delete>
         </target>
         

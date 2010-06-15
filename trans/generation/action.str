@@ -288,12 +288,12 @@ rules // Expressions
 
 
   exp-to-js :
-    AnonymousTemplate(elems) -> $[function(namedArgs, elements, callback) {
+    AnonymousControl(elems) -> $[function(namedArgs, elements, callback) {
                                     var [root] = $("<span>");
                                     [body]
                                   }]
-    with {| InTemplate
-          : rules ( InTemplate := 1 )
+    with {| InControl
+          : rules ( InControl := 1 )
           ; root := <newname> "root"
           ; body := <elems-to-js-callback(|root)> elems
           |}

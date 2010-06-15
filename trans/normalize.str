@@ -32,10 +32,10 @@ rules
     ScreenNoReturnType(manno*, name, farg*, body) -> Screen(manno*, name, farg*, SimpleType(QId("mobl", "void")), body)
 
   normalize :
-    TemplateCallNoArgs(e, body) -> TemplateCall(e, [], body)
+    ControlCallNoArgs(e, body) -> ControlCall(e, [], body)
 
   normalize :
-    TemplateCallNoBody(e, arg*) -> TemplateCall(e, arg*, [])
+    ControlCallNoBody(e, arg*) -> ControlCall(e, arg*, [])
 
   normalize :
     EntityNoSuper(manno*, qid, prop*) -> Entity(manno*, qid, GenericType(QId("mobl", "Entity"), [SimpleType(qid)]), prop*)

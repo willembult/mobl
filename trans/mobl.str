@@ -178,10 +178,27 @@ rules // Main editor interface (defined by editor/MoBL-Builders and -References.
     where t := <type-of> e
         ; method* := <get-all-methods; map(\ meth@c#([_, x|_]) -> ([x], <get-doc> meth) \)> t
 
-  // My guess is template call
+  // My guess is control call
   editor-complete:
-    (NOCONTEXT(COMPLETION(prefix)), position, ast, path, project-path) -> []
-    where template* := <get-all-templates; map(\ tpl@ExternalTemplate(_, qid, args) -> (<concat> [[<pp-mobl-qid> qid, "("], <filter(?FArg(<id>, _)); separate-by(!", ")> args, [")"]], <get-doc> tpl) \)>
+    (NOCONTEXT(COMPLETION(prefix)), position, ast, path, project-path) -> control*
+    where control* := <get-all-controls; map(control-to-proposal); flatten-list>
+
+  control-to-proposal :
+    tpl@ExternalControl(_, qid@QId(_, x), args) -> [
+      (<concat> [[x, "("], fargs, [")"]], <get-doc> tpl),
+      (<concat> [[<pp-mobl-qid> qid, "("], fargs, [")"]], <get-doc> tpl)
+    ]
+    with fargs := <map(farg-to-proposal); separate-by(!", ")> args
+
+  farg-to-proposal :
+    FArg(x, _) -> x
+
+  farg-to-proposal :
+    FArgOptional(x, t, e) -> $[[x]=[<pp-mobl-exp> e]]
+    where not(SimpleType(QId("mobl", "Callback")) := t)
+
+  farg-to-proposal :
+    FArgOptional(x, SimpleType(QId("mobl", "Callback")), e) -> $[[x]={}]
 
   editor-complete:
     (Javascript(COMPLETION(_)), _, _, _, _) -> []

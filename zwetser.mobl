@@ -77,7 +77,7 @@ screen showUpdates(account : Account) {
   backButton("Accounts", onclick={ screen return; })
   <img src="lib/img/compose.png" onclick={ newTweet(account); } class="topRight"/>
 
-  template showTweets(coll : Collection<TwitterUpdate>) {
+  control showTweets(coll : Collection<TwitterUpdate>) {
     var limit = 10
     <div id="tweets">
     list(update in coll.limit(limit)) {
@@ -93,13 +93,13 @@ screen showUpdates(account : Account) {
     altButton("Load more", onclick={ limit = limit + 10; })
     </div>
   }
-  template timeline() {
+  control timeline() {
     showTweets(account.updates.filter("mention", "=", false).order("date", false))
   }
-  template mentions() {
+  control mentions() {
     showTweets(account.updates.filter("mention", "=", true).order("date", false))
   }
-  template search() {
+  control search() {
     var phrase = "#mobl"
     var searchPhrase = ""
     var limit = 10
@@ -123,7 +123,7 @@ screen showUpdates(account : Account) {
 
 screen showUpdate(update : TwitterUpdate) {
   backButton("Timeline", onclick={ screen return; })
-  basicView("Tweet", toolBar=template { toolbarButton("post", onclick={ replyTweet(update); }) }) {
+  basicView("Tweet", toolBar=control { toolbarButton("post", onclick={ replyTweet(update); }) }) {
     <div class="bubble">
       outputString(update.text)
       <span class="meta">"Posted " outputDate(update.date)</span>

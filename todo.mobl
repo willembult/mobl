@@ -42,13 +42,13 @@ screen editTask(t : Task) {
 }
 
 screen root() {
-  template defaultView(t : Task, editing : Bool) {
+  control defaultView(t : Task, editing : Bool) {
     item(onswipe={ editing = true; }) {
       inputCheckbox(t.done, onclick={}) " "
       outputString(t.name)
     }
   }
-  template editView(t : Task, editing : Bool) {
+  control editView(t : Task, editing : Bool) {
     item(onswipe={ editing = false; }) {
       inputCheckbox(t.done, onclick={}) " "
       outputString(t.name)

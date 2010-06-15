@@ -23,7 +23,7 @@ strategies
 
   rename-local-function :
    Function(mannos, name, farg*, rt, body) -> name2
-   where "template" := <RenameScope>
+   where "control" := <RenameScope>
    with name2 := <rename-var> (name, SimpleType(QId("mobl", "Callback")))
       ; rules(
            RenameFunction : name -> name2
@@ -32,11 +32,11 @@ strategies
 
   rename-local-function :
     Function(mannos, name, farg*, rt, body) -> name
-    where not("template" := <RenameScope>)
+    where not("control" := <RenameScope>)
 
   rename-local-function :
    SyncFunction(mannos, name, farg*, rt, body) -> name2
-   where "template" := <RenameScope>
+   where "control" := <RenameScope>
    with name2 := <rename-var> (name, SimpleType(QId("mobl", "Callback")))
       ; rules(
            RenameFunction : name -> name2
@@ -45,7 +45,7 @@ strategies
 
   rename-local-function :
     SyncFunction(mannos, name, farg*, rt, body) -> name
-    where not("template" := <RenameScope>)
+    where not("control" := <RenameScope>)
 
   rename-ref-var :
    (x, t) -> y
@@ -70,17 +70,17 @@ strategies
     Call(x, e*) -> Call(<RenameFunction> x, <rename-all> e*)
 
   /*rename :
-    c#([Var(qid)|rest]) -> c#([Var(<RenameTemplate> qid)|<rename-all> rest])
-    where <string-starts-with(|"TemplateCall")> c*/
+    c#([Var(qid)|rest]) -> c#([Var(<RenameControl> qid)|<rename-all> rest])
+    where <string-starts-with(|"ControlCall")> c*/
 
   rename-scope(s) =
-    {| RenameId, RenameFunction//, RenameTemplate
+    {| RenameId, RenameFunction//, RenameControl
      : s
      |}
 
-  template-scope(s) =
+  control-scope(s) =
     {| RenameScope
-     : rules ( RenameScope := "template" )
+     : rules ( RenameScope := "control" )
      ; rename-scope(s)
      |}
 
@@ -93,7 +93,7 @@ strategies
   rename :
     ExternalGenericType(manno*, qid, x*, method*) -> ExternalGenericType(manno*, qid, x*, method2*)
     with {| RenameType
-          : <map(\ x -> x where rules ( RenameType : SimpleType(x) -> SimpleType(x){"TemplateType"} ) \)> x*
+          : <map(\ x -> x where rules ( RenameType : SimpleType(x) -> SimpleType(x){"ControlType"} ) \)> x*
           ; method2* := <rename-all> method*
           |}
 
@@ -105,23 +105,23 @@ strategies
         ; rules ( CompletionVars := vars )
 
   rename :
-    Template(manno*, qid, farg*, body) -> Template(manno*, qid, farg2*, body2)
-    where not("template" := <RenameScope>)
-    with template-scope(
+    Control(manno*, qid, farg*, body) -> Control(manno*, qid, farg2*, body2)
+    where not("control" := <RenameScope>)
+    with control-scope(
            farg2* := <map(rename-ref-farg)> farg*
-           //; <rename-var> ("elements", SimpleType(QId("mobl", "Template")))
+           //; <rename-var> ("elements", SimpleType(QId("mobl", "Control")))
            ; body2 := <rename-all> body
          )
 
-  // Local template definitions
+  // Local control definitions
   rename :
-    Template(manno*, name, farg*, body) -> <try(declare)> Template(manno*, name2, farg2*, body2)
-    where "template" := <RenameScope>
-    with template-scope(
+    Control(manno*, name, farg*, body) -> <try(declare)> Control(manno*, name2, farg2*, body2)
+    where "control" := <RenameScope>
+    with control-scope(
            farg2* := <map(rename-ref-farg)> farg*
            ; body2 := <rename-all> body
          )
-       ; name2 := <rename-var> (name, SimpleType(QId("mobl", "Template")))
+       ; name2 := <rename-var> (name, SimpleType(QId("mobl", "Control")))
 
   rename-ref-farg :
     FArg(x, t) -> FArg(<rename-ref-var> (x, t), t)
@@ -137,7 +137,7 @@ strategies
 
   rename :
     Screen(manno*, name, arg*, rt, body) -> Screen(manno*, name, arg2*, rt, body2)
-    with template-scope(
+    with control-scope(
            arg2* := <map(rename-ref-farg)> arg*
            ; body2 := <rename-all> body
          )
@@ -169,8 +169,8 @@ strategies
     with action-scope(body2 := <rename-all> body)
 
   rename :
-    AnonymousTemplate(body) -> AnonymousTemplate(body2)
-    with template-scope(body2 := <rename-all> body)
+    AnonymousControl(body) -> AnonymousControl(body2)
+    with control-scope(body2 := <rename-all> body)
 
 strategies
 
@@ -180,7 +180,7 @@ strategies
 
   rename :
     VarDecl(name, t, e) -> VarDecl(<rename-ref-var> (name, t), t, <rename-all> e)
-    where "template" := <RenameScope>
+    where "control" := <RenameScope>
 
   rename :
     VarDeclInferred(name, e) -> VarDeclInferred(<rename-var> (name, <type-of> e), <rename-all> e)
@@ -188,7 +188,7 @@ strategies
 
   rename :
     VarDeclInferred(name, e) -> VarDeclInferred(<rename-ref-var> (name, <type-of> e), <rename-all> e)
-    where "template" := <RenameScope>
+    where "control" := <RenameScope>
 
   rename :
     DeriveDecl(name, t, e) -> DeriveDecl(<rename-ref-var> (name, t), t, <rename-all> e)

@@ -64,19 +64,19 @@ strategies
             props := own-props
           end
 
-  lookup-template =
-      lookup-template-aux
-     <+ import-and-retry(lookup-template-aux|<id>)
+  lookup-control =
+      lookup-control-aux
+     <+ import-and-retry(lookup-control-aux|<id>)
 
-  lookup-template-aux :
-    qid -> ExternalTemplate(manno*, qid, farg2*)
-    where <GetTemplate> qid
-        ; ?ExternalTemplate(manno*, _, farg*)
+  lookup-control-aux :
+    qid -> ExternalControl(manno*, qid, farg2*)
+    where <GetControl> qid
+        ; ?ExternalControl(manno*, _, farg*)
         ; farg2* := <alltd(add-namespace)> farg*
 
-  get-all-templates =
-    dr-all-keys(|"GetTemplate")
-    ; map(GetTemplate)
+  get-all-controls =
+    dr-all-keys(|"GetControl")
+    ; map(GetControl)
 
   lookup-screen =
       lookup-screen-aux
@@ -175,12 +175,12 @@ strategies
     lookup-type
     ; ?ExternalEntity(_, _, _, _)
 
-  is-template-type =
+  is-control-type =
     ?GenericType(QId("mobl", s), _)
-    ; where(<string-starts-with(|"Template")> s)
+    ; where(<string-starts-with(|"Control")> s)
 
-  is-template-type =
-    ?SimpleType(QId("mobl", "Template"))
+  is-control-type =
+    ?SimpleType(QId("mobl", "Control"))
 
   get-all-types =
     <concat> [<all-keys-GetEntity>, <all-keys-GetType>, <all-keys-GetGenericType>]
