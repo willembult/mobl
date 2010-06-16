@@ -10,6 +10,12 @@ imports
 rules
 
   constraint-error :
+    Application(qid, _, def*) -> (qid, $[No 'root' screen defined with no arguments. The root screen functions as the application's entry point and is required.])
+    where [] := <filter(?Screen(_, QId(qid, "root"), [], _, _))> def*
+
+rules
+
+  constraint-error :
     t@SimpleType(_) -> (t, $[Type is not defined: [<write-to-string> t]])
     where not(<lookup-type> t) // no entity for this type
         ; not(_{"ControlType"} := t)
@@ -33,25 +39,6 @@ rules
         ; (ExternalFunction(_, _, farg*, _) := def <+ ExternalSyncFunction(_, _, farg*, _) := def)
         ; not(<resolve-fargs> (e*, <topdown(try(strip-annos))> farg*))
 
-/*    Call(qid, e*) -> (qid, $[Wrong number of arguments, expected [length2] but got [length1].
-                             Expected arguments are: [<separate-by(!", "); concat-strings> regular-fargs]])
-    where def := <lookup-function> qid
-        ; (ExternalFunction(_, _, farg*, _) := def <+ ExternalSyncFunction(_, _, farg*, rt) := def)
-        ; regular-args := <filter(not(?NamedExp(_, _)))> e*
-        ; regular-fargs := <filter(?FArg(<id>, _))> farg*
-        ; length1 := <length> regular-args
-        ; length2 := <length> regular-fargs
-        ; not(length1 := length2)
-
-  constraint-error :
-    Call(qid, e*) -> (t, $[Invalid named arguments: [<separate-by(!", "); concat-strings> invalid-args].
-                           Valid named arguments: [<separate-by(!", "); concat-strings> named-fargs]])
-    where def := <lookup-function> qid
-        ; (ExternalFunction(_, _, farg*, _) := def <+ ExternalSyncFunction(_, _, farg*, rt) := def)
-        ; named-fargs := <filter(?FArgOptional(<id>, _, _)); strip-annos> farg*
-        ; invalid-args := <filter(\ NamedExp(x, _) -> x where not(<fetch(?x)> named-fargs) \)> e*
-        ; [t|_] := invalid-args*/
-
   constraint-error :
     t@Choice(_, _, _) -> (t, $[Could not determine type of: [<write-to-string> t]])
     where not(type-of)
@@ -69,11 +56,6 @@ rules
     ControlCall(e@Var(qid@QId(_, _)), e*, _) -> (e, $[Wrong set  of arguments. Expected arguments are: [<filter(?FArg(<id>, _)); separate-by(!", "); concat-strings> farg*]])
     where ExternalControl(_, _, farg*) := <lookup-control> qid
         ; not(<resolve-fargs> (e*, <topdown(try(strip-annos))> farg*))
-        /*; regular-args := <filter(not(?NamedExp(_, _)))> e*
-        ; regular-fargs := <filter(?FArg(<id>, _))> farg*
-        ; length1 := <length> regular-args
-        ; length2 := <length> regular-fargs
-        ; not(length1 := length2)*/
 
   constraint-error :
     ControlCall(e@Var(qid@QId(_, _)), e*, _) -> (t, $[Invalid named arguments: [<separate-by(!", "); concat-strings> invalid-args].
