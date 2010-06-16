@@ -73,7 +73,7 @@ strategies
 
   fargs-to-control-type :
     farg* -> GenericType(QId("mobl", $[Control[n]]), t*)
-    where t* := <filter(?FArg(_, <id>))> farg*
+    where t* := <map(?FArg(_, <id>) <+ ?FArgOptional(_, <id>, _))> farg*
         ; n := <length> t*
 
   eq-type-of :

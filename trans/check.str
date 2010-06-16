@@ -5,6 +5,7 @@ imports
   lookup
   type
   rename
+  desugar
 
 rules
 
@@ -19,7 +20,7 @@ rules
 
   constraint-error :
     Html(tag, _, _, closeTag) -> (closeTag, $[Wrong closing tag])
-    where not(tag := closeTag)
+    where not(<eq> (tag, closeTag))
 
   constraint-error :
     t@Var(qid) -> (t, $[Variable not defined: [<write-to-string> t]])
@@ -27,7 +28,12 @@ rules
     where not(type-of)
 
   constraint-error :
-    Call(qid, e*) -> (qid, $[Wrong number of arguments, expected [length2] but got [length1].
+    Call(qid, e*) -> (qid, $[Wrong set  of arguments. Expected arguments are: [<filter(?FArg(<id>, _)); separate-by(!", "); concat-strings> farg*]])
+    where def := <lookup-function> qid
+        ; (ExternalFunction(_, _, farg*, _) := def <+ ExternalSyncFunction(_, _, farg*, _) := def)
+        ; not(<resolve-fargs> (e*, <topdown(try(strip-annos))> farg*))
+
+/*    Call(qid, e*) -> (qid, $[Wrong number of arguments, expected [length2] but got [length1].
                              Expected arguments are: [<separate-by(!", "); concat-strings> regular-fargs]])
     where def := <lookup-function> qid
         ; (ExternalFunction(_, _, farg*, _) := def <+ ExternalSyncFunction(_, _, farg*, rt) := def)
@@ -44,7 +50,7 @@ rules
         ; (ExternalFunction(_, _, farg*, _) := def <+ ExternalSyncFunction(_, _, farg*, rt) := def)
         ; named-fargs := <filter(?FArgOptional(<id>, _, _)); strip-annos> farg*
         ; invalid-args := <filter(\ NamedExp(x, _) -> x where not(<fetch(?x)> named-fargs) \)> e*
-        ; [t|_] := invalid-args
+        ; [t|_] := invalid-args*/
 
   constraint-error :
     t@Choice(_, _, _) -> (t, $[Could not determine type of: [<write-to-string> t]])
@@ -60,14 +66,14 @@ rules
     where not(<is-control-type> t)
 
   constraint-error :
-    ControlCall(e@Var(qid@QId(_, _)), e*, _) -> (e, $[Wrong number of arguments, expected [length2] but got [length1].
-                                                       Expected arguments are: [<separate-by(!", "); concat-strings> regular-fargs]])
+    ControlCall(e@Var(qid@QId(_, _)), e*, _) -> (e, $[Wrong set  of arguments. Expected arguments are: [<filter(?FArg(<id>, _)); separate-by(!", "); concat-strings> farg*]])
     where ExternalControl(_, _, farg*) := <lookup-control> qid
-        ; regular-args := <filter(not(?NamedExp(_, _)))> e*
+        ; not(<resolve-fargs> (e*, <topdown(try(strip-annos))> farg*))
+        /*; regular-args := <filter(not(?NamedExp(_, _)))> e*
         ; regular-fargs := <filter(?FArg(<id>, _))> farg*
         ; length1 := <length> regular-args
         ; length2 := <length> regular-fargs
-        ; not(length1 := length2)
+        ; not(length1 := length2)*/
 
   constraint-error :
     ControlCall(e@Var(qid@QId(_, _)), e*, _) -> (t, $[Invalid named arguments: [<separate-by(!", "); concat-strings> invalid-args].
@@ -87,10 +93,16 @@ rules
     where <map(type-of)> arg*
     where not(type-of)
 
+
+  constraint-error :
+    MethodCall(e, x, e*) -> (x, $[Wrong set  of arguments. Expected arguments are: [<filter(?FArg(<id>, _)); separate-by(!", "); concat-strings> farg*]])
+    where def := <lookup-method> (<type-of> e, x)
+        ; (ExternalMethod(_, _, farg*, _) := def <+ ExternalSyncMethod(_, _, farg*, _) := def)
+        ; not(<resolve-fargs> (e*, <topdown(try(strip-annos))> farg*))
+
   constraint-error :
     t@MethodCall(e, x, arg*) -> (t, $[No such method '[x]' defined])
     where <type-of> e
-    where <map(type-of)> arg*
     where not(type-of)
         ; <type-of; debug(!"Type of e: ")> e
 

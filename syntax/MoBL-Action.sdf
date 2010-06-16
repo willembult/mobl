@@ -47,7 +47,7 @@ exports
     QId "(" {NamedExp ","}* ")"   -> Exp {cons("Call")}
 
     QId                           -> LimitedExp {cons("Var")}
-    Exp "." ID "(" {Exp ","}* ")" -> LimitedExp {cons("MethodCall")}
+    Exp "." ID "(" {NamedExp ","}* ")" -> LimitedExp {cons("MethodCall")}
     Exp "." ID                    -> LimitedExp {cons("FieldAccess")}
     Exp "[" Exp "]"               -> LimitedExp {left, cons("Indexer")}
     "(" Exp ")"                   -> LimitedExp {cons("Brackets")}
@@ -103,7 +103,7 @@ exports
 
   context-free priorities
     Exp "." ID -> LimitedExp
-  > Exp "." ID "(" {Exp ","}* ")" -> LimitedExp
+  > Exp "." ID "(" {NamedExp ","}* ")" -> LimitedExp
   > Exp TermOperatorMethodId Exp -> Exp
   > Exp OperatorMethodId Exp -> Exp
   > Exp CompareMethodId Exp -> Exp

@@ -136,9 +136,6 @@ rules // Main editor interface (defined by editor/MoBL-Builders and -References.
     where t2 := <lookup-node> (position, ast)*/
 
 
-  editor-complete =
-    debug(!"Editor complete: "); fail
-
   // Completes an identifier when the user presses control-space
   // (the completion identifier in the AST provides additional context information)
   editor-complete:
@@ -159,7 +156,7 @@ rules // Main editor interface (defined by editor/MoBL-Builders and -References.
         ; method* := <get-all-methods; map(\ meth@c#([_, x, args|_]) -> (<concat> [[x, "("], <filter(?FArg(<id>, _)); separate-by(!", ")> args, [")"]], <get-doc> meth) \)> t
 
   editor-complete:
-    (Var(COMPLETION(prefix)), position, ast, path, project-path) -> [type*, var*, function*]
+    (Var(COMPLETION(_)), position, ast, path, project-path) -> [type*, var*, function*]
     where {| CompletionVars
            : ast' := <analyze; store-result> ast
            ; position' := <desugar-position(normalize|ast)> position
@@ -167,7 +164,23 @@ rules // Main editor interface (defined by editor/MoBL-Builders and -References.
            |}
     where Var(qid) := <term-at-position(|position')> ast'
     where type* := <get-all-types; map(type-name-to-proposal); flatten-list>
-        ; function* := <get-all-functions; map(type-name-to-proposal)>
+        ; function* := <get-all-functions; map(lookup-function; function-to-proposal); flatten-list>
+
+  editor-complete:
+    (QId(_, COMPLETION(_)), position, ast, path, project-path) -> [type*, function*]
+    where type* := <get-all-types; map(type-name-to-proposal); flatten-list>
+        ; function* := <get-all-functions; map(lookup-function; function-to-proposal); flatten-list>
+
+  function-to-proposal :
+    f@ExternalFunction(_, qid@QId(_, x), args, _) -> [
+      (<concat> [[x, "("], fargs, [")"]], <get-doc> f),
+      (<concat> [[<pp-mobl-qid> qid, "("], fargs, [")"]], <get-doc> f)
+    ]
+    with fargs := <map(farg-to-proposal); separate-by(!", ")> args
+
+  function-to-proposal :
+    f@ExternalSyncFunction(manno*, qid@QId(_, x), args, rt) -> <function-to-proposal> ExternalFunction(manno*, qid, args, rt)
+
 
   editor-complete:
     (MethodCall(_, COMPLETION(prefix), _), position, ast, path, project-path) -> method*
@@ -209,6 +222,13 @@ rules // Main editor interface (defined by editor/MoBL-Builders and -References.
 
   type-name-to-proposal:
     qid@QId(_, x) -> [([x], ""), ([<pp-mobl-qid> qid], "")]
+
+
+  editor-complete =
+    debug(!"Editor complete: "); fail
+
+rules
+
 
   editor-desugar :
     (selected, position, ast, path, project-path) -> (filename, <desugar-all; pp-mobl> <ResultingAST>)

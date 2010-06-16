@@ -7,6 +7,9 @@ import mobl
 
 control toolbar() {
   "Hello"
+  init {
+    var n = 8;
+  }
 }
 
 screen root() {
