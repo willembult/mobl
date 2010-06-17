@@ -182,12 +182,10 @@ control inputSecret(s : String, placeholder : String = null, onchange : Callback
 }
 
 control inputNum(i : Num, placeholder : String = null, label : String = null, onchange : Callback = null) {
-  <li>
-    cond(label != null) {
-      <span databind=label class="inputLabel" />
-    }
-    <input type="text" placeholder=placeholder databind=i onchange=onchange class=label != null ? "labelled" : ""/>
-  </li>
+  cond(label != null) {
+    <span databind=label class="inputLabel" />
+  }
+  <input type="text" placeholder=placeholder databind=i onchange=onchange class=label != null ? "labelled" : ""/>
 }
 
 control inputs() {

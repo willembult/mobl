@@ -27,9 +27,6 @@ strategies
     DatabaseSetting(s) -> $[database [s]]
 
   pp-mobl-setting:
-    DatabaseVersionSetting(s) -> $[database version [s]]
-
-  pp-mobl-setting:
     TitleSetting(s) -> $[title [s]]
 
   pp-mobl-doc :

@@ -21,7 +21,7 @@ exports
 
     "title" STRING                   -> Setting {cons("TitleSetting")}
     "database" STRING                -> Setting {cons("DatabaseSetting")}
-    "database" "version" NUMBER      -> Setting {cons("DatabaseVersionSetting")}
+    "moblapp" STING                  -> Setting {cons("MoblAppId")}
 
     "import" QId                   -> Definition {cons("Import")}
     "load" STRING                  -> Definition {cons("Load")}

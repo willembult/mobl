@@ -30,6 +30,8 @@ strategies
   // this is overwritten in Java code (the weird code is just to avoid inlining)
   get-plugin-path = debug(!"<still didn't work>"); editor-analyze; fail; resolve-file
 
+  upload-files(|appid) = debug(!"<still didn't work>"); editor-analyze; fail; resolve-file
+
   resolve-file :
     filename -> filename
     where <file-exists> filename
