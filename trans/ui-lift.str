@@ -9,7 +9,7 @@ strategies
   desugar = ui-lift
 
   ui-lift :
-    TemplateCall(e, arg*, elem*) -> <concat> [inits, [TemplateCall(e, arg2*, elem*)]]
+    ControlCall(e, arg*, elem*) -> <concat> [inits, [ControlCall(e, arg2*, elem*)]]
     where {| Elems
            : arg2* := <map(ui-lift-expression)> arg*
            ; inits := <bagof-Elems>

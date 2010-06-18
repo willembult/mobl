@@ -4,7 +4,7 @@ import mobl
 load "lib/showdown.js"
 
 
-external template markdown(s : String)
+external control markdown(s : String)
 /*template markdown(s : String) {
   label(s)
 }*/

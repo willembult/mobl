@@ -2,74 +2,73 @@
 
 <project name="MoBL" default="all">
 
-	<!-- Key input modules -->
-	<property name="sdfmodule" value="MoBL" />
-	<property name="esvmodule" value="MoBL" />
-	<property name="strmodule" value="mobl" />
+  <!-- Key input modules -->
+  <property name="sdfmodule" value="MoBL" />
+  <property name="esvmodule" value="MoBL" />
+  <property name="strmodule" value="mobl" />
 
-	<!-- Project directories -->
-	<property name="trans" location="trans" />
-	<property name="src-gen" location="editor/java" />
-	<property name="syntax" location="syntax" />
-	<property name="include" location="include" />
-	<property name="lib" location="lib" />
-	<property name="build" location="bin" />
-	<property name="dist" location="bin/dist" />
+  <!-- Project directories -->
+  <property name="trans" location="trans" />
+  <property name="src-gen" location="editor/java" />
+  <property name="syntax" location="syntax" />
+  <property name="include" location="include" />
+  <property name="lib" location="lib" />
+  <property name="build" location="bin" />
+  <property name="dist" location="bin/dist" />
 
-	<!-- Imports -->
-	<property name="build.sdf.imports" value="" />
-	<property name="build.stratego.args" value="--library
+  <!-- Imports -->
+  <property name="build.sdf.imports" value="" />
+  <property name="build.stratego.args" value="--library
                         -I &quot;${trans}&quot; -I &quot;${basedir}&quot;
                         -la stratego-lib -la stratego-sglr -la stratego-gpp -la stratego-xtc -la stratego-aterm" />
 
-	<!-- External .def and .jar locations
+  <!-- External .def and .jar locations
         <property name="externaldef" location="syntax/${sdfmodule}.def"/>
         <property name="externaljar" value="../lib.jar"/>
         <property name="externaljarflags" value="-la org.lib"/>
         -->
 
-	<!-- Environment configuration for command-line builds -->
-	<condition property="build.strategoxt.sdf" value="${eclipse.spoofaximp.nativeprefix}" else="">
-		<isset property="eclipse.spoofaximp.nativeprefix" />
-	</condition>
-	<property name="build.strategoxt.stratego" location="${user.home}/.nix-profile/bin" />
+  <!-- Environment configuration for command-line builds -->
+  <condition property="build.strategoxt.sdf" value="${eclipse.spoofaximp.nativeprefix}" else="">
+    <isset property="eclipse.spoofaximp.nativeprefix" />
+  </condition>
+  <property name="build.strategoxt.stratego" location="${user.home}/.nix-profile/bin" />
 
-	<import file="build.generated.xml" />
+  <import file="build.generated.xml" />
 
-	<!-- Main target -->
-	<target name="all" depends="sdf2table,ppgen,pppack,stratego.aster,mobl-stratego.jar,sdf2imp,refresh" />
+  <!-- Main target -->
+  <target name="all" depends="sdf2table,ppgen,pppack,stratego.aster,mobl-stratego.jar,sdf2imp,refresh" />
 
-
-	<target name="mobl-stratego.jar" depends="rtg2sig">
-		<dependset>
-			<srcfileset dir="${basedir}">
-				<include name="**/*.str" />
-				<include name="**/*.astr" />
-				<exclude name="lib/editor-common.generated.str" />
-			</srcfileset>
-			<targetfileset file="${src-gen}/trans/Main.java" />
-		</dependset>
-		<available file="${src-gen}/trans/Main.java" property="strc-java.available" />
-		<antcall target="copy-jar" />
-		<antcall target="stratego.jar.deletehelper" />
-		<antcall target="stratego.jvm.helper">
-			<param name="build.stratego.outputpath" value="${src-gen}/trans" />
-			<param name="build.stratego.extraargs" value="-la java-front" />
-			<param name="build.stratego.extension" value="java" />
-		</antcall>
-		<!-- copy customized java strategies -->
+  <target name="mobl-stratego.jar" depends="rtg2sig">
+    <dependset>
+      <srcfileset dir="${basedir}">
+        <include name="**/*.str" />
+        <include name="**/*.astr" />
+        <exclude name="lib/editor-common.generated.str" />
+      </srcfileset>
+      <targetfileset file="${src-gen}/trans/Main.java" />
+    </dependset>
+    <available file="${src-gen}/trans/Main.java" property="strc-java.available" />
+    <antcall target="copy-jar" />
+    <antcall target="stratego.jar.deletehelper" />
+    <antcall target="stratego.jvm.helper">
+      <param name="build.stratego.outputpath" value="${src-gen}/trans" />
+      <param name="build.stratego.extraargs" value="-la java-front" />
+      <param name="build.stratego.extension" value="java" />
+    </antcall>
+    <!-- copy customized java strategies -->
     <copy todir="${src-gen}/trans" overwrite="true">
       <fileset dir="editor/java-str/trans" includes="*.java"/>
     </copy>
-		<javac classpath="utils/strategoxt.jar:${src-gen}${externaljarimport}" srcdir="${src-gen}" includes="trans/**" destdir="${build}" source="1.5" target="1.5" debug="on" />
-		<!-- copy imported terms -->
-		<copy todir="${build}/trans">
-			<fileset dir="${src-gen}/trans" excludes="**/*.java" />
-		</copy>
-		<jar basedir="${build}" includes="trans/**" destfile="${include}/${strmodule}.jar" />
-		<delete>
-			<fileset dir="${build}" includes="trans/**" />
-		</delete>
-	</target>
+    <javac classpath="utils/strategoxt.jar:${src-gen}${externaljarimport}" srcdir="${src-gen}" includes="trans/**" destdir="${build}" source="1.5" target="1.5" debug="on" />
+    <!-- copy imported terms -->
+    <copy todir="${build}/trans">
+      <fileset dir="${src-gen}/trans" excludes="**/*.java" />
+    </copy>
+    <jar basedir="${build}" includes="trans/**" destfile="${include}/${strmodule}.jar" />
+    <delete>
+      <fileset dir="${build}" includes="trans/**" />
+    </delete>
+  </target>
 
 </project>

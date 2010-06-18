@@ -12,13 +12,13 @@ builders
 
   provider : include/mobl.jar
   provider : include/acoda.jar
- 
+
   observer : editor-analyze
   on save  : generate-artifacts
   builder  : "Show ATerm"  = generate-aterm (openeditor) (realtime) (meta)
   builder  : "Format code" = format-code (openeditor) (realtime)
   builder  : "Desugar"     = editor-desugar (openeditor) (realtime) (meta)
-  
+
   builder		: "Make Data Model Snapshot"	= editor-mobl-make-snapshot
   builder		: "Derive M3"					= editor-mobl2m3 (openeditor) (realtime) (meta)
   builder		: "Show Database Schema"		= editor-mobl2schema (openeditor) (realtime)

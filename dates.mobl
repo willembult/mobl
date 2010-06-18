@@ -8,21 +8,21 @@ entity Person {
   birthday : DateTime
 }
 
-template showDay(n : Num, d : DateTime) {
+control showDay(n : Num, d : DateTime) {
   row {
     cell(width="40%") { label(n) }
     cell { label(addDays(d, n).toDateString()) }
   }
 }
 
-template showWeek(n : Num, d : DateTime) {
+control showWeek(n : Num, d : DateTime) {
   row {
     cell(width="40%") { label(n) }
     cell { label(addWeeks(d, n).toDateString()) }
   }
 }
 
-template showMonth(n : Num, d : DateTime) {
+control showMonth(n : Num, d : DateTime) {
   row {
     cell(width="40%") { label(n) }
     cell { label(addMonths(d, n).toDateString()) }
@@ -76,7 +76,7 @@ function daysUntil(daysOld : Num, persons : Collection<Person>) : Num {
   return (daysOld - sum)/3;
 }
 
-screen allDates() { 
+screen allDates() {
   header("Group")
   backButton("Back", onclick={ screen return; })
   table {

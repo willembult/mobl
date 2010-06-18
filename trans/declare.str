@@ -69,17 +69,17 @@ strategies
         )
 
   declare:
-    Template(manno*, qid, farg*, body) -> <fail>
+    Control(manno*, qid, farg*, body) -> <fail>
     with
       extern := <definition-to-external>
       ; rules (
-          GetTemplate : qid -> extern
+          GetControl : qid -> extern
         )
 
   declare:
-    extern@ExternalTemplate(manno*, qid, farg*) -> <fail>
+    extern@ExternalControl(manno*, qid, farg*) -> <fail>
     with rules (
-           GetTemplate : qid -> extern
+           GetControl : qid -> extern
          )
 
   declare :
@@ -108,7 +108,7 @@ strategies // convert to externals
     SyncFunction(manno*, qid, farg*, rt, stat*) -> ExternalSyncFunction(manno*, qid, farg*, rt)
 
   definition-to-external :
-    Template(manno*, qid, farg*, elem*) -> ExternalTemplate(manno*, qid, farg*)
+    Control(manno*, qid, farg*, elem*) -> ExternalControl(manno*, qid, farg*)
 
   definition-to-external :
     Screen(manno*, qid, farg*, rt, _) -> ExternalScreen(manno*, qid, farg*, rt)

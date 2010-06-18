@@ -28,7 +28,7 @@ function toggleFavorite(a : Artist) {
   a.favorite = a.favorite ? false : true;
 }
 
-template search() {
+control search() {
   var artistQuery = "Michael"
   searchbox(artistQuery)
   group {
@@ -38,7 +38,7 @@ template search() {
   }
 }
 
-template favorites() {
+control favorites() {
   group {
     list(a in Artist.all().filter("favorite", "=", true)) {
       artistItem(a)
@@ -50,7 +50,7 @@ screen root() {
   tabset([("Search", "lib/toolbar/icon_magnify_glass.png", search), ("Favorites", "lib/toolbar/icon_favorities.png", favorites)])
 }
 
-template artistItem(a : Artist) {
+control artistItem(a : Artist) {
   itemArrow(onclick={showArtist(a); }) {
     var localArtist : Artist = lookupLocalArtist(a)
     label(localArtist.name)

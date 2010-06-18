@@ -28,7 +28,7 @@ strategies
         <script src="lib/persistence.search.js" type="application/x-javascript" charset="utf-8">
         </script>
         <script type="application/x-javascript" charset="utf-8">
-            persistence.connect('[<!<un-double-quote> dbname <+ <qid-to-js> qid>]', 'mobl database', 5 * 1024 * 1024, '[<!db-version <+ !"1">].0');
+            persistence.connect('[<!<un-double-quote> dbname <+ <qid-to-js> qid>]', 'mobl database', 5 * 1024 * 1024, '1.0');
         </script>
         <script src="lib/gestures.js" type="application/x-javascript" charset="utf-8">
         </script>
@@ -46,7 +46,7 @@ strategies
             mobl.load('[<qid-to-path> qid].js');
             $(function(){
                 persistence.schemaSync(function(tx) {
-                    mobl.call("[<qid-to-js> qid].root", $[${}$]$, function() {});
+                    mobl.call("[<qid-to-js> qid].root", $[$$]$, function() {});
                 });
             });
         </script>
@@ -57,4 +57,3 @@ strategies
     ]
     with <filter(?TitleSetting(title))> setting*
        ; <filter(?DatabaseSetting(dbname))> setting*
-       ; <filter(?DatabaseVersionSetting(db-version))> setting*

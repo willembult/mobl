@@ -34,7 +34,7 @@ strategies
     Brackets(e) -> <type-of> e
 
   eq-type-of :
-    AnonymousTemplate(_) -> SimpleType(QId("mobl", "Template"))
+    AnonymousControl(_) -> SimpleType(QId("mobl", "Control"))
 
   eq-type-of :
     Tuple(fst, rest*) -> GenericType(QId("mobl", $[Tuple[n]]), t*)
@@ -68,12 +68,12 @@ strategies
     where <lookup-type> SimpleType(qid)
 
   eq-type-of :
-    Var(qid) -> <fargs-to-template-type> farg*
-    where ExternalTemplate(_, _, farg*) := <lookup-template-aux> qid
+    Var(qid) -> <fargs-to-control-type> farg*
+    where ExternalControl(_, _, farg*) := <lookup-control-aux> qid
 
-  fargs-to-template-type :
-    farg* -> GenericType(QId("mobl", $[Template[n]]), t*)
-    where t* := <filter(?FArg(_, <id>))> farg*
+  fargs-to-control-type :
+    farg* -> GenericType(QId("mobl", $[Control[n]]), t*)
+    where t* := <map(?FArg(_, <id>) <+ ?FArgOptional(_, <id>, _))> farg*
         ; n := <length> t*
 
   eq-type-of :

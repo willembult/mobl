@@ -30,6 +30,8 @@ strategies
   // this is overwritten in Java code (the weird code is just to avoid inlining)
   get-plugin-path = debug(!"<still didn't work>"); editor-analyze; fail; resolve-file
 
+  upload-files(|appid) = debug(!"<still didn't work>"); editor-analyze; fail; resolve-file
+
   resolve-file :
     filename -> filename
     where <file-exists> filename
@@ -136,9 +138,6 @@ rules // Main editor interface (defined by editor/MoBL-Builders and -References.
     where t2 := <lookup-node> (position, ast)*/
 
 
-  editor-complete =
-    debug(!"Editor complete: "); fail
-
   // Completes an identifier when the user presses control-space
   // (the completion identifier in the AST provides additional context information)
   editor-complete:
@@ -159,7 +158,7 @@ rules // Main editor interface (defined by editor/MoBL-Builders and -References.
         ; method* := <get-all-methods; map(\ meth@c#([_, x, args|_]) -> (<concat> [[x, "("], <filter(?FArg(<id>, _)); separate-by(!", ")> args, [")"]], <get-doc> meth) \)> t
 
   editor-complete:
-    (Var(COMPLETION(prefix)), position, ast, path, project-path) -> [type*, var*, function*]
+    (Var(COMPLETION(_)), position, ast, path, project-path) -> [type*, var*, function*]
     where {| CompletionVars
            : ast' := <analyze; store-result> ast
            ; position' := <desugar-position(normalize|ast)> position
@@ -167,7 +166,23 @@ rules // Main editor interface (defined by editor/MoBL-Builders and -References.
            |}
     where Var(qid) := <term-at-position(|position')> ast'
     where type* := <get-all-types; map(type-name-to-proposal); flatten-list>
-        ; function* := <get-all-functions; map(type-name-to-proposal)>
+        ; function* := <get-all-functions; map(lookup-function; function-to-proposal); flatten-list>
+
+  editor-complete:
+    (QId(_, COMPLETION(_)), position, ast, path, project-path) -> [type*, function*]
+    where type* := <get-all-types; map(type-name-to-proposal); flatten-list>
+        ; function* := <get-all-functions; map(lookup-function; function-to-proposal); flatten-list>
+
+  function-to-proposal :
+    f@ExternalFunction(_, qid@QId(_, x), args, _) -> [
+      (<concat> [[x, "("], fargs, [")"]], <get-doc> f),
+      (<concat> [[<pp-mobl-qid> qid, "("], fargs, [")"]], <get-doc> f)
+    ]
+    with fargs := <map(farg-to-proposal); separate-by(!", ")> args
+
+  function-to-proposal :
+    f@ExternalSyncFunction(manno*, qid@QId(_, x), args, rt) -> <function-to-proposal> ExternalFunction(manno*, qid, args, rt)
+
 
   editor-complete:
     (MethodCall(_, COMPLETION(prefix), _), position, ast, path, project-path) -> method*
@@ -178,10 +193,27 @@ rules // Main editor interface (defined by editor/MoBL-Builders and -References.
     where t := <type-of> e
         ; method* := <get-all-methods; map(\ meth@c#([_, x|_]) -> ([x], <get-doc> meth) \)> t
 
-  // My guess is template call
+  // My guess is control call
   editor-complete:
-    (NOCONTEXT(COMPLETION(prefix)), position, ast, path, project-path) -> []
-    where template* := <get-all-templates; map(\ tpl@ExternalTemplate(_, qid, args) -> (<concat> [[<pp-mobl-qid> qid, "("], <filter(?FArg(<id>, _)); separate-by(!", ")> args, [")"]], <get-doc> tpl) \)>
+    (NOCONTEXT(COMPLETION(prefix)), position, ast, path, project-path) -> control*
+    where control* := <get-all-controls; map(control-to-proposal); flatten-list>
+
+  control-to-proposal :
+    tpl@ExternalControl(_, qid@QId(_, x), args) -> [
+      (<concat> [[x, "("], fargs, [")"]], <get-doc> tpl),
+      (<concat> [[<pp-mobl-qid> qid, "("], fargs, [")"]], <get-doc> tpl)
+    ]
+    with fargs := <map(farg-to-proposal); separate-by(!", ")> args
+
+  farg-to-proposal :
+    FArg(x, _) -> x
+
+  farg-to-proposal :
+    FArgOptional(x, t, e) -> $[[x]=[<pp-mobl-exp> e]]
+    where not(SimpleType(QId("mobl", "Callback")) := t)
+
+  farg-to-proposal :
+    FArgOptional(x, SimpleType(QId("mobl", "Callback")), e) -> $[[x]={}]
 
   editor-complete:
     (Javascript(COMPLETION(_)), _, _, _, _) -> []
@@ -192,6 +224,13 @@ rules // Main editor interface (defined by editor/MoBL-Builders and -References.
 
   type-name-to-proposal:
     qid@QId(_, x) -> [([x], ""), ([<pp-mobl-qid> qid], "")]
+
+
+  editor-complete =
+    debug(!"Editor complete: "); fail
+
+rules
+
 
   editor-desugar :
     (selected, position, ast, path, project-path) -> (filename, <desugar-all; pp-mobl> <ResultingAST>)

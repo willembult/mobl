@@ -47,7 +47,7 @@ exports
     QId "(" {NamedExp ","}* ")"   -> Exp {cons("Call")}
 
     QId                           -> LimitedExp {cons("Var")}
-    Exp "." ID "(" {Exp ","}* ")" -> LimitedExp {cons("MethodCall")}
+    Exp "." ID "(" {NamedExp ","}* ")" -> LimitedExp {cons("MethodCall")}
     Exp "." ID                    -> LimitedExp {cons("FieldAccess")}
     Exp "[" Exp "]"               -> LimitedExp {left, cons("Indexer")}
     "(" Exp ")"                   -> LimitedExp {cons("Brackets")}
@@ -71,7 +71,7 @@ exports
     "(" Exp "," {Exp ","}* ")"   -> Exp {cons("Tuple")}
 
     "{" Statement* "}"             -> Exp {cons("Callback")}
-    "template" "{" ScreenElem* "}" -> Exp {cons("AnonymousTemplate")}
+    "control" "{" ScreenElem* "}" -> Exp {cons("AnonymousControl")}
 
     ID "=" Exp                  -> PropVal {cons("PropVal")}
 
@@ -103,7 +103,7 @@ exports
 
   context-free priorities
     Exp "." ID -> LimitedExp
-  > Exp "." ID "(" {Exp ","}* ")" -> LimitedExp
+  > Exp "." ID "(" {NamedExp ","}* ")" -> LimitedExp
   > Exp TermOperatorMethodId Exp -> Exp
   > Exp OperatorMethodId Exp -> Exp
   > Exp CompareMethodId Exp -> Exp

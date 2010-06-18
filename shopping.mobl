@@ -31,12 +31,12 @@ function clean() {
   }
 }
 
-template showItemsHeader() {
+control showItemsHeader() {
   header("Items")
   topRightButton("Clean", onclick={ clean(); })
 }
 
-template showItems() {
+control showItems() {
   group {
     list(it in Item.all().filter("onlist", "=", true).order("order", true)) {
       item(onclick={ it.checked = it.checked ? false: true; }) {
@@ -48,11 +48,11 @@ template showItems() {
   quickAdd()
 }
 
-template showFavoritesHeader() {
+control showFavoritesHeader() {
   header("Favorites")
 }
 
-template showFavorites() {
+control showFavorites() {
   group {
     list(it in Item.all().filter("favorite", "=", true).order("order", true)) {
       item(onclick={ editItem(it); }) {
@@ -65,7 +65,7 @@ template showFavorites() {
   }
 }
 
-template quickAdd() {
+control quickAdd() {
   var newItem = Item{ order=999, onlist=true }
   group {
     inputString(newItem.name, placeholder="New item")

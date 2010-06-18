@@ -27,9 +27,6 @@ strategies
     DatabaseSetting(s) -> $[database [s]]
 
   pp-mobl-setting:
-    DatabaseVersionSetting(s) -> $[database version [s]]
-
-  pp-mobl-setting:
     TitleSetting(s) -> $[title [s]]
 
   pp-mobl-doc :
@@ -55,8 +52,8 @@ strategies
       }]
 
   pp-mobl-def :
-    Template(doc*, qid, farg*, elem*) ->
-    $[[<map(pp-mobl-doc); concat-strings> doc*]template [<pp-mobl-qid> qid]([<map(pp-mobl-farg); separate-by(|", "); concat-strings> farg*]) {
+    Control(doc*, qid, farg*, elem*) ->
+    $[[<map(pp-mobl-doc); concat-strings> doc*]control [<pp-mobl-qid> qid]([<map(pp-mobl-farg); separate-by(|", "); concat-strings> farg*]) {
         [<map(pp-mobl-elem); separate-by(|"\n"); concat-strings> elem*]
       }]
 
@@ -150,16 +147,16 @@ strategies // UI
     HtmlDatabindArg(e) -> <concat-strings> [" databind=", <pp-mobl-exp> e]
 
   pp-mobl-elem :
-    TemplateCall(e, arg*, elem*) ->
+    ControlCall(e, arg*, elem*) ->
     $[[<concat-strings> [<pp-mobl-exp> e, "(", <map(pp-mobl-exp); separate-by(|", "); concat-strings> arg*]]) {
         [<map(pp-mobl-elem); separate-by(|"\n"); concat-strings> elem*]
       }]
 
   pp-mobl-elem :
-    TemplateCallNoBody(e, arg*) -> <concat-strings> [<pp-mobl-exp> e, "(", <map(pp-mobl-exp); separate-by(|", "); concat-strings> arg*, ")"]
+    ControlCallNoBody(e, arg*) -> <concat-strings> [<pp-mobl-exp> e, "(", <map(pp-mobl-exp); separate-by(|", "); concat-strings> arg*, ")"]
 
   pp-mobl-elem :
-    TemplateCallNoArgs(e, elem*) ->
+    ControlCallNoArgs(e, elem*) ->
     $[[<pp-mobl-exp> e] {
         [<map(pp-mobl-elem); separate-by(|"\n"); concat-strings> elem*]
       }]
@@ -303,17 +300,17 @@ strategies // expressions
     Callback([stat]) -> $[{ [<pp-mobl-stat> stat] }]
 
   pp-mobl-exp :
-    AnonymousTemplate(elem*) ->
-    $[template {
+    AnonymousControl(elem*) ->
+    $[control {
         [<map(pp-mobl-elem); separate-by(|"\n"); concat-strings> elem*]
       }]
     where [_,_|_] := elem*
 
   pp-mobl-exp :
-    AnonymousTemplate([]) -> $[template {}]
+    AnonymousControl([]) -> $[control {}]
 
   pp-mobl-exp :
-    AnonymousTemplate([elem]) -> $[template { [<pp-mobl-elem> elem] }]
+    AnonymousControl([elem]) -> $[control { [<pp-mobl-elem> elem] }]
 
   pp-mobl-exp :
     Var(qid) -> <pp-mobl-qid> qid
@@ -428,8 +425,8 @@ strategies // externals
     $[[<map(pp-mobl-doc); concat-strings> doc*]external screen [<pp-mobl-qid> qid]([<map(pp-mobl-farg); separate-by(|", "); concat-strings> farg*]) : [<pp-mobl-type> rt]]
 
   pp-mobl-def :
-    ExternalTemplate(doc*, qid, farg*) ->
-    $[[<map(pp-mobl-doc); concat-strings> doc*]external template [<pp-mobl-qid> qid]([<map(pp-mobl-farg); separate-by(|", "); concat-strings> farg*])]
+    ExternalControl(doc*, qid, farg*) ->
+    $[[<map(pp-mobl-doc); concat-strings> doc*]external control [<pp-mobl-qid> qid]([<map(pp-mobl-farg); separate-by(|", "); concat-strings> farg*])]
 
   pp-mobl-def :
     //Javascript(part*) -> <concat-strings> ["<script>\n", <map(?JSString(<id>)); concat-strings> part*, "</script>"]

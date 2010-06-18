@@ -37,35 +37,35 @@ strategies
   cps-statements :
     [VarDecl(x, t, e)|stat*] -> <cps-expression(|[$[var [x] = result;
 ]|stat*])> e
-    where not(InTemplate)
+    where not(InControl)
 
   cps-statements :
     [VarDeclInferred(x, e)|stat*] -> <cps-expression(|[$[var [x] = result;
 ]|stat*])> e
-    where not(InTemplate)
+    where not(InControl)
 
   cps-statements :
     [VarDecl(x, t, e)|stat*] -> <cps-expression(|[$[var [x] = result;
 ]|stat*])> e
-    where InTemplate
+    where InControl
         ; not(<is-ref> x)
 
   cps-statements :
     [VarDecl(x, t, e)|stat*] -> <cps-expression(|[$[var [x] = ref(result);
 ]|stat*])> e
-    where InTemplate
+    where InControl
         ; <is-ref> x
 
   cps-statements :
     [VarDeclInferred(x, e)|stat*] -> <cps-expression(|[$[var [x] = result;
 ]|stat*])> e
-    where InTemplate
+    where InControl
         ; not(<is-ref> x)
 
   cps-statements :
     [VarDeclInferred(x, e)|stat*] -> <cps-expression(|[$[var [x] = ref(result);
 ]|stat*])> e
-    where InTemplate
+    where InControl
         ; <is-ref> x
 
   cps-statements :

@@ -48,13 +48,11 @@ strategies
   function-to-js :
     SyncFunction(_, qid, farg*, rt, stat*) -> $[
     [varname] = function([args]) {
-      [init-stats]
       [stats]
     };
     ]
     with qids := <qid-to-js> qid
        ; args := <fargs-to-js> farg*
-       ; init-stats := <fargs-to-init-js> farg*
        ; stats := <statements-to-js> stat*
        ; if <is-string> qid then
            varname := $[var [qid]]
@@ -64,12 +62,14 @@ strategies
 
   fargs-to-js =
     filter(farg-to-js)
-    ; <concat> [<id>, ["namedArgs"]]
     ; separate-by(!", ")
     ; concat-strings
 
   farg-to-js :
     FArg(x, _) -> x
+
+  farg-to-js :
+    FArgOptional(x, _, _) -> x
 
   fargs-to-init-js =
     map(farg-to-init-js)
@@ -79,8 +79,8 @@ strategies
     FArg(_, _) -> ""
 
   // TODO: This assumens that the expressions are all synchronous, needs to be checked!
-  farg-to-init-js :
-    FArgOptional(x, t, e) -> $[var [x] = '[x]' in namedArgs ? namedArgs.[x] : [<expression-to-js> e];
+  /*farg-to-init-js :
+    FArgOptional(x, t, e) -> $[[x] = [x] !== undefined ? [x] : [<expression-to-js> e];
 ]
 
   fargs-to-ref-init-js =
@@ -91,19 +91,18 @@ strategies
     FArg(_, _) -> ""
 
   farg-to-ref-init-js :
-    FArgOptional(x, t, e) -> $[var [x] = '[x]' in namedArgs ? namedArgs.[x] : [<ref-expression-to-js> e];
+    FArgOptional(x, t, e) -> $[[x] = [x] !== undefined ? [x] : [<ref-expression-to-js> e];
 ]
+  */
 
   function-to-js :
     Function(_, qid, farg*, rt, stats) -> $[
     [varname] = function([args]) {
-      [init-stats]
       [stats2]
     };
     ]
     with qids := <qid-to-js> qid
-       ; args := <filter(farg-to-js); <concat> [<id>, ["namedArgs", "callback"]]; separate-by(!", "); concat-strings> farg*
-       ; init-stats := <fargs-to-init-js> farg*
+       ; args := <filter(farg-to-js); <concat> [<id>, ["callback"]]; separate-by(!", "); concat-strings> farg*
        ; stats2 := <cps-lift-expressions; <concat> [<id>, [$[if(callback) callback(); return;]]]; cps-statements <+ debug(!"Could not translate to stats: "); fail> stats
        ; if <is-string> qid then
            varname := $[var [qid]]
@@ -288,12 +287,12 @@ rules // Expressions
 
 
   exp-to-js :
-    AnonymousTemplate(elems) -> $[function(namedArgs, elements, callback) {
+    AnonymousControl(elems) -> $[function(elements, callback) {
                                     var [root] = $("<span>");
                                     [body]
                                   }]
-    with {| InTemplate
-          : rules ( InTemplate := 1 )
+    with {| InControl
+          : rules ( InControl := 1 )
           ; root := <newname> "root"
           ; body := <elems-to-js-callback(|root)> elems
           |}
@@ -301,22 +300,22 @@ rules // Expressions
 strategies
 
   arguments-to-js :
-    arg* -> <concat> [normal-args, [$[{[<separate-by(!", "); concat-strings> named-args]}]]]
-    with
+    arg* -> <map(expression-to-js)> arg*
+    /*with
       {| Arg
        : normal-args := <filter(not(?NamedExp(_,_)); expression-to-js <+ rules ( Arg :+= <id>); fail )> arg*
        ; named := <bagof-Arg>
        |}
-       ; named-args := <map(\ NamedExp(x, e) -> $['[x]': [<expression-to-js> e]] \)> named
+       ; named-args := <map(\ NamedExp(x, e) -> $['[x]': [<expression-to-js> e]] \)> named*/
 
   ref-arguments-to-js :
-    arg* -> <concat> [normal-args, [$[{[<separate-by(!", "); concat-strings> named-args]}]]]
-    with
+    arg* -> <map(ref-expression-to-js)> arg*
+    /*with
       {| Arg
        : normal-args := <filter(not(?NamedExp(_,_)); ref-expression-to-js <+ rules ( Arg :+= <id>); fail )> arg*
        ; named := <bagof-Arg>
        |}
-       ; named-args := <map(\ NamedExp(x, e) -> $['[x]': [<ref-expression-to-js> e]] \)> named
+       ; named-args := <map(\ NamedExp(x, e) -> $['[x]': [<ref-expression-to-js> e]] \)> named*/
 
 rules // util
   qid-to-js :

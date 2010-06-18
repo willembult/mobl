@@ -7,7 +7,7 @@ load "lib/spinningwheel.css"
 
 external function getDate(now : DateTime) : DateTime
 
-template datepicker(d : DateTime) {
+control datepicker(d : DateTime) {
   <div class="datepicker" databind=d.toDateString() onclick={
     d = getDate(d);
   }/>
