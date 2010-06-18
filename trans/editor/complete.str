@@ -1,0 +1,104 @@
+module editor/complete
+
+imports
+  include/MoBL
+  analyze
+  mobl
+  lib/editor-common
+  lookup
+  declare
+  rename
+  type
+  pp
+  normalize
+
+rules
+
+  editor-complete:
+    (SimpleType(COMPLETION(prefix)), position, ast, path, project-path) ->
+    proposals
+    where
+      all-types := <get-all-types>;
+      proposals    := <map(type-name-to-proposal); flatten-list> all-types
+
+  editor-complete:
+    (FieldAccess(_, COMPLETION(prefix)), position, ast, path, project-path) -> [prop*, method*]
+    where ast' := <analyze; store-result> ast
+        ; position' := <desugar-position(normalize|ast)> position
+    where FieldAccess(e, _) := <term-at-position(|position')> ast'
+       <+ FieldAccess(e, _) := <parent-at-position(|position')> ast'
+    where t := <type-of> e
+        ; prop* := <get-all-properties; map(\ prop@Property(_, x, _, _) -> ([x], <get-doc> prop) \)> t
+        ; method* := <get-all-methods; map(\ meth@c#([_, x, args|_]) -> (<concat> [[x, "("], <filter(?FArg(<id>, _)); separate-by(!", ")> args, [")"]], <get-doc> meth) \)> t
+
+  editor-complete:
+    (Var(COMPLETION(_)), position, ast, path, project-path) -> [type*, var*, function*]
+    where {| CompletionVars
+           : ast' := <analyze; store-result> ast
+           ; position' := <desugar-position(normalize|ast)> position
+           ; var* := <CompletionVars>
+           |}
+    where Var(qid) := <term-at-position(|position')> ast'
+    where type* := <get-all-types; map(type-name-to-proposal); flatten-list>
+        ; function* := <get-all-functions; map(lookup-function; function-to-proposal); flatten-list>
+
+  editor-complete:
+    (QId(_, COMPLETION(_)), position, ast, path, project-path) -> [type*, function*]
+    where type* := <get-all-types; map(type-name-to-proposal); flatten-list>
+        ; function* := <get-all-functions; map(lookup-function; function-to-proposal); flatten-list>
+
+  function-to-proposal :
+    f@ExternalFunction(_, qid@QId(_, x), args, _) -> [
+      (<concat> [[x, "("], fargs, [")"]], <get-doc> f),
+      (<concat> [[<pp-mobl-qid> qid, "("], fargs, [")"]], <get-doc> f)
+    ]
+    with fargs := <map(farg-to-proposal); separate-by(!", ")> args
+
+  function-to-proposal :
+    f@ExternalSyncFunction(manno*, qid@QId(_, x), args, rt) -> <function-to-proposal> ExternalFunction(manno*, qid, args, rt)
+
+
+  editor-complete:
+    (MethodCall(_, COMPLETION(prefix), _), position, ast, path, project-path) -> method*
+    where ast' := <analyze; store-result> ast
+        ; position' := <desugar-position(normalize|ast)> position
+    where MethodCall(e, _, _) := <term-at-position(|position')> ast'
+       <+ MethodCall(e, _, _) := <parent-at-position(|position')> ast'
+    where t := <type-of> e
+        ; method* := <get-all-methods; map(\ meth@c#([_, x|_]) -> ([x], <get-doc> meth) \)> t
+
+  // My guess is control call
+  editor-complete:
+    (NOCONTEXT(COMPLETION(prefix)), position, ast, path, project-path) -> control*
+    where control* := <get-all-controls; map(control-to-proposal); flatten-list>
+
+  control-to-proposal :
+    tpl@ExternalControl(_, qid@QId(_, x), args) -> [
+      (<concat> [[x, "("], fargs, [")"]], <get-doc> tpl),
+      (<concat> [[<pp-mobl-qid> qid, "("], fargs, [")"]], <get-doc> tpl)
+    ]
+    with fargs := <map(farg-to-proposal); separate-by(!", ")> args
+
+  farg-to-proposal :
+    FArg(x, _) -> x
+
+  farg-to-proposal :
+    FArgOptional(x, t, e) -> $[[x]=[<pp-mobl-exp> e]]
+    where not(SimpleType(QId("mobl", "Callback")) := t)
+
+  farg-to-proposal :
+    FArgOptional(x, SimpleType(QId("mobl", "Callback")), e) -> $[[x]={}]
+
+  editor-complete:
+    (Javascript(COMPLETION(_)), _, _, _, _) -> []
+
+  type-name-to-proposal:
+    x -> ([x], "")
+    where is-string
+
+  type-name-to-proposal:
+    qid@QId(_, x) -> [([x], ""), ([<pp-mobl-qid> qid], "")]
+
+
+  editor-complete =
+    debug(!"Editor complete: "); fail

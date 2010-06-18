@@ -73,9 +73,9 @@ rules
 
   externalize-module :
     Module(qid, def*) -> def2*
-    with def2* := <analyze; desugar-all; ?Module(_, <id>); filter(definition-to-external)>
+    with def2* := <analyze; ?Module(_, <id>); filter(origin-track-forced(definition-to-external))>
 
   externalize-module :
     Application(qid, _, def*) -> def2*
-    with def2* := <analyze; desugar-all; ?Application(_, _, <id>); filter(definition-to-external)>
+    with def2* := <analyze; ?Application(_, _, <id>); filter(definition-to-external)>
 

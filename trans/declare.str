@@ -39,6 +39,7 @@ strategies
     with rules (
              GetEntity : qid -> extern
            )
+    where try(origin-term; debug(!"Origin term for external entity: "))
 
   declare:
     extern@ExternalFunction(manno*, qid, farg*, rt) -> <fail>
