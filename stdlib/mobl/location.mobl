@@ -16,13 +16,13 @@ mobl.location.isSupported = function() {
   return !!navigator.geolocation;
 }
 
-mobl.location.getPosition = function(namedArgs, callback) {
+mobl.location.getPosition = function(callback) {
   if(navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(function(position) {
       callback({latitude: position.coords.latitude, longitude: position.coords.longitude, accuracy: position.coords.accuracy});
     });
   } else {
-    return null;
+    callback(null);
   }
 };
 </script>

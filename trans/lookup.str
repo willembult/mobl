@@ -7,6 +7,7 @@ imports
   resolve
   type
   mobl
+  lib/editor-common
 
 strategies
 
@@ -29,12 +30,15 @@ strategies
     SimpleType(qid) -> <GetType> qid
 
   lookup-type-aux :
-    GenericType(qid, t*) -> ExternalType(manno*, <newname> "Generic", SimpleType(QId("mobl", "Object")), method2*)
+    GenericType(qid, t*) -> extern
     where ExternalGenericType(manno*, _, x*, method*) := <GetGenericType> qid
-        ; {| RenameGenericType
-           : <zip(\ (x, t) -> <id> where rules ( RenameGenericType : SimpleType(x) -> t ) \)> (x*, t*)
-           ; method2* := <alltd(RenameGenericType)> method*
-           |}
+        ; origin-track-forced(
+            {| RenameGenericType
+             : <zip(\ (x, t) -> <id> where rules ( RenameGenericType : SimpleType(x) -> t ) \)> (x*, t*)
+             ; method2* := <alltd(RenameGenericType)> method*
+             |}
+            ; !ExternalType(manno*, <newname> "Generic", SimpleType(QId("mobl", "Object")), method2*)
+          ); ?extern
 
   get-all-types =
     entities := <dr-all-keys(|"GetEntity")>
@@ -69,10 +73,9 @@ strategies
      <+ import-and-retry(lookup-control-aux|<id>)
 
   lookup-control-aux :
-    qid -> ExternalControl(manno*, qid, farg2*)
+    qid -> extern
     where <GetControl> qid
-        ; ?ExternalControl(manno*, _, farg*)
-        ; farg2* := <alltd(add-namespace)> farg*
+        ; extern := <origin-track-forced(\ ExternalControl(manno*, _, farg*) -> ExternalControl(manno*, qid, <alltd(add-namespace)> farg*) \)>
 
   get-all-controls =
     dr-all-keys(|"GetControl")
@@ -83,73 +86,90 @@ strategies
    <+ import-and-retry(lookup-screen-aux|<id>)
 
   lookup-screen-aux :
-    qid -> ExternalScreen(manno*, qid, farg2*, rt)
+    qid -> extern
     where <GetScreen> qid
-        ; ?ExternalScreen(manno*, _, farg*, rt)
-        ; farg2* := <alltd(add-namespace)> farg*
+        ; extern := <origin-track-forced(\ ExternalScreen(manno*, _, farg*, rt) -> ExternalScreen(manno*, qid, <alltd(add-namespace)> farg*, <alltd(add-namespace)> rt) \)>
 
   lookup-function =
       lookup-function-aux
    <+ import-and-retry(lookup-function-aux|<id>)
 
   lookup-function-aux :
-    qid -> ExternalFunction(manno*, qid, farg2*, rt2)
+    qid -> extern
     where ExternalFunction(manno*, _, farg*, rt) := <GetFunction> qid
-        ; rt2 := <alltd(add-namespace)> rt
-        ; farg2* := <alltd(add-namespace)> farg*
+        ; extern := <origin-track-forced(\ ExternalFunction(manno*, _, farg*, rt) -> ExternalFunction(manno*, qid, <alltd(add-namespace)> farg*, <alltd(add-namespace)> rt) \)>
 
   lookup-function-aux :
-    qid -> ExternalSyncFunction(manno*, qid, farg2*, rt2)
+    qid -> extern
     where ExternalSyncFunction(manno*, _, farg*, rt) := <GetFunction> qid
-        ; rt2 := <alltd(add-namespace)> rt
-        ; farg2* := <alltd(add-namespace)> farg*
+        ; extern := <origin-track-forced(\ ExternalSyncFunction(manno*, _, farg*, rt) -> ExternalSyncFunction(manno*, qid, <alltd(add-namespace)> farg*, <alltd(add-namespace)> rt) \)>
 
   get-all-functions =
-    dr-all-keys(|"GetFunction"); debug(!"All functions: ")
+    dr-all-keys(|"GetFunction")
 
   lookup-method :
-    (t, x) -> ExternalSyncMethod(manno*, x, farg2*, rt2)
+    (t, x) -> extern
     where not(GenericType("Type", _) := t)
     where ExternalType(_, _, super, method*) := <lookup-type> t
-        ; [ExternalSyncMethod(manno*, _, _, _)] := <filter(?ExternalSyncMethod(_, x, farg*, rt))> method*
-        ; if not(!farg*); not(super := t) then // could not find a method
-            <lookup-method> (super, x)
-          end
-        ; rt2 := <alltd(add-namespace)> rt
-        ; farg2* := <alltd(add-namespace)> farg*
+        ; [esm@ExternalSyncMethod(manno*, _, _, _)] := <filter(?ExternalSyncMethod(_, x, farg*, rt))> method*
+        ; !esm
+        ; origin-track-forced(
+            if not(!farg*); not(super := t) then // could not find a method
+              <lookup-method> (super, x)
+            end
+            ; rt2 := <alltd(add-namespace)> rt
+            ; farg2* := <alltd(add-namespace)> farg*
+            ; !ExternalSyncMethod(manno*, x, farg2*, rt2)
+          )
+        ; ?extern
 
   lookup-method :
-    (t, x) -> ExternalMethod(manno*, x, farg2*, rt2)
+    (t, x) -> extern
     where not(GenericType("Type", _) := t)
     where ExternalType(_, _, super, method*) := <lookup-type> t
-        ; [ExternalMethod(manno*, _, _, _)] := <filter(?ExternalMethod(_, x, farg*, rt))> method*
-        ; if not(!farg*); not(super := t) then // could not find a method
-            <lookup-method> (super, x)
-          end
-        ; rt2 := <alltd(add-namespace)> rt
-        ; farg2* := <alltd(add-namespace)> farg*
+        ; [em@ExternalMethod(manno*, _, _, _)] := <filter(?ExternalMethod(_, x, farg*, rt))> method*
+        ; !em
+        ; origin-track-forced(
+            if not(!farg*); not(super := t) then // could not find a method
+              <lookup-method> (super, x)
+            end
+            ; rt2 := <alltd(add-namespace)> rt
+            ; farg2* := <alltd(add-namespace)> farg*
+            ; !ExternalMethod(manno*, x, farg2*, rt2)
+          )
+        ; ?extern
 
   lookup-method :
-    (t2, x) -> ExternalMethod(manno*, x, farg2*, rt2)
+    (t2, x) -> extern
     where GenericType("Type", [t@SimpleType(qid)]) := t2 // for static methods
     where ExternalType(_, _, super, method*) := <GetType <+ GetEntity; <lookup-type> GenericType(QId("mobl", "Entity"), [t])> qid
-        ; [ExternalStaticMethod(manno*, _, _, _)] := <filter(?ExternalStaticMethod(_, x, farg*, rt))> method*
-        ; if not(!farg*); not(super := t) then // could not find a method
-            <lookup-method> (super, x)
-          end
-        ; rt2 := <alltd(add-namespace)> rt
-        ; farg2* := <alltd(add-namespace)> farg*
+        ; [esm@ExternalStaticMethod(manno*, _, _, _)] := <filter(?ExternalStaticMethod(_, x, farg*, rt))> method*
+        ; !esm
+        ; origin-track-forced(
+            if not(!farg*); not(super := t) then // could not find a method
+              <lookup-method> (super, x)
+            end
+            ; rt2 := <alltd(add-namespace)> rt
+            ; farg2* := <alltd(add-namespace)> farg*
+            ; !ExternalMethod(manno*, x, farg2*, rt2)
+          )
+        ; ?extern
 
   lookup-method :
-    (t2, x) -> ExternalSyncMethod(manno*, x, farg2*, rt2)
+    (t2, x) -> extern
     where GenericType("Type", [t@SimpleType(qid)]) := t2 // for static methods
     where ExternalType(_, _, super, method*) := <GetType <+ GetEntity; <lookup-type> GenericType(QId("mobl", "Entity"), [t])> qid
-        ; [ExternalStaticSyncMethod(manno*, _, _, _)] := <filter(?ExternalStaticSyncMethod(_, x, farg*, rt))> method*
-        ; if not(!farg*); not(super := t) then // could not find a method
-            <lookup-method> (super, x)
-          end
-        ; rt2 := <alltd(add-namespace)> rt
-        ; farg2* := <alltd(add-namespace)> farg*
+        ; [esm@ExternalStaticSyncMethod(manno*, _, _, _)] := <filter(?ExternalStaticSyncMethod(_, x, farg*, rt))> method*
+        ; !esm
+        ; origin-track-forced(
+            if not(!farg*); not(super := t) then // could not find a method
+              <lookup-method> (super, x)
+            end
+            ; rt2 := <alltd(add-namespace)> rt
+            ; farg2* := <alltd(add-namespace)> farg*
+            ; !ExternalSyncMethod(manno*, x, farg2*, rt2)
+          )
+        ; ?extern
 
   lookup-method :
     (SimpleType(QId("mobl", "Dynamic")), x) -> ExternalSyncMethod([], x, [], SimpleType(QId("mobl", "Dynamic")))

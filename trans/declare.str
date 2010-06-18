@@ -10,7 +10,7 @@ strategies
   declare-all =
     with(
       (?Module(_, def*) <+ ?Application(_, _, def*))
-      ; <filter(declare)> def*
+      ; <filter(origin-track-forced(declare))> def*
     )
 
   // Records the definition of an entity in a dynamic rule GetEntity.
@@ -39,7 +39,6 @@ strategies
     with rules (
              GetEntity : qid -> extern
            )
-    where try(origin-term; debug(!"Origin term for external entity: "))
 
   declare:
     extern@ExternalFunction(manno*, qid, farg*, rt) -> <fail>
@@ -56,7 +55,7 @@ strategies
   declare:
     Function(manno*, qid, farg*, rt, body) -> <fail>
     with
-      extern := <definition-to-external>
+      extern := <origin-track-forced(definition-to-external)>
       ; rules (
           GetFunction : qid -> extern
         )
@@ -64,7 +63,7 @@ strategies
   declare:
     SyncFunction(manno*, qid, farg*, rt, body) -> <fail>
     with
-      extern := <definition-to-external>
+      extern := <origin-track-forced(definition-to-external)>
       ; rules (
           GetFunction : qid -> extern
         )
@@ -72,7 +71,7 @@ strategies
   declare:
     Control(manno*, qid, farg*, body) -> <fail>
     with
-      extern := <definition-to-external>
+      extern := <origin-track-forced(definition-to-external)>
       ; rules (
           GetControl : qid -> extern
         )
@@ -86,7 +85,7 @@ strategies
   declare :
     Screen(manno*, qid, farg*, rt, body) -> <fail>
     with
-      extern := <definition-to-external>
+      extern := <origin-track-forced(definition-to-external)>
       ; rules (
           GetScreen : qid -> extern
         )
