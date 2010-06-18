@@ -86,7 +86,7 @@ rules
     t@MethodCall(e, x, arg*) -> (t, $[No such method '[x]' defined])
     where <type-of> e
     where not(type-of)
-        ; <type-of; debug(!"Type of e: ")> e
+        ; <type-of> e
 
   constraint-error :
     Assignment(lhs, e) -> (lhs, $[No such variable '[lhs]' defined])

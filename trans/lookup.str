@@ -186,10 +186,10 @@ strategies
           end
 
   get-all-methods :
-    type -> own-methods
+    type -> own-methods //<concat> [own-methods, super-methods]
     where GenericType("Type", [t@SimpleType(qid)]) := type // for static methods
-    where c#([_, _, super, member*]) := <GetType <+ GetEntity; <lookup-type> GenericType(QId("mobl", "Entity"), [t])> qid
-        ; own-methods := <filter(?ExternalStaticMethod(_, _, _, _) <+ ?ExternalStaticSyncMethod(_, _, _, _))> member*
+    where c#([_, _, super, members]) := <GetType <+ GetEntity; <lookup-type> GenericType(QId("mobl", "Entity"), [t])> qid
+        ; own-methods := <filter(?ExternalStaticMethod(_, _, _, _) <+ ?ExternalStaticSyncMethod(_, _, _, _))> members
 
   is-entity-type =
     lookup-type

@@ -15,6 +15,9 @@ imports
 rules
 
   editor-resolve:
+    (Import(qid), position, ast, path, project-path) -> <parse-file> <resolve-file> <concat-strings> [<qid-to-path> qid, ".mobl"]
+
+  editor-resolve:
     (SimpleType(_), position, ast, path, project-path) -> target
     where ast' := <analyze; store-result> ast
         ; position' := <desugar-position(normalize|ast)> position
