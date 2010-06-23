@@ -57,6 +57,10 @@ strategies
     ExternalControl(manno*, x, farg*) -> ExternalControl(manno*, QId(<ModuleName>, x), farg*)
     where <is-string> x
 
+  add-tl-namespace :
+    Service(manno*, x, selem*) -> Service(manno*, QId(<ModuleName>, x), selem*)
+    where <is-string> x
+
 rules
 
   add-namespace-all =
@@ -79,6 +83,12 @@ rules
     where <is-string> qid
     where not(<lookup-control-aux> qid)
         ; [qid2] := <filter({c, newid: ?c; <prefix-qid(|c)> qid; ?newid; lookup-control-aux; !newid})> [<ModuleName>|<bagof-Imports>]
+
+  add-namespace :
+    Var(qid{}) -> Var(qid2)
+    where <is-string> qid
+    where not(<lookup-function-aux> qid)
+        ; [qid2] := <filter({c, newid: ?c; <prefix-qid(|c)> qid; ?newid; lookup-function-aux; !newid})> [<ModuleName>|<bagof-Imports>]
 
   add-namespace :
     GenericType(qid, t*) -> GenericType(qid2, t2*)

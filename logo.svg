@@ -24,6 +24,13 @@
        inkscape:vp_z="744.09448 : 526.18109 : 1"
        inkscape:persp3d-origin="372.04724 : 350.78739 : 1"
        id="perspective10" />
+    <inkscape:perspective
+       id="perspective2834"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
   </defs>
   <sodipodi:namedview
      id="base"
@@ -33,15 +40,15 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="0.98994949"
-     inkscape:cx="282.45658"
-     inkscape:cy="759.37667"
+     inkscape:cx="256.69769"
+     inkscape:cy="718.97057"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
      inkscape:window-width="1151"
      inkscape:window-height="825"
-     inkscape:window-x="20"
-     inkscape:window-y="20"
+     inkscape:window-x="176"
+     inkscape:window-y="28"
      inkscape:window-maximized="0" />
   <metadata
      id="metadata7">
@@ -51,6 +58,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -65,14 +73,15 @@
        y="362.31323"
        id="text2816"
        transform="scale(1.0325302,0.9684947)"
-       inkscape:export-xdpi="90"
-       inkscape:export-ydpi="90"><tspan
+       inkscape:export-xdpi="53.380001"
+       inkscape:export-ydpi="53.380001"
+       inkscape:export-filename="/Users/zef/git/mobl-docs/logo.png"><tspan
          sodipodi:role="line"
          x="81.44886"
          y="362.31323"
          style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:Sans;-inkscape-font-specification:LucidaTypewriter Medium"
          id="tspan2820"><tspan
-   style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;fill:#447821;stroke:none;font-family:Sans;-inkscape-font-specification:LucidaTypewriter Medium"
+   style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;fill:#ac0e22;stroke:none;font-family:Sans;-inkscape-font-specification:LucidaTypewriter Medium;fill-opacity:1"
    id="tspan3598">m</tspan>obl</tspan></text>
     <rect
        id="rect2824"
@@ -80,9 +89,37 @@
        height="130.0304"
        x="67.004616"
        y="255.9447"
-       style="fill:none;stroke:#447821;stroke-width:11.17391396000000015;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:0.94117647000000004;stroke-dasharray:none"
+       style="fill:none;stroke:#ac0e22;stroke-width:11.17391396000000015;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
        transform="matrix(0.99807891,-0.06195554,0.05829475,0.99829942,0,0)"
-       inkscape:export-filename="/Users/zef/git/mobl/text2816.png"
+       inkscape:export-filename="/Users/zef/git/mobl-docs/logo.png"
+       inkscape:export-xdpi="53.380001"
+       inkscape:export-ydpi="53.380001" />
+    <text
+       xml:space="preserve"
+       style="font-size:148.03289795000000595px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;fill:#ac0e22;fill-opacity:1;stroke:none;font-family:Bodoni SvtyTwo OS ITC TT;-inkscape-font-specification:Bodoni SvtyTwo OS ITC TT"
+       x="215.40359"
+       y="551.62213"
+       id="text2816-7"
+       transform="scale(1.0325302,0.96849468)"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       inkscape:export-filename="/Users/zef/git/mobl/m.png"><tspan
+         sodipodi:role="line"
+         x="215.40359"
+         y="551.62213"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:Sans;-inkscape-font-specification:LucidaTypewriter Medium;fill:#ac0e22;fill-opacity:1"
+         id="tspan2820-9"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;fill:#ac0e22;stroke:none;font-family:Sans;-inkscape-font-specification:LucidaTypewriter Medium;fill-opacity:1"
+           id="tspan3598-3">m</tspan></tspan></text>
+    <rect
+       id="rect2824-8"
+       width="156.5461"
+       height="130.0304"
+       x="194.39453"
+       y="447.50763"
+       style="fill:none;stroke:#ac0e22;stroke-width:11.17391396000000015;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       transform="matrix(0.99807891,-0.06195554,0.05829475,0.99829942,0,0)"
+       inkscape:export-filename="/Users/zef/git/mobl/m.png"
        inkscape:export-xdpi="90"
        inkscape:export-ydpi="90" />
   </g>

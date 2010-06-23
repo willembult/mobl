@@ -35,6 +35,16 @@ mobl.loadingSpan = function() {
     return $("<span>Loading... <img src=\"lib/img/loading.gif\"/></span>");
 };
 
+mobl.encodeUrlObj = function(obj) {
+  var parts = [];
+  for(var k in obj) {
+    if(obj.hasOwnProperty(k)) {
+      parts.push(encodeURI(k)+"="+encodeURI(obj[k]));
+    }
+  }
+  return "?" + parts.join("&");
+};
+
 function op(operator, e1, e2, callback) {
     switch(operator) {
     case '+': callback(e1 + e2); break;
@@ -49,7 +59,7 @@ mobl.proxyUrl = function(url, user, password) {
     if(user && password) {
         return '/proxy.php?user=' + user + '&pwd=' + password + '&proxy_url=' + escape(url);
     } else {
-        return '/proxy.php?proxy_url=' + escape(url);
+        return '/proxy.php?proxy_url=' + encodeURI(url);
     }
 }
 

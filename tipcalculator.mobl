@@ -3,15 +3,14 @@ application tipcalculator
 import mobl
 
 screen root() {
-  var amount : Num = 10
-  var percentage : Num = 10
+  var amount = 10
+  var percentage = 10
   var total <- amount * (1 + percentage/100)
-  // formula total <- amount * (1 + percentage/100)
 
   header("Tip calculator")
   group {
-    inputNum(amount, label="amount")
-    inputNum(percentage, label="%")
+    item { inputNum(amount, label="amount") }
+    item { inputNum(percentage, label="%") }
     item { label(total)}
   }
 }

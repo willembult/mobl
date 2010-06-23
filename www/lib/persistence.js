@@ -224,6 +224,7 @@ var persistence = (window && window.persistence) ? window.persistence : {};
       if (!trackedObjects[obj.id]) {
         trackedObjects[obj.id] = obj;
       }
+      return persistence;
     };
 
     /**
@@ -234,6 +235,7 @@ var persistence = (window && window.persistence) ? window.persistence : {};
       if (!objectsToRemove[obj.id]) {
         objectsToRemove[obj.id] = obj;
       }
+      return persistence;
     };
 
     /**
@@ -508,7 +510,16 @@ var persistence = (window && window.persistence) ? window.persistence : {};
                 var coll = it;
                 if (meta.hasMany[coll].manyToMany) {
                   that.__defineSetter__(coll, function (val) {
-                      throw "Not yet supported.";
+                      if(val && val._items) { 
+                        // Local query collection, just add each item
+                        // TODO: this is technically not correct, should clear out existing items too
+                        var items = val._items;
+                        for(var i = 0; i < items.length; i++) {
+                          that[coll].add(items[i]);
+                        }
+                      } else {
+                        throw "Not yet supported.";
+                      }
                     });
                   that.__defineGetter__(coll,
                     function () {
@@ -531,7 +542,16 @@ var persistence = (window && window.persistence) ? window.persistence : {};
                     });
                 } else {
                   that.__defineSetter__(coll, function (val) {
-                      throw "Not yet supported.";
+                      if(val && val._items) { 
+                        // Local query collection, just add each item
+                        // TODO: this is technically not correct, should clear out existing items too
+                        var items = val._items;
+                        for(var i = 0; i < items.length; i++) {
+                          that[coll].add(items[i]);
+                        }
+                      } else {
+                        throw "Not yet supported.";
+                      }
                     });
                   that.__defineGetter__(coll, function () {
                       if (this._data[coll]) {
@@ -1427,6 +1447,72 @@ var persistence = (window && window.persistence) ? window.persistence : {};
       };
 
       /**
+       * Asynchronous call to remove all the items in the collection. 
+       * Note: does not only remove the items from the collection, but
+       * the items themselves.
+       * @param tx transaction to use
+       * @param callback function to be called when clearing has completed
+       */
+      DbQueryCollection.prototype.destroyAll = function (tx, callback) {
+        var that = this;
+        if(tx && !tx.executeSql) { // provided callback as first argument
+          callback = tx;
+          tx = null;
+        } 
+        if(!tx) { // no transaction supplied
+          persistence.transaction(function(tx) {
+              that.destroyAll(tx, callback);
+            });
+          return;
+        } 
+        var entityName = this._entityName;
+
+        var args = [];
+        var whereSql = "WHERE "
+        + [ this._filter.sql("", args) ].concat(
+          this._additionalWhereSqls).join(' AND ');
+
+        var sql = "DELETE FROM `" + entityName + "` " + whereSql;
+
+        persistence.flush(tx, function () {
+            tx.executeSql(sql, args, callback);
+          });
+      };
+
+      /**
+       * Asynchronous call to count the number of items in the collection.
+       * @param tx transaction to use
+       * @param callback function to be called when clearing has completed
+       */
+      DbQueryCollection.prototype.count = function (tx, callback) {
+        var that = this;
+        if(tx && !tx.executeSql) { // provided callback as first argument
+          callback = tx;
+          tx = null;
+        } 
+        if(!tx) { // no transaction supplied
+          persistence.transaction(function(tx) {
+              that.count(tx, callback);
+            });
+          return;
+        } 
+        var entityName = this._entityName;
+
+        var args = [];
+        var whereSql = "WHERE "
+        + [ this._filter.sql("", args) ].concat(
+          this._additionalWhereSqls).join(' AND ');
+
+        var sql = "SELECT COUNT(*) AS cnt FROM `" + entityName + "` " + whereSql;
+
+        persistence.flush(tx, function () {
+            tx.executeSql(sql, args, function(results) {
+                callback(results[0].cnt);
+              });
+          });
+      };
+
+      /**
        * An implementation of QueryCollection, that is used
        * to represent all instances of an entity type
        * @constructor
@@ -1579,6 +1665,25 @@ var persistence = (window && window.persistence) ? window.persistence : {};
           callback(results);
         } else {
           return results;
+        }
+      };
+
+      LocalQueryCollection.prototype.destroyAll = function(callback) {
+        if(!callback || callback.executeSql) { // first argument is transaction
+          callback = arguments[1]; // set to second argument
+        }
+        this._items = [];
+        if(callback) callback();
+      };
+
+      LocalQueryCollection.prototype.count = function(callback) {
+        if(!callback || callback.executeSql) { // first argument is transaction
+          callback = arguments[1]; // set to second argument
+        }
+        if(callback) {
+          callback(this._items.length);
+        } else {
+          return this._items.length;
         }
       };
 

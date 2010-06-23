@@ -13,8 +13,8 @@ strategies
     {| OneToMany, SearchableProperties
      : map(entity-to-js)
      ; <map(one-to-many-to-js)> <bagof-OneToMany>
+     ; <map(one-to-one-to-js)> <bagof-OneToOne>
      ; <map(searchable-to-js)> <bagof-SearchableProperties>
-     //; <emit> $[persistence.schemaSync();]
      |}
 
   entity-to-js :
@@ -43,8 +43,18 @@ strategies
     where <filter(?InverseAnno(inv))> anno*
         ; rules ( OneToMany :+= (SimpleType(ent), x, t, inv) )
 
+  property-to-js(|ent) :
+    Property(_, x, t@SimpleType(_), anno*) -> <fail>
+    where <is-entity-type> t
+    where [] := <filter(?InverseAnno(_))> anno*
+        ; rules ( OneToOne :+= (SimpleType(ent), x, t) )
+
   one-to-many-to-js :
     (SimpleType(from), field, SimpleType(to), invField) -> <emit> $[[<qid-to-js> from].hasMany('[field]', [<qid-to-js> to], '[invField]');
+]
+
+  one-to-one-to-js :
+    (SimpleType(from), field, SimpleType(to)) -> <emit> $[[<qid-to-js> from].hasOne('[field]', [<qid-to-js> to]);
 ]
 
   searchable-to-js :

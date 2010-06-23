@@ -5,6 +5,7 @@ imports
   MoBL-UI
   MoBL-Data
   MoBL-Action
+  MoBL-Service
   MoBL-External
 
 exports

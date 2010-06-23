@@ -23,6 +23,11 @@ external type List<T> {
   sync function add(item : T) : void
 }
 
+external type Array<T> {
+  sync function get(n : Num) : T
+  sync function push(item : T) : void
+}
+
 external type Tuple1<T1> {
   _1 : T1
 }
@@ -64,6 +69,8 @@ external type Text : Object { }
 
 external type DateTime {
   static sync function parse(s : String) : DateTime
+  static sync function fromTimestamp(timestamp : Num) : DateTime
+
   sync function getFullYear() : Num
   sync function getMonth() : Num
 
@@ -94,8 +101,14 @@ external type Collection<T> {
   @doc "Filter the collection on a property based on an operator `op` (options: '=', '<', '>', '<=', '>=' or '!=') and a value"
   sync function filter(property : String, op : String, value : Object) : Collection<T>
 
-  @doc "Order the collection based on a property in ascending (ascending = true) or dedescending (ascending = false) order"
+  @doc "Order the collection based on a property in ascending (ascending = true) or descending (ascending = false) order"
   sync function order(property : String, ascending : Bool) : Collection<T>
+
+  @doc "Deletes all the items in the collection"
+  function destroyAll() : void
+
+  @doc "Count the number of items in the collection"
+  function count() : Num
 
   sync function limit(n : Num) : Collection<T>
   sync function offset(n : Num) : Collection<T>
@@ -163,6 +176,10 @@ control inputString(s : String, placeholder : String = null, onchange : Callback
   </li>
 }
 
+control textbox(s : String, placeholder : String = null, onchange : Callback = null) {
+  <input type="text" placeholder=placeholder databind=s onchange=onchange />
+}
+
 control searchbox(s : String, placeholder : String = null, onsearch : Callback = null) {
   <div class="searchbox">
     <input type="text" placeholder=placeholder databind=s onchange=onsearch />
@@ -221,6 +238,7 @@ control basicView(title : String, toolBar : Control = control{}) {
   </div>
 }
 
+@doc "Renders a table, use row { } rows and cell { } for cells"
 control table() {
   <table>elements()</table>
 }
@@ -390,6 +408,9 @@ persistence.QueryCollection.prototype.updates = function() {
 mobl.DateTime = {
   parse: function(s) {
     return new Date(Date.parse(s));
+  },
+  fromTimestamp: function(timestamp) {
+    return new Date(timestamp);
   }
 };
 
@@ -429,5 +450,17 @@ persistence.entityDecoratorHooks.push(function(Entity) {
     return Entity.search(query, true);
   };
 });
+
+Array.prototype.list = function(tx, callback) {
+  var valueCopy = [];
+  for(var i = 0; i < this.length; i++) {
+    valueCopy[i] = this[i];
+  }
+  callback(valueCopy);
+};
+
+Array.prototype.get = function(idx) {
+  return this[idx];
+};
 
 </script>

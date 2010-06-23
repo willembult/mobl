@@ -71,6 +71,16 @@ strategies
     Var(qid) -> <fargs-to-control-type> farg*
     where ExternalControl(_, _, farg*) := <lookup-control-aux> qid
 
+  eq-type-of :
+    Var(qid) -> <fargs-to-function-type> [farg*, FArg("returnType", rt)]
+    where ExternalFunction(_, _, farg*, rt) := <lookup-function> qid
+       <+ ExternalSyncFunction(_, _, farg*, rt) := <lookup-function> qid
+
+  fargs-to-function-type :
+    farg* -> GenericType(QId("mobl", $[Function[n]]), t*)
+    where t* := <map(?FArg(_, <id>) <+ ?FArgOptional(_, <id>, _))> farg*
+        ; n := <length> t*
+
   fargs-to-control-type :
     farg* -> GenericType(QId("mobl", $[Control[n]]), t*)
     where t* := <map(?FArg(_, <id>) <+ ?FArgOptional(_, <id>, _))> farg*

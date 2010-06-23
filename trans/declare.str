@@ -96,6 +96,15 @@ strategies
            GetScreen : qid -> extern
          )
 
+  declare :
+    Service(manno*, qid, selem*) -> <fail>
+    with
+      extern := <origin-track-forced(definition-to-external)>
+      ; rules (
+          GetType : qid -> extern
+        )
+
+
 strategies // convert to externals
 
   definition-to-external :
@@ -112,6 +121,13 @@ strategies // convert to externals
 
   definition-to-external :
     Screen(manno*, qid, farg*, rt, _) -> ExternalScreen(manno*, qid, farg*, rt)
+
+  definition-to-external :
+    Service(manno*, qid, selem*) -> ExternalType(manno*, qid, SimpleType(QId("mobl", "Object")), <filter(service-elem-to-external)> selem*)
+
+  // For signatures we turn a webservice into an external type and resources into external methods
+  service-elem-to-external :
+    Resource(manno*, qid, farg*, rt, _) -> ExternalStaticMethod(manno*, qid, farg*, rt)
 
   definition-to-external :
     Import(s) -> Import(s)

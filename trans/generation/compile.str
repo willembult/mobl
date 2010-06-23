@@ -13,6 +13,7 @@ imports
   generation/data
   generation/script
   generation/html
+  generation/service
   include/MoBL
   lib/editor-common
   sync-analysis
