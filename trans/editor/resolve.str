@@ -11,6 +11,7 @@ imports
   type
   rename
   generation/compile
+  util
 
 rules
 
@@ -61,12 +62,6 @@ rules
   editor-resolve:
     (QId(_, _), position, ast, path, project-path) -> <editor-resolve> (parent, <cut-off-last-element> position, ast, path, project-path)
     where parent := <parent-at-position(|position)> ast
-
-  cut-off-last-element :
-    [_] -> []
-
-  cut-off-last-element :
-    [a|k] -> [a|<cut-off-last-element> k]
 
   // For actual variables
   editor-resolve:

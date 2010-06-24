@@ -20,10 +20,17 @@ imports
 
 strategies
 
+  mkdirs =
+    where(old := <getcwd>; <chdir> <project-path>)
+    ; where(map((file-exists <+ mkdir(|"w") <+ debug(!"Failed to created: ")); chdir)
+            ; <chdir> old)
+    ; separate-by(|"/"); concat-strings
+
+
   ensure-existing-dir :
     dir -> dir
-    where parts := <string-tokenize(|["/"])> dir
-        ; <file-exists <+ mkdir <+ debug(!"Could not create directory: "); fail> dir
+    where parts := <string-tokenize(|<explode-string> "/")> dir
+        ; <mkdirs> parts
 
   compile =
       (?Module(qid, def*) <+ ?app@Application(qid, _, def*))

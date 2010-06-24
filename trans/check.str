@@ -6,6 +6,7 @@ imports
   type
   rename
   desugar
+  mobl
 
 rules
 
@@ -93,6 +94,10 @@ rules
     where <is-string> lhs
     where not(<type-of> Var(lhs))
 
+  constraint-error :
+    p@Path(part*) -> (p, $[File not found. Note that paths are relative to the project root.])
+    where not(<separate-by(|"/"); concat-strings; resolve-file> part*)
+
   constraint-warning:
     Entity(_, qid, _, _) -> (x, $[Entity names must start with a capital])
     where
@@ -102,6 +107,7 @@ rules
         QId(_, x) := qid
       end
       ; not(<explode-string; Hd; is-upper> x)
+
 
 /*  constraint-note:
     Module(x @ "example", _) -> (x, $[This is just an example program in the "entities" language

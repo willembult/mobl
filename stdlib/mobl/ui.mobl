@@ -1,0 +1,61 @@
+module mobl::ui
+
+import mobl
+
+load mobl/ui.css
+
+control bar(text : String) {
+  <div class="header">
+    <div class="headerContainer"><div databind=text class="headerText"/></div>
+    elements()
+  </div>
+}
+
+control button(text : String, onclick : Callback = null) {
+  <span class="button" onclick=onclick databind=text/>
+}
+
+control backButton(text : String, onclick : Callback = null) {
+  <span class="backButton" onclick=onclick databind=text/>
+}
+
+control group() {
+  <ul class="group">
+    elements()
+  </ul>
+}
+
+control item(onclick : Callback = null) {
+  <li class="item" onclick=onclick>
+    elements()
+  </li>
+}
+
+control itemArrow(onclick : Callback = null) {
+  <li class="itemArrow" onclick=onclick>
+    elements()
+  </li>
+}
+
+control checkBox(b : Bool, label : String = "") {
+  <span onclick={ b = b ? false : true; }>
+    <img src=b ? "lib/img/checkbox-checked.png" : "lib/img/checkbox.png" class="checkbox" />
+    <span databind=label/>
+  </span>
+}
+
+control textField(s : String, placeholder : String = null, onchange : Callback = null) {
+  <input type="text" placeholder=placeholder databind=s onchange=onchange />
+}
+
+control float(side : String = "right", distance : Num = 0) {
+  <span style="float: " + side + "; " + (side == "left" ? "margin-left: " + distance + "px;" : "margin-right: " + distance + "px;" )>
+    elements()
+  </span>
+}
+
+<javascript>
+setTimeout(function() {
+  scrollTo(0, 0);
+}, 250);
+</javascript>

@@ -4,10 +4,11 @@ title "Questions"
 database "questions"
 
 import mobl
+import mobl::ui::ios
 
 control toolbar() {
   "Hello"
-  init {
+  script {
     var n = 8;
   }
 }

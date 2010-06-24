@@ -10,4 +10,10 @@ rules
 
   lvalue-vars :
     LTuple(fst, rest*) -> [<lvalue-vars> fst|<map(lvalue-vars); concat> rest*]
- 
+
+  cut-off-last-element :
+    [_] -> []
+
+  cut-off-last-element :
+    [a|k] -> [a|<cut-off-last-element> k]
+

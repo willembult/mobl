@@ -4,6 +4,7 @@ title "Zodo"
 database "zodo"
 
 import mobl
+import mobl::ui::ios
 
 entity Task {
   name        : String (searchable)
@@ -58,7 +59,7 @@ screen root() {
   topRightButton("Add", onclick={ addTask(); })
   var searchQuery = ""
   basicView("Tasks") {
-    searchbox(searchQuery)
+    searchBox(searchQuery)
     group {
       list(t in Task.searchPrefix(searchQuery)) {
         var editing = false

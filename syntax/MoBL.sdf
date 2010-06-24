@@ -25,7 +25,8 @@ exports
     "moblapp" STING                  -> Setting {cons("MoblAppId")}
 
     "import" QId                   -> Definition {cons("Import")}
-    "load" STRING                  -> Definition {cons("Load")}
+    "load" Path                    -> Definition {cons("Load")}
+    "resource" Path                -> Definition {cons("Resource")}
 
     ID ":" Type                    -> FArg {cons("FArg")}
     ID ":" Type "=" Exp            -> FArg {cons("FArgOptional")}
@@ -34,6 +35,9 @@ exports
     QId "<" {Type ","}* ">"        -> Type {cons("GenericType")}
 
     "@doc" STRING                  -> MetaAnno {cons("DocAnno")}
+
+  context-free syntax %% Paths
+    {FILENAME "/"}+                  -> Path {cons("Path")}
 
   context-free syntax %% native javascript
 

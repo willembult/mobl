@@ -1,6 +1,7 @@
 application mtv
 
 import mobl
+import mobl::ui::ios
 
 external sync function findArtist(query : String) : Collection<Artist>
 external sync function getVideos(a : Artist) : Collection<Video>
@@ -30,7 +31,7 @@ function toggleFavorite(a : Artist) {
 
 control search() {
   var artistQuery = "Michael"
-  searchbox(artistQuery)
+  searchBox(artistQuery)
   group {
     list(a : Artist in findArtist(artistQuery)) {
       artistItem(a)

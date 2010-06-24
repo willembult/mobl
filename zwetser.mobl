@@ -4,6 +4,7 @@ title "Zwetser"
 database "zwetser"
 
 import mobl
+import mobl::ui::ios
 import zwetser::logic
 import zwetser::data
 import zwetser::account
@@ -12,7 +13,7 @@ import twitter
 load "zwitter.css"
 
 screen root() {
-  init {
+  script {
     //resetDatabase();
     var account = Account.all().one();
     if(account != null) {
@@ -66,7 +67,7 @@ screen replyTweet(update : TwitterUpdate) {
 }
 
 screen showUpdates(account : Account) {
-  init {
+  script {
     async {
       updateStream(account);
     }
@@ -103,7 +104,7 @@ screen showUpdates(account : Account) {
     var phrase = "#mobl"
     var searchPhrase = ""
     var limit = 10
-    searchbox(phrase, onsearch={ searchPhrase = phrase; })
+    searchBox(phrase, onsearch={ searchPhrase = phrase; })
     <div id="tweets">
     list(twupdate in twitter::search(searchPhrase).limit(limit)) {
       <div class="tweet">
