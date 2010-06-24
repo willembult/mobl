@@ -37,7 +37,8 @@ exports
 
   context-free syntax %% native javascript
 
-    "<script>" JSString "</script>"  -> Definition {cons("Javascript"), prefer}
+    "<script>" JSString "</script>"  -> Definition {cons("Javascript"), prefer, deprecated("Please use <javascript> instead.")}
+    "<javascript>" JSString "</javascript>"  -> Definition {cons("Javascript"), prefer}
 
   lexical syntax
     JSChar*       -> JSString

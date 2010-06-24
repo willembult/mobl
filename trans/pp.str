@@ -126,8 +126,8 @@ strategies // UI
     DeriveDeclInferred(x, e) -> $[derive [x] <- [<pp-mobl-exp> e]]
 
   pp-mobl-elem :
-    Init(stat*) ->
-    $[init {
+    Script(stat*) ->
+    $[script {
         [<map(pp-mobl-stat); separate-by(|"\n"); concat-strings> stat*]
       }]
 

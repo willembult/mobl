@@ -3,16 +3,41 @@ application stack
 import mobl
 
 screen root() {
-  init {
-    var questions = StackOverflow.questions(answers=true, body=true);
-    for(question in questions) {
-      add(question);
-      for(answer in question.answers) {
-        add(answer);
-      }
+  /*script {
+    async {
+      StackOverflow.questions(answers=true, body=true);
+    }
+  }*/
+  header("Stack overflow")
+  group {
+    list(q in Question.all()) {
+      itemArrow(onclick={ showQuestion(q); }) { label(q.title) }
     }
   }
 }
+
+control text() {
+  <div class="text-content">
+    elements()
+  </div>
+}
+
+screen showQuestion(q : Question) {
+  header(q.title.substr(0, 15) + "...")
+  backButton("Back", onclick={ screen return; })
+  text {
+    html(q.body)
+  }
+  <h2>"Answers"</h2>
+  list(answer in q.answers.prefetch("owner")) {
+    text {
+      <strong>label(answer.owner.name)</strong>
+      html(answer.body)
+    }
+  }
+}
+
+// Stack overflow types
 
 external type QuestionsResult {
   total     : Num
@@ -21,7 +46,6 @@ external type QuestionsResult {
   questions : Array<Question>
 }
 
-// Stack overflow types
 external type RemoteQuestion {
   question_id     : Num
   title           : String
@@ -131,7 +155,9 @@ function mapAnswer(answer : RemoteAnswer) : Answer {
 }
 
 function mapUser(user : RemoteUser) : User {
-  log(user);
+  if(user == null) {
+    return null;
+  }
   var u = User.all().filter("userId", "=", user.user_id).one();
   if(u == null) {
     u = User {
@@ -145,7 +171,6 @@ function mapUser(user : RemoteUser) : User {
 }
 
 function mapQuestionsResult(res : QuestionsResult) : Collection<Question> {
-  log("Here's the data: ");
   log(res);
   var resultList : Collection<Question> = Collection<Question>();
   for(question in res.questions) {

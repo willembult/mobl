@@ -57,9 +57,9 @@ function op(operator, e1, e2, callback) {
 
 mobl.proxyUrl = function(url, user, password) {
     if(user && password) {
-        return '/proxy.php?user=' + user + '&pwd=' + password + '&proxy_url=' + escape(url);
+        return '/proxy.php?user=' + user + '&pwd=' + password + '&proxy_url=' + encodeURIComponent(url);
     } else {
-        return '/proxy.php?proxy_url=' + encodeURI(url);
+        return '/proxy.php?proxy_url=' + encodeURIComponent(url);
     }
 }
 

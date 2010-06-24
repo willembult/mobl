@@ -31,7 +31,7 @@ rules
   service-elem-to-js :
     Resource(_, x, farg*, rt, prop*) ->
     $[[x]: function([fargs]) {
-      var url = (this.root ? mobl.proxyUrl(this.root) : "") + [<expression-to-js> uri] + mobl.encodeUrlObj({[data]});
+      var url = this.root ? mobl.proxyUrl(this.root + [<expression-to-js> uri] + mobl.encodeUrlObj({[data]})) : [<expression-to-js> uri] + mobl.encodeUrlObj({[data]});
       $.ajax({
          url: url,
          datatype: [<expression-to-js> encoding],

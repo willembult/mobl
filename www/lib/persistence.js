@@ -1199,7 +1199,7 @@ var persistence = (window && window.persistence) ? window.persistence : {};
           var subscribers = {};
           for(var eventType in this.subscribers) {
             if(this.subscribers.hasOwnProperty(eventType)) {
-              subscribers[eventType] = subs.slice(0);
+              subscribers[eventType] = this.subscribers[eventType].slice(0);
             }
           }
           c.subscribers = subscribers; //this.subscribers;

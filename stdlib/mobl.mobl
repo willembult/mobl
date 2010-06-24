@@ -9,7 +9,9 @@ load "lib/iphone.css"
 external type void {}
 
 @doc "String type"
-external type String : Object { }
+external type String : Object {
+  sync function substr(start : Num, length : Num) : String
+}
 
 @doc "Numeric type, represents both integers and floating point numbers"
 external type Num : Object { }
@@ -176,11 +178,11 @@ control inputString(s : String, placeholder : String = null, onchange : Callback
   </li>
 }
 
-control textbox(s : String, placeholder : String = null, onchange : Callback = null) {
+control textField(s : String, placeholder : String = null, onchange : Callback = null) {
   <input type="text" placeholder=placeholder databind=s onchange=onchange />
 }
 
-control searchbox(s : String, placeholder : String = null, onsearch : Callback = null) {
+control searchBox(s : String, placeholder : String = null, onsearch : Callback = null) {
   <div class="searchbox">
     <input type="text" placeholder=placeholder databind=s onchange=onsearch />
   </div>
@@ -237,6 +239,9 @@ control basicView(title : String, toolBar : Control = control{}) {
   toolBar()
   </div>
 }
+
+@doc "Injects given HTML directly into the screen"
+external control html(html : String)
 
 @doc "Renders a table, use row { } rows and cell { } for cells"
 control table() {
@@ -347,7 +352,7 @@ control tabsetCustomHeaders(tabs : List<Tuple4<String, String, Control, Control>
   </div>
 }
 
-<script>
+<javascript>
 mobl.alert = function(s, _, callback) {
     alert(s);
     if(callback) callback();
@@ -445,6 +450,24 @@ mobl.range = function(from, to) {
   return l;
 };
 
+mobl.html = function(html, elements, callback) {
+  var root192 = $("<span>");
+  var node180 = $("<span >");
+
+  var ref108 = html;
+  node180.html(html.get().toString());
+  var ignore51 = false;
+  ref108.addEventListener('change', function(_, ref, val) {
+    if(ignore51) return;
+    if(ref === ref108) {
+      node180.html(val.toString());
+    }
+  });
+  ref108.rebind();
+  root192.append(node180);
+  callback(root192); return;
+};
+
 persistence.entityDecoratorHooks.push(function(Entity) {
   Entity.searchPrefix = function(query) {
     return Entity.search(query, true);
@@ -463,4 +486,4 @@ Array.prototype.get = function(idx) {
   return this[idx];
 };
 
-</script>
+</javascript>

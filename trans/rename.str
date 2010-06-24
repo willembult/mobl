@@ -161,7 +161,7 @@ strategies
          ; qid2 := <rename-local-function> f
 
   rename :
-    Init(body) -> Init(body2)
+    Script(body) -> Script(body2)
     with action-scope(body2 := <rename-all> body)
 
   rename :

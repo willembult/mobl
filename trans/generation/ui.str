@@ -160,7 +160,7 @@ rules
     where <is-string> s
 
   elems-to-js(|root) :
-    [Init(init-stats)|rest*] -> <concat; cps-statements> [<cps-lift-expressions> init-stats, [<elems-to-js(|root)> rest*]]
+    [Script(init-stats)|rest*] -> <concat; cps-statements> [<cps-lift-expressions> init-stats, [<elems-to-js(|root)> rest*]]
 
   elems-to-js(|root) :
     [] -> ""

@@ -7,13 +7,13 @@ load "lib/spinningwheel.css"
 
 external function getDate(now : DateTime) : DateTime
 
-control datepicker(d : DateTime) {
+control datePicker(d : DateTime) {
   <div class="datepicker" databind=d.toDateString() onclick={
     d = getDate(d);
   }/>
 }
 
-<script>
+<javascript>
 mobl.datepicker.getDate = function(now, callback) {
   var days = { };
   var years = { };
@@ -41,4 +41,4 @@ mobl.datepicker.getDate = function(now, callback) {
 
   SpinningWheel.open();
 };
-</script>
+</javascript>

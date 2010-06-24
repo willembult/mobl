@@ -35,7 +35,10 @@ exports
 
     FunctionDef                                                       -> ScreenElem
 
-    "init" "{" Statement* "}"                                         -> ScreenElem {cons("Init")}
+    %% Deprecated
+    "init" "{" Statement* "}"                                         -> ScreenElem {cons("Script"), deprecated("Please use 'script' instead.")}
+
+    "script" "{" Statement* "}"                                       -> ScreenElem {cons("Script")}
 
     STRING                                                            -> ScreenElem {cons("ScreenString")}
 
