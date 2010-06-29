@@ -4,34 +4,64 @@ title "Zwetser"
 database "zwetser"
 
 import mobl
-import mobl::ui::ios
+import mobl::ui
 import zwetser::logic
 import zwetser::data
-import zwetser::account
 import twitter
 
-load "zwitter.css"
+load zwitter.css
 
 screen root() {
   script {
-    //resetDatabase();
-    var account = Account.all().one();
-    if(account != null) {
-      showUpdates(account);
+    var authUrl = Twitter.isAuthenticated();
+    if(authUrl != "OK") { // Authenticated already
+      openUrl(authUrl + "?fromurl=/~zef/mobl/zwetser.html");
+    }
+    async {
+      //updateStream();
     }
   }
-  header("Accounts")
-  topRightButton("Add", onclick={ addAccount(); })
-  group {
-    list(account in Account.all().order("username", true)) {
-      itemArrow(onclick={ showUpdates(account); }) {
-        outputString(account.username)
-        sideButton("Edit", onclick={ editAccount(account); })
-      }
-    }
+  bar("Timeline")
+
+  <div id="tweets">
+  list(update in TwitterUpdate.all().filter("conversationRoot", "=", null).order("lastUpdate", ascending=false)) {
+    tweet(update, onclick={ showConversation(update); })
   }
+  </div>
 }
 
+screen showConversation(update : TwitterUpdate) {
+  bar("Conversation") {
+    backButton("Timeline", onclick={ screen return; })
+  }
+  <div id="tweets">
+    tweet(update)
+  </div>
+  <h2>"Replies"</h2>
+  <div id="tweets">
+    list(reply in update.replies.order("date", ascending=true)) {
+      tweet(reply)
+    }
+  </div>
+}
+
+control tweet(update : TwitterUpdate, onclick : Callback = null) {
+  <div class="tweet" onclick=onclick>
+   cond(update.replyCount > 0) {
+     float(side="right", distance=20) {
+       <span class="replyCount" databind=update.replyCount/>
+     }
+   }
+   <span class="icon"><img src=update.iconUrl width="48" height="48"/></span>
+    <span class="text">
+      <strong>label(update.screenName) ": "</strong>
+      label(update.text)
+      <span class="meta">"Posted " label(update.date)</span>
+    </span>
+  </div>
+}
+
+/*
 screen newTweet(account : Account) {
   var text = ""
   topRightButton("Tweet", onclick={
@@ -134,4 +164,4 @@ screen showUpdate(update : TwitterUpdate) {
       outputString(update.screenName)
     </div>
   }
-}
+}*/

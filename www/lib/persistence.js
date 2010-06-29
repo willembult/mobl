@@ -584,6 +584,11 @@ var persistence = (window && window.persistence) ? window.persistence : {};
 
         Entity.prototype.fetch = function(tx, rel, callback) {
           var that = this;
+          if(typeof tx === "string") {
+            rel = tx;
+            callback = rel;
+            tx = null;
+          }
           if(!tx) {
             persistence.transaction(function(tx) {
                 that.fetch(tx, rel, callback);

@@ -37,11 +37,17 @@ control itemArrow(onclick : Callback = null) {
   </li>
 }
 
-control checkBox(b : Bool, label : String = "") {
+control checkBox2(b : Bool, label : String = "") {
   <span onclick={ b = b ? false : true; }>
     <img src=b ? "lib/img/checkbox-checked.png" : "lib/img/checkbox.png" class="checkbox" />
     <span databind=label/>
   </span>
+}
+
+control checkBox(b : Bool, label : String = "") {
+  <input type="checkbox" databind=b/>
+  " "
+  <span databind=label onclick={ b = b ? false : true; }/>
 }
 
 control textField(s : String, placeholder : String = null, onchange : Callback = null) {
@@ -49,13 +55,13 @@ control textField(s : String, placeholder : String = null, onchange : Callback =
 }
 
 control float(side : String = "right", distance : Num = 0) {
-  <span style="float: " + side + "; " + (side == "left" ? "margin-left: " + distance + "px;" : "margin-right: " + distance + "px;" )>
+  <span class="float" style="float: " + side + "; " + (side == "left" ? "margin-left: " + distance + "px;" : "margin-right: " + distance + "px;" )>
     elements()
   </span>
 }
 
 <javascript>
 setTimeout(function() {
-  scrollTo(0, 0);
+  scrollTo(0, -1);
 }, 250);
 </javascript>

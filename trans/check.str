@@ -7,6 +7,7 @@ imports
   rename
   desugar
   mobl
+  generation/compile
 
 rules
 
@@ -97,6 +98,10 @@ rules
   constraint-error :
     p@Path(part*) -> (p, $[File not found. Note that paths are relative to the project root.])
     where not(<separate-by(|"/"); concat-strings; resolve-file> part*)
+
+  constraint-error :
+    Import(qid) -> (qid, $[Module not found.])
+    where not(<qid-to-path; <concat-strings> [<id>, ".mobl"]; resolve-file> qid)
 
   constraint-warning:
     Entity(_, qid, _, _) -> (x, $[Entity names must start with a capital])

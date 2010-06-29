@@ -271,7 +271,7 @@ rules
     HtmlDatabindArg(e) -> $[
       var [r] = [es];
       [node].attr('checked', !![r].get());
-      [r].addSetListener(function(ref, val) {
+      [r].addEventListener('change', function(_, ref, val) {
         if(ref === [r]) [node].attr('checked', !!val);
       });
       [node].change(function() {

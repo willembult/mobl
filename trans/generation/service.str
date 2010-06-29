@@ -34,7 +34,7 @@ rules
       var url = this.root ? mobl.proxyUrl(this.root + [<expression-to-js> uri] + mobl.encodeUrlObj({[data]})) : [<expression-to-js> uri] + mobl.encodeUrlObj({[data]});
       $.ajax({
          url: url,
-         datatype: [<expression-to-js> encoding],
+         dataType: [<expression-to-js> encoding],
          type: [<expression-to-js> method],
          error: function(_, message, error) {
            console.log(message);

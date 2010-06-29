@@ -206,7 +206,7 @@ function log(s) {
             var that = this;
             this.ref.get().addEventListener('change', function(_, _, prop, value) {
                 if(prop === that.prop) {
-                    callback(that, value);
+                    callback(eventType, that, value);
                 }
             });
         }
@@ -218,7 +218,7 @@ function log(s) {
         if(this.ref.addEventListener) {
            this.ref.addEventListener('change', function(_, _, prop, value) {
              if(prop === that.prop) {
-               callback(that, value);
+               callback(eventType, that, value);
              }
            });
         }

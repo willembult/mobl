@@ -21,7 +21,7 @@ imports
 strategies
 
   mkdirs =
-    where(old := <getcwd>; <chdir> <project-path>)
+    where(old := <getcwd>; <chdir> "/")
     ; where(map((file-exists <+ mkdir(|"w") <+ debug(!"Failed to created: ")); chdir)
             ; <chdir> old)
     ; separate-by(|"/"); concat-strings

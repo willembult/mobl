@@ -122,6 +122,8 @@ external type Entity<T> {
   static sync function all() : Collection<T>
   static sync function search(query : String) : Collection<T>
   static sync function searchPrefix(query : String) : Collection<T>
+
+  function fetch(rel : String) : T
 }
 
 external sync function log(s : String) : void
@@ -269,4 +271,7 @@ Array.prototype.get = function(idx) {
   return this[idx];
 };
 
+mobl.dummyMapper = function(data, callback) {
+  callback(data);
+};
 </javascript>

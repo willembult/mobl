@@ -2,19 +2,16 @@ module zwetser::data
 
 import mobl
 
-entity Account {
-  username : String
-  password : String
-  updates  : Collection<TwitterUpdate> (inverse: account)
-}
-
 entity TwitterUpdate {
-  account    : Account (inverse: updates)
-  updateId   : Num
-  screenName : String
-  iconUrl    : String
-  text       : String
-  mention    : Bool
-  favorite   : Bool
-  date       : DateTime
+  updateId         : Num
+  screenName       : String
+  iconUrl          : String
+  text             : String
+  mention          : Bool
+  favorite         : Bool
+  date             : DateTime
+  lastUpdate       : DateTime
+  conversationRoot : TwitterUpdate
+  replyCount       : Num // only for root
+  replies          : Collection<TwitterUpdate> (inverse: conversationRoot)
 }
