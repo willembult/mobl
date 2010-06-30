@@ -4,7 +4,7 @@ title "Zwetser"
 database "zwetser"
 
 import mobl
-import mobl::ui
+import mobl::ui::generic
 import zwetser::logic
 import zwetser::data
 import twitter
@@ -18,10 +18,10 @@ screen root() {
       openUrl(authUrl + "?fromurl=/~zef/mobl/zwetser.html");
     }
     async {
-      //updateStream();
+      updateStream();
     }
   }
-  bar("Timeline")
+  header("Timeline")
 
   <div id="tweets">
   list(update in TwitterUpdate.all().filter("conversationRoot", "=", null).order("lastUpdate", ascending=false)) {
@@ -31,7 +31,7 @@ screen root() {
 }
 
 screen showConversation(update : TwitterUpdate) {
-  bar("Conversation") {
+  header("Conversation") {
     backButton("Timeline", onclick={ screen return; })
   }
   <div id="tweets">

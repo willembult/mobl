@@ -30,7 +30,9 @@ var persistence = (window && window.persistence) ? window.persistence : {};
     var trackedObjects = {};
     var objectsToRemove = {};
     var globalPropertyListeners = {}; // EntityType__prop -> QueryColleciton obj
-    var queryCollectionCache = {}; // uniqueString -> QueryCollection
+    var queryCollectionCache = {}; // entityName -> uniqueString -> QueryCollection
+
+    persistence.queryCollectionCache = queryCollectionCache;
 
     // Public Extension hooks
     persistence.entityDecoratorHooks = [];
@@ -72,6 +74,21 @@ var persistence = (window && window.persistence) ? window.persistence : {};
           }
         }
       } 
+    }
+
+    function objectRemoved(obj) {
+      var entityName = obj._type;
+      if(queryCollectionCache[entityName]) {
+        var colls = queryCollectionCache[entityName];
+        for(var key in colls) {
+          if(colls.hasOwnProperty(key)) {
+            var coll = colls[key];
+            if(coll._filter.match(obj)) { // matched the filter -> was part of collection
+              coll.triggerEvent('change', coll, obj);
+            }
+          }
+        }
+      }
     }
 
     /**
@@ -235,6 +252,7 @@ var persistence = (window && window.persistence) ? window.persistence : {};
       if (!objectsToRemove[obj.id]) {
         objectsToRemove[obj.id] = obj;
       }
+      objectRemoved(obj);
       return persistence;
     };
 
@@ -1107,11 +1125,15 @@ var persistence = (window && window.persistence) ? window.persistence : {};
        * Ensure global uniqueness of query collection object
        */
       function uniqueQueryCollection(coll) {
-        var uniqueString = coll.toUniqueString();
-        if(!queryCollectionCache[uniqueString]) {
-          queryCollectionCache[uniqueString] = coll;
+        var entityName = coll._entityName;
+        if(!queryCollectionCache[entityName]) {
+          queryCollectionCache[entityName] = {};
         }
-        return queryCollectionCache[uniqueString];
+        var uniqueString = coll.toUniqueString();
+        if(!queryCollectionCache[entityName][uniqueString]) {
+          queryCollectionCache[entityName][uniqueString] = coll;
+        }
+        return queryCollectionCache[entityName][uniqueString];
       }
       persistence.uniqueQueryCollection = uniqueQueryCollection;
 

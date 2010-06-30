@@ -1,10 +1,12 @@
-module mobl::ui
+module mobl::ui::generic
 
 import mobl
 
-load mobl/ui.css
+load mobl/ui/generic.css
 
-control bar(text : String) {
+resource mobl/ui/generic/arrow.png
+
+control header(text : String) {
   <div class="header">
     <div class="headerContainer"><div databind=text class="headerText"/></div>
     elements()
@@ -37,13 +39,6 @@ control itemArrow(onclick : Callback = null) {
   </li>
 }
 
-control checkBox2(b : Bool, label : String = "") {
-  <span onclick={ b = b ? false : true; }>
-    <img src=b ? "lib/img/checkbox-checked.png" : "lib/img/checkbox.png" class="checkbox" />
-    <span databind=label/>
-  </span>
-}
-
 control checkBox(b : Bool, label : String = "") {
   <input type="checkbox" databind=b/>
   " "
@@ -52,6 +47,10 @@ control checkBox(b : Bool, label : String = "") {
 
 control textField(s : String, placeholder : String = null, onchange : Callback = null) {
   <input type="text" placeholder=placeholder databind=s onchange=onchange />
+}
+
+control numField(n : Num, placeholder : String = null, onchange : Callback = null) {
+  <input type="text" placeholder=placeholder databind=n onchange=onchange />
 }
 
 control float(side : String = "right", distance : Num = 0) {

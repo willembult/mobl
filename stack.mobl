@@ -1,13 +1,14 @@
 application stack
 
 import mobl
+import mobl::ui::ios
 
 screen root() {
-  /*script {
+  script {
     async {
       StackOverflow.questions(answers=true, body=true);
     }
-  }*/
+  }
   header("Stack overflow")
   group {
     list(q in Question.all()) {

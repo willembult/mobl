@@ -17,30 +17,30 @@ strategies
         <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta names="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-        <script src="lib/gears_init.js" type="application/x-javascript" charset="utf-8">
+        <script src="js/gears_init.js" type="application/x-javascript" charset="utf-8">
         </script>
-        <script src="lib/jquery-1.4.min.js" type="application/x-javascript" charset="utf-8">
+        <script src="js/jquery-1.4.min.js" type="application/x-javascript" charset="utf-8">
         </script>
-        <script src="lib/jquery-ui-1.7.2.custom.min.js" type="application/x-javascript" charset="utf-8">
+        <script src="js/jquery-ui-1.7.2.custom.min.js" type="application/x-javascript" charset="utf-8">
         </script>
-        <script src="lib/persistence.js" type="application/x-javascript" charset="utf-8">
+        <script src="js/persistence.js" type="application/x-javascript" charset="utf-8">
         </script>
-        <script src="lib/persistence.search.js" type="application/x-javascript" charset="utf-8">
+        <script src="js/persistence.search.js" type="application/x-javascript" charset="utf-8">
         </script>
         <script type="application/x-javascript" charset="utf-8">
             persistence.connect('[<!<un-double-quote> dbname <+ <qid-to-js> qid>]', 'mobl database', 5 * 1024 * 1024, '1.0');
         </script>
-        <script src="lib/gestures.js" type="application/x-javascript" charset="utf-8">
+        <script src="js/gestures.js" type="application/x-javascript" charset="utf-8">
         </script>
-        <script src="lib/mobl.util.js" type="application/x-javascript" charset="utf-8">
+        <script src="js/mobl.util.js" type="application/x-javascript" charset="utf-8">
         </script>
-        <script src="lib/mobl.orientation.js" type="application/x-javascript" charset="utf-8">
+        <script src="js/mobl.orientation.js" type="application/x-javascript" charset="utf-8">
         </script>
-        <script src="lib/mobl.event.js" type="application/x-javascript" charset="utf-8">
+        <script src="js/mobl.event.js" type="application/x-javascript" charset="utf-8">
         </script>
-        <script src="lib/mobl.load.js" type="application/x-javascript" charset="utf-8">
+        <script src="js/mobl.load.js" type="application/x-javascript" charset="utf-8">
         </script>
-        <script src="lib/iscroll.js" type="application/javascript" charset="utf-8">
+        <script src="js/iscroll.js" type="application/javascript" charset="utf-8">
         </script>
         <script type="application/x-javascript" charset="utf-8">
             mobl.load('[<qid-to-path> qid].js');

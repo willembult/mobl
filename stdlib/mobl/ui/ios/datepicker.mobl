@@ -1,9 +1,9 @@
-module mobl::datepicker
+module mobl::ui::ios::datepicker
 
 import mobl
 
-load "lib/spinningwheel.js"
-load "lib/spinningwheel.css"
+load mobl/ui/ios/spinningwheel.css
+load mobl/ui/ios/spinningwheel.js
 
 external function getDate(now : DateTime) : DateTime
 
@@ -14,7 +14,7 @@ control datePicker(d : DateTime) {
 }
 
 <javascript>
-mobl.datepicker.getDate = function(now, callback) {
+mobl.ui.ios.datepicker.getDate = function(now, callback) {
   var days = { };
   var years = { };
   var months = { 0: 'Jan', 1: 'Feb', 2: 'Mar', 3: 'Apr', 4: 'May', 5: 'Jun', 6: 'Jul', 7: 'Aug', 8: 'Sep', 9: 'Oct', 10: 'Nov', 11: 'Dec' };

@@ -1,5 +1,19 @@
 module mobl
 
+// Runtime Javascript files to be copied to www/
+resource js/gears_init.js
+resource js/gestures.js
+resource js/iscroll.js
+resource js/jquery-1.4.min.js
+resource js/jquery-ui-1.7.2.custom.min.js
+resource js/mobl.event.js
+resource js/mobl.load.js
+resource js/mobl.orientation.js
+resource js/mobl.util.js
+resource js/persistence.js
+resource js/persistence.search.js
+resource mobl/loading.gif
+
 /**
  * Built-in types
  */
@@ -173,12 +187,9 @@ mobl.remove = function(e, _, callback) {
     allEnt.triggerEvent('change', allEnt, e);
     if(callback) callback();
 };
+
 mobl.resetDatabase = function(_, callback) {
     persistence.reset(null, callback);
-};
-
-mobl.updateScrollers = function() {
-    mobl.delayedUpdateScrollers();
 };
 
 mobl.openUrl = function(url) {

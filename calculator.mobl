@@ -3,6 +3,7 @@ application calculator
 title "Calculator"
 
 import mobl
+import mobl::ui::generic
 
 screen root() {
   var n1 : Num = 2
@@ -10,11 +11,11 @@ screen root() {
 
   header("Calculator")
   group {
-    inputNum(n1)
-    inputNum(n2)
-    item { "* " outputNum(n1 * n2) }
-    item { "+ " outputNum(n1 + n2) }
-    item { "- " outputNum(n1 - n2) }
-    item { "/ " outputNum(n1 / n2) }
+    item { numField(n1) }
+    item { numField(n2) }
+    item { "* " label(n1 * n2) }
+    item { "+ " label(n1 + n2) }
+    item { "- " label(n1 - n2) }
+    item { "/ " label(n1 / n2) }
   }
 }

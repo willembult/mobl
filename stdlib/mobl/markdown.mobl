@@ -1,7 +1,8 @@
 module mobl::markdown
 
 import mobl
-load "lib/showdown.js"
+
+load mobl/showdown.js
 
 
 external control markdown(s : String)
@@ -9,8 +10,8 @@ external control markdown(s : String)
   label(s)
 }*/
 
-<script>
-mobl.markdown.markdown = function(s, namedArgs, elements, callback) {
+<javascript>
+mobl.markdown.markdown = function(s, elements, callback) {
   var convert = new Attacklab.showdown.converter();
   var root192 = $("<span>");
   var node180 = $("<span >");
@@ -33,4 +34,4 @@ mobl.markdown.markdown = function(s, namedArgs, elements, callback) {
   callback(root192); return;
 
 };
-</script>
+</javascript>

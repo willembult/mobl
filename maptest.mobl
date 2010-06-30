@@ -2,17 +2,18 @@ application maptest
 
 import mobl::location
 import mobl
+import mobl::ui::generic
 
 screen root() {
   var position : Coordinates = null
-  init {
+  script {
     async {
       position = getPosition();
     }
   }
   header("A map")
   cond(position != null) {
-    outputString("Position: " + position.latitude + ", " + position.longitude)
+    label("Position: " + position.latitude + ", " + position.longitude)
     mobl::maps::map(position)
   }
 }

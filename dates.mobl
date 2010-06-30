@@ -1,7 +1,8 @@
 application dates
 
 import mobl
-import mobl::datepicker
+import mobl::ui::ios
+import mobl::ui::ios::datepicker
 
 entity Person {
   name     : String
@@ -58,7 +59,7 @@ screen addPerson() {
     inputString(p.name, placeholder="Name")
   }
   group {
-    datepicker(p.birthday)
+    datePicker(p.birthday)
   }
 }
 
@@ -96,7 +97,7 @@ screen personDates(p : Person) {
   header("Birthdays")
   backButton("Back", onclick={ screen return; })
   group {
-    datepicker(birthday)
+    datePicker(birthday)
   }
   table {
     row {
@@ -145,8 +146,8 @@ function addMonths(d : DateTime, n : Num) : DateTime {
 
 external sync function makeDate(year : Num, month : Num, day : Num) : DateTime
 
-<script>
+<javascript>
 dates.makeDate = function(year, month, day) {
   return new Date(year, month, day);
 }
-</script>
+</javascript>

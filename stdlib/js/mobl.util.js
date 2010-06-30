@@ -32,7 +32,7 @@ mobl.stringTomobl__DateTime = function(s) {
 };
 
 mobl.loadingSpan = function() {
-    return $("<span>Loading... <img src=\"lib/img/loading.gif\"/></span>");
+    return $("<span>Loading... <img src=\"mobl/loading.gif\"/></span>");
 };
 
 mobl.encodeUrlObj = function(obj) {

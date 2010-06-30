@@ -1,7 +1,7 @@
 application tipcalculator
 
 import mobl
-import mobl::ui::ios
+import mobl::ui::generic
 
 screen root() {
   var amount = 10
@@ -10,8 +10,8 @@ screen root() {
 
   header("Tip calculator")
   group {
-    item { inputNum(amount, label="amount") }
-    item { inputNum(percentage, label="%") }
+    item { numField(amount) }
+    item { numField(percentage) }
     item { label(total)}
   }
 }

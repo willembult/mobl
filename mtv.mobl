@@ -82,7 +82,7 @@ screen showArtist(a : Artist) {
   }
 }
 
-<script>
+<javascript>
 mtv.findArtist = function(query) {
   return mobl.remoteCollection('http://api.mtvnservices.com/1/artist/search/?term=' + escape(query) + '&max-results=10', 'xml', function(data) {
     var doc = $(data);
@@ -128,4 +128,4 @@ mtv.getRelatedArtists = function(artist) {
     return results.slice(0, 5);
   });
 };
-</script>
+</javascript>

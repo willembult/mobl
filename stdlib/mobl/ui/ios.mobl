@@ -2,6 +2,28 @@ module mobl::ui::ios
 
 import mobl
 
+resource mobl/ui/ios/calendar.gif
+resource mobl/ui/ios/checkbox-checked.png
+resource mobl/ui/ios/checkbox.png
+resource mobl/ui/ios/chevron.png
+resource mobl/ui/ios/compose.png
+resource mobl/ui/ios/growl.png
+resource mobl/ui/ios/iPhoneBackButton.png
+resource mobl/ui/ios/iPhoneButton.png
+resource mobl/ui/ios/iPhoneToolbar.png
+resource mobl/ui/ios/redButton.dark.png
+resource mobl/ui/ios/redButton.png
+resource mobl/ui/ios/selectedtabbg.png
+resource mobl/ui/ios/stripes.png
+resource mobl/ui/ios/sw-alpha.png
+resource mobl/ui/ios/sw-button-cancel.png
+resource mobl/ui/ios/sw-button-done.png
+resource mobl/ui/ios/sw-header.png
+resource mobl/ui/ios/sw-slot-border.png
+resource mobl/ui/ios/tabbg.png
+resource mobl/ui/ios/whiteButton.png
+resource mobl/ui/ios/search.png
+
 load mobl/ui/ios.css
 
 @doc "Internal use only"
@@ -80,7 +102,7 @@ control inputs() {
 
 control checkbox(b : Bool, label : String = "") {
   <span onclick={ b = b ? false : true; }>
-    <img src=b ? "lib/img/checkbox-checked.png" : "lib/img/checkbox.png" class="checkbox" />
+    <img src=b ? "mobl/ui/ios/checkbox-checked.png" : "mobl/ui/ios/checkbox.png" class="checkbox" />
     <span databind=label/>
   </span>
 }
@@ -222,4 +244,9 @@ mobl.scrollTop = function() {
     scroller.scrollTo(0, 0);
   }
 }
+
+mobl.ui.ios.updateScrollers = function() {
+    mobl.delayedUpdateScrollers();
+};
+
 </javascript>

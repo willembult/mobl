@@ -1,14 +1,14 @@
 module mobl::notify
 
-load "lib/jquery.jgrowl.js"
-load "lib/jquery.jgrowl.css"
+load mobl/jquery.jgrowl.js
+load mobl/jquery.jgrowl.css
 
 import mobl
 
 external sync function notify(message : String) : void
 
-<script>
+<javascript>
 mobl.notify.notify = function(message) {
   $.jGrowl(message);
 };
-</script>
+</javascript>

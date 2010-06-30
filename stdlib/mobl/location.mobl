@@ -11,7 +11,7 @@ external type Coordinates {
 external function getPosition() : Coordinates
 external sync function isSupported() : Bool
 
-<script>
+<javascript>
 mobl.location.isSupported = function() {
   return !!navigator.geolocation;
 }
@@ -25,4 +25,4 @@ mobl.location.getPosition = function(callback) {
     callback(null);
   }
 };
-</script>
+</javascript>
