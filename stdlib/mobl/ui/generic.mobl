@@ -3,8 +3,12 @@ module mobl::ui::generic
 import mobl
 
 load mobl/ui/generic.css
+load mobl/ui/generic/css-beziers.js
+load mobl/ui/generic/touchscroll.js
+load mobl/ui/generic/touchscroll.css
 
 resource mobl/ui/generic/arrow.png
+resource mobl/ui/generic/contextmenu.png
 
 control header(text : String) {
   <div class="header">
@@ -46,7 +50,7 @@ control checkBox(b : Bool, label : String = "") {
 }
 
 control textField(s : String, placeholder : String = null, onchange : Callback = null) {
-  <input type="text" placeholder=placeholder databind=s onchange=onchange />
+  <input type="text" placeholder=placeholder databind=s onchange=onchange onblur={ scrollUp(); }/>
 }
 
 control numField(n : Num, placeholder : String = null, onchange : Callback = null) {
@@ -59,8 +63,143 @@ control float(side : String = "right", distance : Num = 0) {
   </span>
 }
 
+external sync function handlePopClick() : void
+
+external control popOnItem(items : Control)
+
+<javascript>
+mobl.ui.generic.handlePopClick = function(event) {
+};
+
+mobl.ui.generic.popOnItem = function(items, elements, callback) {
+  var root5174 = $("<span>");
+  var node3279 = $("<li class=\"item\">");
+
+  var nodes2692 = $("<span>");
+  node3279.append(nodes2692);
+  ref(elements).addEventListener('change', function() {
+    renderControl1335();
+  });
+  var img = $("<img src='mobl/ui/generic/contextmenu.png' style='float: right;'/>");
+  node3279.append(img);
+
+  img.tap(function(event) {
+    var target = node3279;
+    var item = $("<div class='contextMenu'>");
+    //item.css('left', (target.offset().left + target.width()/2 - 100) + "px");
+    item.css('right', "5px");
+    item.css('top', target.offset().top+8 + "px");
+    items.get()(function(elements, callback) {
+      var root5175 = $("<span>");
+      callback(root5175); return;
+    }, function(node) { item.append(node); });
+    $("body").append(item);
+    item.hide().fadeIn();
+    function removeMenu() {
+      item.fadeOut().remove();
+      $("body").unbind('click', arguments.callee);
+    }
+    setTimeout(function() {
+      $("body").bind('click', removeMenu);
+    }, 200);
+  });
+
+  function renderControl1335() {
+    (elements)(function(elements, callback) {
+      var root5175 = $("<span>");
+      callback(root5175); return;
+    }, function(node) {
+      var oldNodes = nodes2692;
+      nodes2692 = node.contents();
+      oldNodes.replaceWith(nodes2692);
+    });
+  }
+  renderControl1335();
+  root5174.append(node3279);
+  callback(root5174); return;
+};
+</javascript>
+
+// Higher level controls
+
+control masterDetail(items : Collection<Dynamic>, masterItem : Control1<Dynamic>, detail : Control1<Dynamic>) {
+  group {
+    list(it in items) {
+      item(onclick={ detailScreen(it, detail); }) {
+        masterItem(it)
+      }
+    }
+  }
+}
+
+screen detailScreen(it : Dynamic, detail : Control1<Dynamic>) {
+  header("Detail") {
+    backButton("Back", onclick={ screen return; })
+  }
+  detail(it)
+}
+
+@cond isIpad() && isLandscape()
+control masterDetail(items : Collection<Dynamic>, masterItem : Control1<Dynamic>, detail : Control1<Dynamic>) {
+  var current : Dynamic = items.one()
+  <div width="100%">
+    <div style="float:left; width:33%; position:relative; border-right: solid 1px #cccccc;">
+      group {
+        list(it in items) {
+          (it == current ? itemArrow : item)({ current = it; }) {
+            masterItem(it)
+          }
+        }
+      }
+    </div>
+    <div style="float:left; width:66.5%; position:relative; margin-left: 0.5%;">
+      detail(current)
+    </div>
+  </div>
+}
+
+// SCROLLERS
+
+external sync function setupScrollers() : void
+external sync function scrollUp() : void
+
+control scroller(height : Num = 200) {
+  <div class="scroller">
+    elements()
+  </div>
+  script {
+    setupScrollers();
+  }
+}
+
 <javascript>
 setTimeout(function() {
   scrollTo(0, -1);
 }, 250);
+
+mobl.ui.generic.scrollUp = function() {
+  scrollTo(0, 0);
+}
+
+mobl.ui.generic.setupScrollers = function() {
+  setTimeout(function() {
+    var allScrollers = $("div.scroller");
+    for(var i = 0; i < allScrollers.length; i++) {
+      var scroller = allScrollers.eq(i);
+      if(!scroller.data("scroller")) {
+         scroller.data("scroller", new TouchScroll(scroller[0], {elastic: true}));
+      }
+    }
+  }, 250);
+};
+
+setInterval(function() {
+  var allScrollers = $("div.scroller");
+  for(var i = 0; i < allScrollers.length; i++) {
+    var scroller = allScrollers.eq(i).data("scroller");
+    if(scroller) {
+       scroller.setupScroller();
+    }
+  }
+}, 1000);
 </javascript>

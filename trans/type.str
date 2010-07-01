@@ -79,7 +79,7 @@ strategies
   fargs-to-function-type :
     farg* -> GenericType(QId("mobl", $[Function[n]]), t*)
     where t* := <map(?FArg(_, <id>) <+ ?FArgOptional(_, <id>, _))> farg*
-        ; n := <length> t*
+        ; n := <subt> (<length> t*, 1)
 
   fargs-to-control-type :
     farg* -> GenericType(QId("mobl", $[Control[n]]), t*)

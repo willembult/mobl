@@ -18,12 +18,28 @@ imports
 rules
 
   definition-to-js :
-    Control(_, qid, farg*, elems) -> <emit> $[
+    Control(manno*, qid, farg*, elems) -> <emit> $[
       [<qid-to-js> qid] = function([fargs]) {
         var [root] = $("<span>");
         [body]
       };
       ]
+    where [] := <filter(?ConditionalAnno(_))> manno*
+    with {| InControl
+          : rules ( InControl := 1 )
+          ; root := <newname> "root"
+          ; fargs :=  <filter(farg-to-js); <concat> [<id>, ["elements", "callback"]]; separate-by(!", "); concat-strings> farg*
+          ; body := <elems-to-js-callback(|root)> elems
+          |}
+
+  definition-to-js :
+    Control(manno*, qid, farg*, elems) -> <emit> $[
+      [<qid-to-js> qid] = mobl.conditionalDef([<qid-to-js> qid], function() { return [<expression-to-js> cond-e]; }, function([fargs]) {
+        var [root] = $("<span>");
+        [body]
+      });
+      ]
+    where [ConditionalAnno(cond-e)] := <filter(?ConditionalAnno(_))> manno*
     with {| InControl
           : rules ( InControl := 1 )
           ; root := <newname> "root"
@@ -185,7 +201,7 @@ rules
       [r].rebind();
     ]
     where not(String(_) := e)
-        ; not(SimpleType(QId("mobl", "Callback")) := <type-of> e)
+        ; not(SimpleType(QId("mobl", "Callback")) := <type-of> e <+ GenericType(QId("mobl", "Function0"), _) := <type-of> e)
     with es := <ref-expression-to-js> e
        ; r  := <newname> "ref"
        ; watch-expr* := <find-watchable-expressions> e
@@ -205,7 +221,8 @@ rules
         [node].bind('[<string-replace(|"on", "")> name]', [val]);
       }
     ]
-    where SimpleType(QId("mobl", "Callback")) := <type-of> e
+    where (SimpleType(QId("mobl", "Callback")) := <type-of> e
+        <+ GenericType(QId("mobl", "Function0"), _) := <type-of> e)
         ; not("onclick" := name)
     with es := <expression-to-js> e
        ; val  := <newname> "val"
@@ -217,7 +234,8 @@ rules
         [node].tap([val]);
       }
     ]
-    where SimpleType(QId("mobl", "Callback")) := <type-of> e
+    where (SimpleType(QId("mobl", "Callback")) := <type-of> e
+        <+ GenericType(QId("mobl", "Function0"), _) := <type-of> e)
     with es := <expression-to-js> e
        ; val  := <newname> "val"
 

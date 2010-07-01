@@ -35,6 +35,7 @@ exports
     QId "<" {Type ","}* ">"        -> Type {cons("GenericType")}
 
     "@doc" STRING                  -> MetaAnno {cons("DocAnno")}
+    "@cond" Exp                    -> MetaAnno {cons("ConditionalAnno")}
 
   context-free syntax %% Paths
     {FILENAME "/"}+                  -> Path {cons("Path")}

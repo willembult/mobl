@@ -94,6 +94,7 @@ mobl.call = function (screenName, args, callback) {
             $("body > #" + previousScreen.div).show('slide', {
                 direction: "left"
             }, 100);
+            scrollTo(0, previousScreen.pageYOffset);
             /*
             var old = $("body > #" + screenFrame.div);
             old.addClass('righthidden');
@@ -123,12 +124,14 @@ mobl.call = function (screenName, args, callback) {
         if (mobl.screenStack.length > 1) {
             var previousScreen = mobl.screenStack[mobl.screenStack.length - 2];
             //node.addClass('righthidden');
+            previousScreen.pageYOffset = window.pageYOffset;
             $("body > #" + previousScreen.div).hide('slide', {
                 direction: "left"
             }, 100);
             node.hide().prependTo(body).show('slide', {
                 direction: "right"
             }, 100);
+            scrollTo(0, 0);
             /*
             $("body > #" + previousScreen.div).addClass('hidden');
             node.prependTo(body);

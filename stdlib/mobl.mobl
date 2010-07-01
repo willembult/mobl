@@ -32,14 +32,10 @@ external type Bool : Object { }
 
 external type Dynamic : Object { }
 
-external type List<T> {
-  sync function get(n : Num) : T
-  sync function add(item : T) : void
-}
-
 external type Array<T> {
   sync function get(n : Num) : T
   sync function push(item : T) : void
+  function one() : T
 }
 
 external type Tuple1<T1> {
@@ -72,7 +68,7 @@ external type Control4<T1, T2, T3, T4> { }
 external type Control5<T1, T2, T3, T4, T5> { }
 
 external type Callback {}
-external type Function<RT> { }
+external type Function0<RT> { }
 external type Function1<RT, T1> { }
 external type Function2<RT, T1, T2> { }
 external type Function3<RT, T1, T2, T3> { }
@@ -148,8 +144,25 @@ external sync function remove(e : Object) : void
 external function resetDatabase() : void
 external sync function formatDate(d : DateTime) : String
 external sync function openUrl(url : String) : void
-external sync function range(from : Num, to : Num) : List<Num>
+external sync function range(from : Num, to : Num) : Array<Num>
 external sync function random(max : Num) : Num
+
+// Device checks
+
+external sync function isIphone() : Bool
+external sync function isIpad() : Bool
+external sync function isAndroid() : Bool
+external sync function isLandscape() : Bool
+external sync function isPortrait() : Bool
+
+<javascript>
+mobl.isIphone = function() { return !!navigator.userAgent.match(/iPhone/i) || !!navigator.userAgent.match(/iPod/i); };
+mobl.isIpad = function() { return !!navigator.userAgent.match(/iPad/i); };
+mobl.isAndroid = function() { return !!navigator.userAgent.match(/Android/i); };
+mobl.isLandscape = function() { return window.innerHeight < window.innerWidth; };
+mobl.isPortrait = function() { return window.innerHeight >= window.innerWidth; };
+</javascript>
+
 
 // Controls
 @doc "Injects given HTML directly into the screen"
@@ -241,9 +254,7 @@ mobl.range = function(from, to) {
   for(var i = from; i < to; i++) {
     ar.push(i);
   }
-  var l = new mobl.List();
-  l.values = ar;
-  return l;
+  return ar;
 };
 
 mobl.html = function(html, elements, callback) {
@@ -281,6 +292,16 @@ Array.prototype.list = function(tx, callback) {
 Array.prototype.get = function(idx) {
   return this[idx];
 };
+
+Array.prototype.one = function(callback) {
+  if(this.length === 0) {
+    callback(null);
+  } else {
+    callback(this[0]);
+  }
+};
+
+Array.prototype.addEventListener = function() {}
 
 mobl.dummyMapper = function(data, callback) {
   callback(data);
