@@ -94,6 +94,12 @@ function log(s) {
     console.log(s);
 }
 
+mobl.implementInterface = function(sourceModule, targetModule, items) {
+  for(var i = 0; i < items.length; i++) {
+    targetModule[items[i]] = sourceModule[items[i]];
+  }
+};
+
 
 (function () {
     function Tuple() {

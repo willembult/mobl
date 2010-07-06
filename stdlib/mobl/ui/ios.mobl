@@ -26,17 +26,64 @@ resource mobl/ui/ios/search.png
 
 load mobl/ui/ios.css
 
-@doc "Internal use only"
-external sync function updateScrollers() : void
-
-external sync function scrollTop() : void
-
+// mobl::ui implementation
 control header(text : String, onclick : Callback = null) {
   <div class="header" onclick=onclick>
     <div class="headerContainer"><div databind=text class="headerText"/></div>
     elements()
   </div>
 }
+
+control button(text : String, onclick : Callback = null) {
+  <span class="button" databind=text onclick=onclick/>
+}
+
+control sideButton(text : String, onclick : Callback = null) {
+  <span class="sideButton" databind=text onclick=onclick/>
+}
+
+control backButton(text : String, onclick : Callback = null) {
+  <a href="javascript:void(0)" class="backButton" id="back-button" databind=text onclick=onclick></a>
+}
+
+control group() {
+  <ul>
+    elements()
+  </ul>
+}
+
+control item(onclick : Callback = null, onswipe : Callback = null) {
+  <li onclick=onclick onswipe=onswipe>elements()</li>
+}
+
+control itemArrow(onclick : Callback = null, onswipe : Callback = null) {
+  <li onclick=onclick class="arrow">elements()</li>
+}
+
+control checkBox(b : Bool, label : String = "") {
+  <span onclick={ b = b ? false : true; }>
+    <img src=b ? "mobl/ui/ios/checkbox-checked.png" : "mobl/ui/ios/checkbox.png" class="checkbox" />
+    <span databind=label/>
+  </span>
+}
+
+control textField(s : String, placeholder : String = null, onchange : Callback = null) {
+  <input type="text" placeholder=placeholder databind=s onchange=onchange />
+}
+
+control numField(n : Num, placeholder : String = null, onchange : Callback = null) {
+  /*cond(label != null) {
+    <span databind=label class="inputLabel" />
+  }*/
+  //<input type="text" placeholder=placeholder databind=n onchange=onchange class=label != null ? "labelled" : ""/>
+  <input type="text" placeholder=placeholder databind=n onchange=onchange/>
+}
+// end
+
+@doc "Internal use only"
+external sync function updateScrollers() : void
+
+external sync function scrollTop() : void
 
 screen promptString(question : String) : String {
   var answer : String = ""
@@ -47,10 +94,6 @@ screen promptString(question : String) : String {
   button("Ok", onclick={ screen return answer; })
 }
 
-control textField(s : String, placeholder : String = null, onchange : Callback = null) {
-  <input type="text" placeholder=placeholder databind=s onchange=onchange />
-}
-
 control searchBox(s : String, placeholder : String = null, onsearch : Callback = null) {
   <div class="searchbox">
     <input type="text" placeholder=placeholder databind=s onchange=onsearch />
@@ -59,20 +102,6 @@ control searchBox(s : String, placeholder : String = null, onsearch : Callback =
 
 control textarea(s : String, placeholder : String = null, onchange : Callback = null) {
     <textarea placeholder=placeholder databind=s onchange=onchange/>
-}
-
-control numField(i : Num, placeholder : String = null, label : String = null, onchange : Callback = null) {
-  cond(label != null) {
-    <span databind=label class="inputLabel" />
-  }
-  <input type="text" placeholder=placeholder databind=i onchange=onchange class=label != null ? "labelled" : ""/>
-}
-
-control checkBox(b : Bool, label : String = "") {
-  <span onclick={ b = b ? false : true; }>
-    <img src=b ? "mobl/ui/ios/checkbox-checked.png" : "mobl/ui/ios/checkbox.png" class="checkbox" />
-    <span databind=label/>
-  </span>
 }
 
 control basicView(title : String, toolBar : Control = control{}) {
@@ -100,38 +129,12 @@ control cell(width : String = null) {
   <td width=width>elements()</td>
 }
 
-control group() {
-  <ul>
-    elements()
-  </ul>
-}
-
-control item(onclick : Callback = null, onswipe : Callback = null) {
-  <li onclick=onclick onswipe=onswipe>elements()</li>
-}
-
-control itemArrow(onclick : Callback = null) {
-  <li onclick=onclick class="arrow">elements()</li>
-}
-
 control image(url : String, onclick : Callback = null) {
   <img src=url onclick=onclick/>
 }
 
-control button(text : String, onclick : Callback = null) {
-  <span class="button" databind=text onclick=onclick/>
-}
-
 control altButton(text : String, onclick : Callback = null) {
   <a href="javascript:void(0)" class="whiteButton" databind=text onclick=onclick></a>
-}
-
-control sideButton(text : String, onclick : Callback = null) {
-  <span class="sideButton" databind=text onclick=onclick/>
-}
-
-control backButton(text : String, onclick : Callback = null) {
-  <a href="javascript:void(0)" class="backButton" id="back-button" databind=text onclick=onclick></a>
 }
 
 control toolbarButton(type : String, onclick : Callback = null) {
@@ -139,7 +142,7 @@ control toolbarButton(type : String, onclick : Callback = null) {
 }
 
 @doc "A tabset, takes a list of tuples as argument, e.g. [(\"Tab 1\", \"icon url\", tab1), (\"Tab 2\", \"icon uri\", tab2)] where tab1 and tab2 are controls with no arguments"
-control tabset(tabs : Array<Tuple3<String, String, Control>>) {
+control tabSet(tabs : Array<Tuple3<String, String, Control>>) {
   var activeTabName : String = tabs.get(0)._1
 
   list((tabName, tabIcon, tabControl) in tabs) {

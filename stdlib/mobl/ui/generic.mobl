@@ -35,13 +35,13 @@ control group() {
   </ul>
 }
 
-control item(onclick : Callback = null) {
+control item(onclick : Callback = null, onswipe : Callback = null) {
   <li class="item" onclick=onclick>
     elements()
   </li>
 }
 
-control itemArrow(onclick : Callback = null) {
+control itemArrow(onclick : Callback = null, onswipe : Callback = null) {
   <li class="itemArrow" onclick=onclick>
     elements()
   </li>
@@ -69,7 +69,7 @@ control float(side : String = "right", distance : Num = 0) {
 
 
 @doc "A tabset, takes a list of tuples as argument, e.g. [(\"Tab 1\", \"icon url\", tab1), (\"Tab 2\", \"icon uri\", tab2)] where tab1 and tab2 are controls with no arguments"
-control tabset(tabs : Array<Tuple3<String, String, Control>>) {
+control tabSet(tabs : Array<Tuple3<String, String, Control>>) {
   var activeTabName : String = tabs.get(0)._1
 
   <div class="tabbar">
@@ -164,6 +164,39 @@ control masterDetail(items : Collection<Dynamic>, masterItem : Control1<Dynamic>
   </div>
 }
 
+// Floating box
+
+external sync function setupFloatBox(top : Num = null, right : Num = null, bottom : Num = null, left : Num = null) : void
+
+control floatBox(top : Num = null, right : Num = null, bottom : Num = null, left : Num = null) {
+  <div id="floatBox" style="position: absolute;">
+    elements()
+  </div>
+  script {
+    setupFloatBox(top, right, bottom, left);
+  }
+}
+
+<javascript>
+mobl.ui.generic.setupFloatBox = function(top, right, bottom, left) {
+  setTimeout(function() {
+    var box = $("div#floatBox");
+    if(top !== null) box.css("top", "" + top + "px");
+    if(right !== null) box.css("right", "" + right + "px");
+    if(bottom !== null) box.css("top", "" + (window.pageYOffset + window.innerHeight - box.outerHeight() - bottom) + "px");
+    if(left !== null) box.css("left", "" + left + "px");
+    $(window).bind('scroll', function() {
+      if(top !== null) {
+        box.css("top", "" + (window.pageYOffset + top) + "px");
+      }
+      if(bottom !== null) {
+        box.css("top", "" + (window.pageYOffset + window.innerHeight - box.outerHeight() - bottom) + "px");
+      }
+    });
+  }, 200);
+};
+</javascript>
+
 // SCROLLERS
 
 external sync function setupScrollers() : void
@@ -184,12 +217,11 @@ setTimeout(function() {
 }, 250);
 
 jQuery.fn.tap = function (callback) {
-  console.log("New style tap: ");
-    if(mobl.isIphone() || mobl.isAndroid() || mobl.isIpad()) {
-      new NoClickDelay(this[0], callback);
-    } else {
-     this.click(callback);
-    }
+  if(mobl.isIphone() || mobl.isAndroid() || mobl.isIpad()) {
+    new NoClickDelay(this[0], callback);
+  } else {
+   this.click(callback);
+  }
 };
 
 

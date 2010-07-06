@@ -16,8 +16,9 @@ exports
     Property                                                     -> ExternalMemberDecl
 
     MetaAnno* "external" "control" QId "(" {FArg ","}* ")"                                -> Definition {cons("ExternalControl")}
-    MetaAnno* "external" "template" QId "(" {FArg ","}* ")"                               -> Definition {deprecated("The 'template' keyword has been replaced with 'control'."),cons("ExternalControl")}
     MetaAnno* "external" "screen" QId ":" Type "(" {FArg ","}* ")"                        -> Definition {cons("ExternalScreen")}
     MetaAnno* "external" "entity" QId ":" Type "{" Property* "}"                          -> Definition {cons("ExternalEntity")}
     MetaAnno* "external" "function" QId "(" {FArg ","}* ")" ":" Type                      -> Definition {cons("ExternalFunction")}
     MetaAnno* "external" "sync" "function" QId "(" {FArg ","}* ")" ":" Type               -> Definition {cons("ExternalSyncFunction")}
+
+    MetaAnno* "external" "template" QId "(" {FArg ","}* ")"                               -> Definition {deprecated("The 'template' keyword has been replaced with 'control'."),cons("ExternalControl")}

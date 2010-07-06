@@ -2,7 +2,7 @@ application tipcalculator
 
 import mobl
 //import mobl::ui::generic
-import mobl::ui::ios
+import mobl::ui
 
 screen root() {
   var amount = 10

@@ -1,7 +1,7 @@
 application shopping
 
 import mobl
-import mobl::ui::generic
+import mobl::ui
 //import mobl::ui::ios
 
 entity Item {
@@ -77,5 +77,5 @@ control quickAdd() {
 }
 
 screen root() {
-  tabset([("Items", "lib/toolbar/icon_users.png", showItems), ("Favorite", "lib/toolbar/icon_users.png", showFavorites)])
+  tabSet([("Items", "lib/toolbar/icon_users.png", showItems), ("Favorite", "lib/toolbar/icon_users.png", showFavorites)])
 }
