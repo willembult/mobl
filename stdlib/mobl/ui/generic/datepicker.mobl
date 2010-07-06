@@ -1,0 +1,54 @@
+module mobl::ui::generic::datepicker
+
+import mobl
+import mobl::ui::generic
+
+function getMonthName(m : Num) : String {
+  var months : Array<String> = Array<String>("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec");
+  return months.get(m);
+}
+
+control datePicker(d : DateTime) {
+  var visible = false
+  label(d.toDateString(), onclick={
+    visible = visible ? false : true;
+  })
+  <div>
+  cond(visible) {
+    <div style="float: left; text-align: center;">
+    button("+", onclick={
+      d.setDate(d.getDate() + 1);
+      d = d;
+    })<br/>
+    label(d.getDate())<br/>
+    button("-", onclick={
+      d.setDate(d.getDate() - 1);
+      d = d;
+    })
+    </div>
+    <div style="float: left; text-align: center;">
+    button("+", onclick={
+      d.setMonth(d.getMonth() + 1);
+      d = d;
+    })<br/>
+    label(getMonthName(d.getMonth()))<br/>
+    button("-", onclick={
+      d.setMonth(d.getMonth() - 1);
+      d = d;
+    })
+    </div>
+    <div style="float: left; text-align: center;">
+    button("+", onclick={
+      d.setFullYear(d.getFullYear() + 1);
+      d = d;
+    })<br/>
+    label(d.getFullYear())<br/>
+    button("-", onclick={
+      d.setFullYear(d.getFullYear() - 1);
+      d = d;
+    })
+    </div>
+  }
+  <div style="clear: both"/>
+  </div>
+}

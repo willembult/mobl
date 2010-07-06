@@ -14,7 +14,7 @@ function updateScrollers () {
     //scrollTo(0, 0);
     if (scrollwrappers.length > 0) {
         var height = mobl.innerHeight ? mobl.innerHeight : window.innerHeight;
-        height -= $("div.header:visible").height();
+        //height -= $("div.header:visible").height();
         height -= $("#footer:visible").height();
         height -= $("#tabbar:visible").height();
         scrollwrappers.height(height);

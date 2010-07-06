@@ -24,7 +24,7 @@ div.header {
   line-height: 2.3em;
   font-weight: bold;
   text-align: center;
-  text-shadow: #5c98f6 0px 1px 1px;
+  text-shadow: #477 0px 1px 1px;
   color: white;
   font-weight: bold;
   margin: 0;
@@ -64,15 +64,22 @@ span.button {
   background: -moz-linear-gradient(top, #fff, #c6def2);
 }
 
+span.sideButton {
+  position: absolute;
+  right: 0.4em;
+  padding: 0.3em 0.8em 0.3em 0.8em;
+  margin-top: -0.2em;
+  color: black;
+  -webkit-box-shadow: 0px 0px 3px #777777;
+  -moz-box-shadow: 0px 0px 3px #777777;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#fff),
+    to(#c6def2) );
+  background: -moz-linear-gradient(top, #fff, #c6def2);
+}
+
 span.backButton {
-  /*-webkit-border-bottom-left-radius: 35px 15px;
-  -webkit-border-top-left-radius: 35px 15px;
-  -webkit-border-bottom-right-radius: 5px;
-  -webkit-border-top-right-radius: 5px;
-  -moz-border-radius-bottomleft: 35px 15px;
-  -moz-border-radius-topleft: 35px 15px;
-  -moz-border-radius-bottomright: 5px;
-  -moz-border-radius-topright: 5px;*/
   -moz-border-radius: 5px;
   -webkit-border-radius: 5px;
   background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#fff),
@@ -135,28 +142,6 @@ img.checkbox {
   vertical-align: top;
 }
 
-span.old__backButton {
-  -webkit-border-image: url(../lib/new/back.png) 0 5 0 14;
-  /*url(data:image/png;base64,) 0 4 0 14;*/
-  -moz-border-image: url(../lib/new/back.png) 0 5 0 14;
-  /*url(data:image/png;base64,) 0 4 0 14;*/
-  border-bottom-width: 0px;
-  border-left-width: 13px;
-  border-right-width: 5px;
-  border-top-width: 0px;
-  float: left;
-  margin-left: 5px;
-  margin-top: 5px;
-  font-family: Arial, Helvetica, sans-serif;
-  font-size: 13px;
-  font-weight: bold;
-  line-height: 33px;
-  height: 33px;
-  text-shadow: white 0px 1px 0px;
-  padding-right: 3px;
-  z-index: 3;
-}
-
 ul.group {
   list-style: none;
   margin: 0;
@@ -194,8 +179,6 @@ li.itemArrow {
 
 div.contextMenu {
   position: absolute;
-  /*-moz-border-radius: 5px;
-  -webkit-border-radius: 5px;*/
 }
 
 div.contextMenu span.button {
@@ -215,6 +198,53 @@ div.contextMenu span.button {
   background: -moz-linear-gradient(top, #fff, #c6def2);
 }
 
+/* TAB BAR */
+
+div.tabbar {
+  text-align: left;
+  font-size: 16px;
+  z-index: 3;
+  width: 100%;
+  border-bottom: 1px solid #444;
+  margin-top: 0.3em;
+  margin-bottom: 0;
+}
+
+div.tabbar > span {
+  margin: 0;
+  padding: 0;
+}
+
+div.tabbar span.tab {
+  padding-right: 15px;
+  padding-left: 15px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  margin-left: 10px;
+  line-height: 37px;
+  height: 37px;
+  margin-bottom: 0;
+  background-color: white;
+  color: black;
+  border-top: 1px solid #444;
+  border-right: 1px solid #444;
+  border-left: 1px solid #444;
+  -webkit-border-top-right-radius: 8px;
+  -moz-border-radius-topright: 8px;
+  -webkit-border-top-left-radius: 8px;
+  -moz-border-radius-topleft: 8px;
+}
+
+div.inActiveTab {
+  display: none;
+}
+
+div.tabbar span.activeTabButton {
+  background-color: #5c98f6;
+  color: #fefefe;
+  position: relative;
+  top: 1px;
+}
 
 div.scroller {
   -webkit-box-flex: 1;

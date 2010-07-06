@@ -63,7 +63,7 @@ exports
     Exp OperatorMethodId Exp     -> Exp {cons("BinMethodCall"), left}
 
     Exp "?" Exp ":" Exp          -> Exp {left, cons("Choice")}
-    QId "<" Type ">" "(" {Exp ","}* ")"      -> Exp {cons("CollectionCons")}
+    QId "<" Type ">" "(" {Exp ","}* ")"      -> Exp {cons("CollectionCons"), prefer}
     Type "{" {PropVal ","}* "}"  -> Exp {cons("EntityCons")}
 
     "[" {Exp ","}* "]"           -> Exp {cons("List")}

@@ -1,0 +1,42 @@
+application tasks
+
+import mobl
+import mobl::ui::generic
+
+entity Task {
+  name    : String (searchable)
+  done    : Bool
+  dueDate : DateTime
+}
+
+screen root() {
+  header("Todo") {
+    button("Add", onclick={ addTask(); })
+  }
+  control itemMaster(t : Task) {
+    checkBox(t.done, label=t.name)
+  }
+  control detail(t : Task) {
+    "Task details"
+    group {
+      item { "Name: " label(t.name) }
+      item { "Done: " label(t.done) }
+      item { "Due: " label(t.dueDate) }
+    }
+  }
+  masterDetail(Task.all(), itemMaster, detail)
+}
+
+screen addTask() {
+  var newTask = Task{ done = false, dueDate=now() }
+  header("Add") {
+    backButton("Back", onclick={ screen return; })
+  }
+  group {
+    item { textField(newTask.name, placeholder="Task name") }
+  }
+  button("Add", onclick={
+    add(newTask);
+    screen return;
+  })
+}

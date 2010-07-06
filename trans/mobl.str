@@ -30,9 +30,9 @@ imports
 strategies
 
   // this is overwritten in Java code (the weird code is just to avoid inlining)
-  get-plugin-path = debug(!"<still didn't work>"); editor-analyze; fail; resolve-file
+  //get-plugin-path = debug(!"<still didn't work>"); editor-analyze; fail; resolve-file
 
-  upload-files(|appid) = debug(!"<still didn't work>"); editor-analyze; fail; resolve-file
+  //upload-files(|appid) = debug(!"<still didn't work>"); editor-analyze; fail; resolve-file
 
   resolve-file :
     filename -> filename
@@ -57,7 +57,7 @@ rules // Main editor interface (defined by editor/MoBL-Builders and -References.
       rules ( ProjectPath     := project-path
               CachedParseAst  : path -> ast
               OutputPath      := <concat-strings> [project-path, "/www"]
-              IncludePaths    := [project-path, <concat-strings> [<get-plugin-path>, "/stdlib"]])
+              IncludePaths    := [project-path, <concat-strings> [<plugin-path>, "/stdlib"]])
       ; (Module(mod-name, _)  := ast <+ Application(mod-name, _, _) := ast)
       ; rules ( CompilingModule := mod-name )
       ; <compile> ast

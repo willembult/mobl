@@ -262,7 +262,11 @@ rules // Expressions
        ; idxes := <expression-to-js> idxe
 
   exp-to-js :
-    CollectionCons(_, _, e*) -> $[new persistence.LocalQueryCollection($[$[args]$]$)]
+    CollectionCons("Collection", _, e*) -> $[new persistence.LocalQueryCollection($[$[args]$]$)]
+    with args := <map(expression-to-js); separate-by(!", "); concat-strings> e*
+
+  exp-to-js :
+    CollectionCons("Array", _, e*) -> $[$[$[args]$]$]
     with args := <map(expression-to-js); separate-by(!", "); concat-strings> e*
 
   exp-to-js :

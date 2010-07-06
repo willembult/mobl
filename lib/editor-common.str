@@ -19,6 +19,10 @@ strategies
   /*parse-string =
     parse-string(|<import-term(include/MoBL.tbl)>)*/
 
+  project-path = prim("SSL_EXT_projectpath")
+
+  plugin-path = prim("SSL_EXT_pluginpath")
+
 strategies
 
   /**

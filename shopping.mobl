@@ -1,6 +1,7 @@
 application shopping
 
 import mobl
+//import mobl::ui::generic
 import mobl::ui::ios
 
 entity Item {
@@ -12,12 +13,13 @@ entity Item {
 }
 
 screen editItem(it : Item) {
-  header("Edit item")
-  topRightButton("Done", onclick={ screen return; })
-  inputs {
-    inputString(it.name, placeholder="Name")
-    item { checkbox(it.favorite, label="favorite") }
-    inputNum(it.order, placeholder="Shop order (0 = early, 999=late)")
+  header("Edit item") {
+    button("Done", onclick={ screen return; })
+  }
+  group {
+    item { textField(it.name, placeholder="Name") }
+    item { checkBox(it.favorite, label="favorite") }
+    item { numField(it.order, placeholder="Shop order (0 = early, 999=late)") }
   }
 }
 
@@ -32,28 +34,25 @@ function clean() {
   }
 }
 
-control showItemsHeader() {
-  header("Items")
-  topRightButton("Clean", onclick={ clean(); })
-}
-
 control showItems() {
+  header("Show Items") {
+    button("Clean", onclick={ clean(); })
+  }
   group {
     list(it in Item.all().filter("onlist", "=", true).order("order", true)) {
-      item(onclick={ it.checked = it.checked ? false: true; }) {
-        checkbox(it.checked, label=it.name)
-        sideButton("Edit", onclick={ editItem(it); })
+      item {
+        checkBox(it.checked, label=it.name)
+        contextMenu {
+          button("Edit", onclick={ editItem(it); })
+        }
       }
     }
   }
   quickAdd()
 }
 
-control showFavoritesHeader() {
-  header("Favorites")
-}
-
 control showFavorites() {
+  header("Favorites")
   group {
     list(it in Item.all().filter("favorite", "=", true).order("order", true)) {
       item(onclick={ editItem(it); }) {
@@ -69,14 +68,14 @@ control showFavorites() {
 control quickAdd() {
   var newItem = Item{ order=999, onlist=true }
   group {
-    inputString(newItem.name, placeholder="New item")
+    item { textField(newItem.name, placeholder="New item") }
   }
-  altButton("Add", onclick={
+  button("Add", onclick={
     add(newItem);
     newItem = Item{order=999, onlist=true};
   })
 }
 
 screen root() {
-  tabsetCustomHeaders([("Items", "lib/toolbar/icon_users.png", showItemsHeader, showItems), ("Favorite", "lib/toolbar/icon_users.png", showFavoritesHeader, showFavorites)])
+  tabset([("Items", "lib/toolbar/icon_users.png", showItems), ("Favorite", "lib/toolbar/icon_users.png", showFavorites)])
 }

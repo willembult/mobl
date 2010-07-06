@@ -37,38 +37,6 @@
   <import file="build.generated.xml" />
 
   <!-- Main target -->
-  <target name="all" depends="sdf2table,ppgen,pppack,stratego.aster,mobl-stratego.jar,sdf2imp,refresh" />
-
-  <target name="mobl-stratego.jar" depends="rtg2sig">
-    <dependset>
-      <srcfileset dir="${basedir}">
-        <include name="**/*.str" />
-        <include name="**/*.astr" />
-        <exclude name="lib/editor-common.generated.str" />
-      </srcfileset>
-      <targetfileset file="${src-gen}/trans/Main.java" />
-    </dependset>
-    <available file="${src-gen}/trans/Main.java" property="strc-java.available" />
-    <antcall target="copy-jar" />
-    <antcall target="stratego.jar.deletehelper" />
-    <antcall target="stratego.jvm.helper">
-      <param name="build.stratego.outputpath" value="${src-gen}/trans" />
-      <param name="build.stratego.extraargs" value="-la java-front" />
-      <param name="build.stratego.extension" value="java" />
-    </antcall>
-    <!-- copy customized java strategies -->
-    <copy todir="${src-gen}/trans" overwrite="true">
-      <fileset dir="editor/java-str/trans" includes="*.java"/>
-    </copy>
-    <javac classpath="utils/strategoxt.jar:${src-gen}${externaljarimport}" srcdir="${src-gen}" includes="trans/**" destdir="${build}" source="1.5" target="1.5" debug="on" />
-    <!-- copy imported terms -->
-    <copy todir="${build}/trans">
-      <fileset dir="${src-gen}/trans" excludes="**/*.java" />
-    </copy>
-    <jar basedir="${build}" includes="trans/**" destfile="${include}/${strmodule}.jar" />
-    <delete>
-      <fileset dir="${build}" includes="trans/**" />
-    </delete>
-  </target>
+  <target name="all" depends="sdf2table,ppgen,pppack,stratego.aster,stratego.jar,sdf2imp,refresh" />
 
 </project>

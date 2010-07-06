@@ -87,6 +87,12 @@ external type DateTime {
   @doc "Day of the month"
   sync function getDate() : Num
 
+  sync function setFullYear(y : Num) : Num
+  sync function setMonth(m : Num) : Num
+
+  @doc "Day of the month"
+  sync function setDate(d : Num) : Num
+
   sync function toString() : String
   sync function toDateString() : String
 

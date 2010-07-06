@@ -31,38 +31,20 @@ external sync function updateScrollers() : void
 
 external sync function scrollTop() : void
 
-control outputString(s : String) {
-  <span databind=s></span>
-}
-
-
-control outputNum(n : Num) {
-  <span databind=n></span>
-}
-
-control outputDate(d : DateTime) {
-  <span databind=formatDate(d)/>
-}
-
-control header(title : String, onclick : Callback = null) {
+control header(text : String, onclick : Callback = null) {
   <div class="header" onclick=onclick>
-    <h1 databind=title></h1>
+    <div class="headerContainer"><div databind=text class="headerText"/></div>
+    elements()
   </div>
 }
 
 screen promptString(question : String) : String {
   var answer : String = ""
   header(question)
-  inputs {
-    inputString(answer)
+  group {
+    item { textField(answer) }
   }
   button("Ok", onclick={ screen return answer; })
-}
-
-control inputString(s : String, placeholder : String = null, onchange : Callback = null) {
-  <li>
-    <input type="text" placeholder=placeholder databind=s onchange=onchange />
-  </li>
 }
 
 control textField(s : String, placeholder : String = null, onchange : Callback = null) {
@@ -75,44 +57,22 @@ control searchBox(s : String, placeholder : String = null, onsearch : Callback =
   </div>
 }
 
-control inputText(s : String, placeholder : String = null, onchange : Callback = null) {
-  <li>
+control textarea(s : String, placeholder : String = null, onchange : Callback = null) {
     <textarea placeholder=placeholder databind=s onchange=onchange/>
-  </li>
 }
 
-control inputSecret(s : String, placeholder : String = null, onchange : Callback = null) {
-  <li>
-    <input type="password" placeholder=placeholder databind=s onchange=onchange/>
-  </li>
-}
-
-control inputNum(i : Num, placeholder : String = null, label : String = null, onchange : Callback = null) {
+control numField(i : Num, placeholder : String = null, label : String = null, onchange : Callback = null) {
   cond(label != null) {
     <span databind=label class="inputLabel" />
   }
   <input type="text" placeholder=placeholder databind=i onchange=onchange class=label != null ? "labelled" : ""/>
 }
 
-control inputs() {
-  <ul>
-    elements()
-  </ul>
-}
-
-control checkbox(b : Bool, label : String = "") {
+control checkBox(b : Bool, label : String = "") {
   <span onclick={ b = b ? false : true; }>
     <img src=b ? "mobl/ui/ios/checkbox-checked.png" : "mobl/ui/ios/checkbox.png" class="checkbox" />
     <span databind=label/>
   </span>
-}
-
-control inputCheckbox(b : Bool, onchange : Callback = null, onclick : Callback = {}) {
-  <input type="checkbox" databind=b onchange=onchange />
-}
-
-control outputCheckbox(b : Bool) {
-  <input type="checkbox" databind=b disabled="disabled" />
 }
 
 control basicView(title : String, toolBar : Control = control{}) {
@@ -159,7 +119,7 @@ control image(url : String, onclick : Callback = null) {
 }
 
 control button(text : String, onclick : Callback = null) {
-  <a href="javascript:void(0)" class="redButton" databind=text onclick=onclick></a>
+  <span class="button" databind=text onclick=onclick/>
 }
 
 control altButton(text : String, onclick : Callback = null) {
@@ -167,11 +127,7 @@ control altButton(text : String, onclick : Callback = null) {
 }
 
 control sideButton(text : String, onclick : Callback = null) {
-  <a href="javascript:void(0)" class="button" databind=text onclick=onclick></a>
-}
-
-control topRightButton(text : String, onclick : Callback = null) {
-  <a href="javascript:void(0)" class="topRightButton" databind=text onclick=onclick></a>
+  <span class="sideButton" databind=text onclick=onclick/>
 }
 
 control backButton(text : String, onclick : Callback = null) {
@@ -183,10 +139,9 @@ control toolbarButton(type : String, onclick : Callback = null) {
 }
 
 @doc "A tabset, takes a list of tuples as argument, e.g. [(\"Tab 1\", \"icon url\", tab1), (\"Tab 2\", \"icon uri\", tab2)] where tab1 and tab2 are controls with no arguments"
-control tabset(tabs : List<Tuple3<String, String, Control>>) {
+control tabset(tabs : Array<Tuple3<String, String, Control>>) {
   var activeTabName : String = tabs.get(0)._1
 
-  header(activeTabName, onclick={ scrollTop(); })
   list((tabName, tabIcon, tabControl) in tabs) {
     <div class=activeTabName == tabName ? "activeTab" : "inActiveTab">
       <div id="scrollwrapper">
@@ -201,40 +156,50 @@ control tabset(tabs : List<Tuple3<String, String, Control>>) {
     list((tabName, tabIcon, tabControl) in tabs) {
       <div onclick={ activeTabName = tabName; updateScrollers(); } class=activeTabName == tabName ? "activeTabButton" : "inActiveTabButton">
         <img src=tabIcon width="25" height="25"/><br/>
-        outputString(tabName)
+        label(tabName)
       </div>
     }
   </div>
 }
 
-@doc "A tabset, takes a list of tuples as argument, e.g. [(\"Tab 1\", \"icon url\", tab1), (\"Tab 2\", \"icon uri\", tab2)] where tab1 and tab2 are controls with no arguments"
-control tabsetCustomHeaders(tabs : List<Tuple4<String, String, Control, Control>>) {
-  var activeTabName : String = tabs.get(0)._1
+resource mobl/ui/generic/contextmenu.png
 
-  list((tabName, tabIcon, headerControl, tabControl) in tabs) {
-    <div class=activeTabName == tabName ? "activeTab" : "inActiveTab">
-      headerControl()
-    </div>
-  }
-  list((tabName, tabIcon, headerControl, tabControl) in tabs) {
-    <div class=activeTabName == tabName ? "activeTab" : "inActiveTab">
-      <div id="scrollwrapper">
-        <div id="content">
-          tabControl()
-        </div>
-      </div>
-    </div>
-  }
+external control contextMenu()
 
-  <div id="tabbar">
-    list((tabName, tabIcon, headerControl, tabControl) in tabs) {
-      <div onclick={ activeTabName = tabName; updateScrollers(); } class=activeTabName == tabName ? "activeTabButton" : "inActiveTabButton">
-        <img src=tabIcon width="25" height="25"/><br/>
-        outputString(tabName)
-      </div>
+<javascript>
+mobl.ui.ios.contextMenu = function(elements, callback) {
+  var root = $("<span>");
+  var img = $("<img src='mobl/ui/generic/contextmenu.png' style='float: right;'/>");
+  root.append(img);
+
+  img.tap(function(event) {
+    var target = img.parent();
+    var item = $("<div class='contextMenu'>");
+    img.fadeOut();
+    item.css('right', "0");
+    item.css('top', target.position().top + 8 + "px");
+    elements(function(elements, callback) {
+      var root5175 = $("<span>");
+      callback(root5175); return;
+    }, function(node) { item.append(node); });
+    target.append(item);
+    item.hide().fadeIn();
+    function removeMenu() {
+      item.fadeOut().remove();
+      img.show();
+      $("body").unbind('click', removeMenu);
+      $("body").unbind('touchstart', removeMenu);
     }
-  </div>
-}
+    setTimeout(function() {
+      //document.addEventListener('click', removeMenu, false);
+      $("body").bind('click', removeMenu);
+      $("body").bind('touchstart', removeMenu);
+    }, 0);
+  });
+
+  callback(root);
+};
+</javascript>
 
 <javascript>
 mobl.scrollTop = function() {

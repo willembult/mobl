@@ -10,8 +10,8 @@ load mobl/ui/generic/touchscroll.css
 resource mobl/ui/generic/arrow.png
 resource mobl/ui/generic/contextmenu.png
 
-control header(text : String) {
-  <div class="header">
+control header(text : String, onclick : Callback = null) {
+  <div class="header" onclick=onclick>
     <div class="headerContainer"><div databind=text class="headerText"/></div>
     elements()
   </div>
@@ -19,6 +19,10 @@ control header(text : String) {
 
 control button(text : String, onclick : Callback = null) {
   <span class="button" onclick=onclick databind=text/>
+}
+
+control sideButton(text : String, onclick : Callback = null) {
+  <span class="sideButton" onclick=onclick databind=text/>
 }
 
 control backButton(text : String, onclick : Callback = null) {
@@ -63,60 +67,61 @@ control float(side : String = "right", distance : Num = 0) {
   </span>
 }
 
-external sync function handlePopClick() : void
 
-external control popOnItem(items : Control)
+@doc "A tabset, takes a list of tuples as argument, e.g. [(\"Tab 1\", \"icon url\", tab1), (\"Tab 2\", \"icon uri\", tab2)] where tab1 and tab2 are controls with no arguments"
+control tabset(tabs : Array<Tuple3<String, String, Control>>) {
+  var activeTabName : String = tabs.get(0)._1
+
+  <div class="tabbar">
+    list((tabName, tabIcon, tabControl) in tabs) {
+      <span onclick={ activeTabName = tabName; } class=activeTabName == tabName ? "tab activeTabButton" : "tab inActiveTabButton">
+        label(tabName)
+      </span>
+    }
+  </div>
+  list((tabName, tabIcon, tabControl) in tabs) {
+    <div class=activeTabName == tabName ? "activeTab" : "inActiveTab">
+      tabControl()
+    </div>
+  }
+}
+
+// CONTEXT MENU
+
+external control contextMenu()
 
 <javascript>
-mobl.ui.generic.handlePopClick = function(event) {
-};
-
-mobl.ui.generic.popOnItem = function(items, elements, callback) {
-  var root5174 = $("<span>");
-  var node3279 = $("<li class=\"item\">");
-
-  var nodes2692 = $("<span>");
-  node3279.append(nodes2692);
-  ref(elements).addEventListener('change', function() {
-    renderControl1335();
-  });
+mobl.ui.generic.contextMenu = function(elements, callback) {
+  var root = $("<span>");
   var img = $("<img src='mobl/ui/generic/contextmenu.png' style='float: right;'/>");
-  node3279.append(img);
+  root.append(img);
 
   img.tap(function(event) {
-    var target = node3279;
+    var target = img.parent();
+    img.hide();
     var item = $("<div class='contextMenu'>");
-    //item.css('left', (target.offset().left + target.width()/2 - 100) + "px");
     item.css('right', "5px");
-    item.css('top', target.offset().top+8 + "px");
-    items.get()(function(elements, callback) {
+    item.css('top', target.position().top+6 + "px");
+    elements(function(elements, callback) {
       var root5175 = $("<span>");
       callback(root5175); return;
     }, function(node) { item.append(node); });
-    $("body").append(item);
+    target.append(item);
     item.hide().fadeIn();
     function removeMenu() {
-      item.fadeOut().remove();
-      $("body").unbind('click', arguments.callee);
+      setTimeout(function() {
+        item.remove();
+        img.show();
+        $("body").unbind('click touchstart', removeMenu);
+      }, 400);
     }
     setTimeout(function() {
-      $("body").bind('click', removeMenu);
-    }, 200);
+      //document.addEventListener('click', removeMenu, false);
+      $("body").bind('click touchstart', removeMenu);
+    }, 0);
   });
 
-  function renderControl1335() {
-    (elements)(function(elements, callback) {
-      var root5175 = $("<span>");
-      callback(root5175); return;
-    }, function(node) {
-      var oldNodes = nodes2692;
-      nodes2692 = node.contents();
-      oldNodes.replaceWith(nodes2692);
-    });
-  }
-  renderControl1335();
-  root5174.append(node3279);
-  callback(root5174); return;
+  callback(root);
 };
 </javascript>
 
