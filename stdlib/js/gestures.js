@@ -74,8 +74,7 @@ $.event.special.swipe = {
 
 function NoClickDelay (el, callback) {
     this.element = el;
-    if (window.Touch)
-        this.element.addEventListener('touchstart', this, false);
+    this.element.addEventListener('touchstart', this, false);
     this.callback = callback;
 }
 
@@ -97,19 +96,27 @@ NoClickDelay.prototype = {
     onTouchStart: function (e) {
         e.preventDefault();
         this.moved = false;
-
+        console.log("Starting...");
         this.element.addEventListener('touchmove', this, false);
         this.element.addEventListener('touchend', this, false);
+        this.touchStartY = e.touches[0].pageY;
+        this.touchStartX = e.touches[0].pageX;
     },
 
     onTouchMove: function (e) {
-        this.moved = true;
+        console.log("Moving");
+        var topDelta = e.touches[0].pageY - this.touchStartY;
+        var leftDelta = e.touches[0].pageX - this.touchStartX;
+        if(Math.abs(topDelta) > 5 || Math.abs(leftDelta) > 5) {
+            this.moved = true;
+        }
     },
 
     onTouchEnd: function (e) {
         this.element.removeEventListener('touchmove', this, false);
         this.element.removeEventListener('touchend', this, false);
 
+        console.log("The end");
         if (!this.moved) {
             this.callback(e);
         }

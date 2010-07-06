@@ -97,6 +97,8 @@ mobl.ui.generic.contextMenu = function(elements, callback) {
   root.append(img);
 
   img.tap(function(event) {
+    event.stopPropagation();
+    event.preventDefault();
     var target = img.parent();
     img.hide();
     var item = $("<div class='contextMenu'>");
@@ -107,18 +109,17 @@ mobl.ui.generic.contextMenu = function(elements, callback) {
       callback(root5175); return;
     }, function(node) { item.append(node); });
     target.append(item);
-    item.hide().fadeIn();
+    //item.hide().fadeIn();
     function removeMenu() {
       setTimeout(function() {
         item.remove();
         img.show();
-        $("body").unbind('click touchstart', removeMenu);
-      }, 400);
+        $("body").unbind('touchstart click', removeMenu);
+      }, 500);
     }
-    setTimeout(function() {
-      //document.addEventListener('click', removeMenu, false);
-      $("body").bind('click touchstart', removeMenu);
-    }, 0);
+    //setTimeout(function() {
+    $("body").bind('touchstart click', removeMenu);
+    //}, 0);
   });
 
   callback(root);
@@ -181,6 +182,16 @@ control scroller(height : Num = 200) {
 setTimeout(function() {
   scrollTo(0, -1);
 }, 250);
+
+jQuery.fn.tap = function (callback) {
+  console.log("New style tap: ");
+    if(mobl.isIphone() || mobl.isAndroid() || mobl.isIpad()) {
+      new NoClickDelay(this[0], callback);
+    } else {
+     this.click(callback);
+    }
+};
+
 
 mobl.ui.generic.scrollUp = function() {
   scrollTo(0, 0);

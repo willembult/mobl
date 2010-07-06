@@ -27,7 +27,7 @@ strategies
     (?Module(qid, def*) <+ ?Application(qid, _, def*))
     ; entities := <filter(?Entity(_, _, _, _))> def*
     ; rest := <filter(not(?Entity(_, _, _, _) <+ ?Import(_)))> def*
-    ; to-import := <collect(?QId(<id>, _); not(?qid))> def*
+    ; to-import := <filter(not(?Import(_))); collect-om(?QId(<id>, _)); filter(not(?qid))> def*
     ; <map(import-to-js)> to-import
     ; <entities-to-js> entities
     ; <filter(definition-to-js)> rest
