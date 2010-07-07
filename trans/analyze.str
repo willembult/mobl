@@ -42,16 +42,15 @@ rules
   import-all =
     alltd(import-module)
 
-  import-module =
-    ?Import(qid)
-    ; (<ParsedAndImported> qid
-       ; rules ( Imports :+= qid )
-    <+ rules ( ParsedAndImported : qid )
-     //; debug(!"Importing: ")
-     ; where(<open-import(\ path -> <resolve-file> <concat-strings> [path, ".mobl"] \, parse-file, externalize-module)> <qid-to-path> qid
+  import-module :
+    Import(qid) -> Import(qid)
+    where (<ParsedAndImported> qid
+           ; rules ( Imports :+= qid )
+        <+ rules ( ParsedAndImported : qid )
+         ; where(<open-import(\ path -> <resolve-file> <concat-strings> [path, ".mobl"] \, parse-file, externalize-module)> <qid-to-path> qid
              ; <declare-all> Module(qid, <id>))
-     ; rules ( Imports :+= qid )
-      )
+         ; rules ( Imports :+= qid )
+           )
 
   compile-import-module =
     ?QId(qid, _)
@@ -70,6 +69,10 @@ rules
      ; where(<open-import(\ path -> <resolve-file> <concat-strings> [path, ".mobl"] \, parse-file, externalize-module)> <qid-to-path> qid
              ; <declare-all> Module(qid, <id>))
       )
+
+  get-module-defs :
+    qid -> def*
+    with def* := <open-import(\ path -> <resolve-file> <concat-strings> [path, ".mobl"] \, parse-file, externalize-module)> <qid-to-path> qid
 
   externalize-module :
     Module(qid, def*) -> def2*

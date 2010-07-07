@@ -83,6 +83,7 @@ mobl.call = function (screenName, args, callback) {
         mobl.screenStack.pop();
         if (mobl.screenStack.length > 0) {
             var previousScreen = mobl.screenStack[mobl.screenStack.length - 1];
+            /* Sliding code
             $("body > #" + screenFrame.div).hide('slide', {
                 direction: "right"
             }, 100, function () {
@@ -94,6 +95,10 @@ mobl.call = function (screenName, args, callback) {
             $("body > #" + previousScreen.div).show('slide', {
                 direction: "left"
             }, 100);
+            */
+            var n = $("body > #" + screenFrame.div).remove();
+            mobl.delayedUpdateScrollers();
+            $("body > #" + previousScreen.div).show();
             scrollTo(0, previousScreen.pageYOffset);
             /*
             var old = $("body > #" + screenFrame.div);
@@ -120,17 +125,20 @@ mobl.call = function (screenName, args, callback) {
         node.addClass('screen');
         node.attr('style', "position: absolute; left: 0; top: 0; width: 100%;");
         var body = $("body");
-
         if (mobl.screenStack.length > 1) {
             var previousScreen = mobl.screenStack[mobl.screenStack.length - 2];
             //node.addClass('righthidden');
             previousScreen.pageYOffset = window.pageYOffset;
+            /* Slide code
             $("body > #" + previousScreen.div).hide('slide', {
                 direction: "left"
             }, 100);
             node.hide().prependTo(body).show('slide', {
                 direction: "right"
             }, 100);
+            */
+            $("body > #" + previousScreen.div).hide();
+            node.prependTo(body);
             scrollTo(0, 0);
             /*
             $("body > #" + previousScreen.div).addClass('hidden');

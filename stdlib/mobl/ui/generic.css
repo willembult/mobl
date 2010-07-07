@@ -159,6 +159,10 @@ li.item {
   margin-bottom: -1px;
   padding: 12px 10px;
   text-decoration: none;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 li.itemArrow {
@@ -175,6 +179,10 @@ li.itemArrow {
   background-image: url(generic/arrow.png);
   background-position: right center;
   background-repeat: no-repeat;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 div.contextMenu {

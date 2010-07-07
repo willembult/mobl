@@ -1,20 +1,32 @@
 application stack
 
 import mobl
-import mobl::ui::ios
+import mobl::ui
 
 screen root() {
-  script {
+  /*script {
     async {
       StackOverflow.questions(answers=true, body=true);
     }
-  }
+  }*/
   header("Stack overflow")
   group {
     list(q in Question.all()) {
-      itemArrow(onclick={ showQuestion(q); }) { label(q.title) }
+      itemArrow(onclick={ showQuestion(q); }) {
+        float(side="left", distance=10) {
+          roundedLabel(q.score, bgcolor="green")
+        }
+        float(side="right", distance=10) {
+          roundedLabel(q.answerCount, bgcolor="#ccc")
+        }
+        label(q.title)
+      }
     }
   }
+}
+
+control roundedLabel(s : String, color : String = "white", bgcolor : String = "gray") {
+  <span databind=s style="-moz-border-radius: 5px;  -webkit-border-radius: 5px; background-color: " + bgcolor + "; color: " + color + "; padding: 2px 4px 2px 4px; margin: 0 3px 0 3px;"/>
 }
 
 control text() {
@@ -24,8 +36,9 @@ control text() {
 }
 
 screen showQuestion(q : Question) {
-  header(q.title.substr(0, 15) + "...")
-  backButton("Back", onclick={ screen return; })
+  header(q.title.substr(0, 15) + "...") {
+    backButton("Back", onclick={ screen return; })
+  }
   text {
     html(q.body)
   }
@@ -89,8 +102,10 @@ entity Question {
   title        : String
   body         : Text
   answers      : Collection<Answer> (inverse: question)
+  answerCount  : Num
   upVotes      : Num
   downVotes    : Num
+  score        : Num
   creationDate : DateTime
   owner        : User
 }
@@ -122,14 +137,17 @@ function mapQuestion(remote : RemoteQuestion) : Question {
       answers = mapAnswers(remote.answers),
       upVotes = remote.up_vote_count,
       downVotes = remote.down_vote_count,
+      score = remote.score,
       creationDate = DateTime.fromTimestamp(remote.creation_date),
       owner = mapUser(remote.owner)
     };
+    q.answerCount = q.answers.count();
     add(q);
   } else {
     if(q.answers.count() != remote.answer_count) {
       q.answers.destroyAll();
       q.answers = mapAnswers(remote.answers);
+      q.answerCount = q.answers.count();
     }
   }
   return q;
@@ -181,8 +199,8 @@ function mapQuestionsResult(res : QuestionsResult) : Collection<Question> {
 }
 
 service StackOverflow {
-  root = "http://api.stackoverflow.com/0.8"
-  resource questions(answers : Bool = false, body : Bool = false) : Collection<Question> {
+  root = "http://api.stackoverflow.com/0.9"
+  resource questions(answers : Bool = false, body : Bool = false, pagesize : Num = 20) : Collection<Question> {
     uri = "/questions"
     method = "GET"
     encoding = "json"

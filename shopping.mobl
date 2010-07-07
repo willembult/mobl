@@ -1,7 +1,9 @@
 application shopping
 
+offline true
+
 import mobl
-import mobl::ui
+import mobl::ui::generic
 //import mobl::ui::ios
 
 entity Item {
@@ -49,6 +51,9 @@ control showItems() {
     }
   }
   quickAdd()
+  button("Reset", onclick={
+    resetDatabase();
+  })
 }
 
 control showFavorites() {

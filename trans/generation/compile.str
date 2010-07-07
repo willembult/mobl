@@ -33,7 +33,7 @@ strategies
         ; <mkdirs> parts
 
   compile =
-      (?Module(qid, def*) <+ ?app@Application(qid, _, def*))
+      (?Module(qid, def*) <+ ?app@Application(qid, setting*, def*))
       ; where(<debug(!"Now compiling: ")> qid
               ; rules ( Compiled : qid ))
       ; analyze
@@ -43,7 +43,8 @@ strategies
       ; where(path := <qid-to-path> qid
               ; js-filename   := <concat-strings; guarantee-extension(|"js")> [<OutputPath>, "/", path]
               ; <dirname; ensure-existing-dir> js-filename
-              ; index-html-filename   := <concat-strings; guarantee-extension(|"html")> [<OutputPath>, "/", path])
+              ; index-html-filename   := <concat-strings; guarantee-extension(|"html")> [<OutputPath>, "/", path]
+              ; manifest-filename   := <concat-strings; guarantee-extension(|"manifest")> [<OutputPath>, "/", path])
       ; fp := <fopen> (js-filename, "w")
       ; <fputs> ($[mobl.provides('[<qid-to-js> qid]');
 ], fp)
@@ -55,9 +56,27 @@ strategies
           ; <fputs> (<generate-index-html <+ debug(!"Could not generate index.html")> app, fp2)
           ; <fclose> fp2
           ; <refresh-workspace-file> index-html-filename
+          ; if <fetch(?OfflineSetting(True()))> setting* then
+              fp3 := <fopen <+ debug(!"Could not open file: "); fail> (manifest-filename, "w")
+              ; <fputs> (<generate-manifest <+ debug(!"Could not generate index.html")> <get-all-resources> qid, fp3)
+              ; <fclose> fp3
+              ; <refresh-workspace-file> manifest-filename
+            end
         )
         end
       ; <refresh-workspace-file> js-filename
+
+  get-all-resources :
+    qid -> [$[[<qid-to-path> qid].js], res*, import*]
+    where not(ResourceProcessed)
+    with rules ( ResourceProcessed : qid )
+       ; def* := <get-module-defs> qid
+       ; res* := <filter((?Resource(<id>) <+ ?Load(<id>)); path-to-string)> def*
+       ; import* := <filter(?Import(<id>); get-all-resources); concat> def*
+
+  get-all-resources :
+    qid -> []
+    where ResourceProcessed
 
 strategies
 

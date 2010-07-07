@@ -195,6 +195,11 @@ div.screen ul li {
   margin-bottom: -1px;
   padding: 12px 10px;
   text-decoration: none;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
 }
 
 div.screen ul li.arrow {

@@ -2,16 +2,16 @@ module MoBL-Data
 
 imports
   Common
+  MoBL
 
 exports
 
   context-free syntax
-  
+
     MetaAnno* "entity" QId ":" Type "{" Property* "}"  -> Definition {cons("Entity")}
     MetaAnno* "entity" QId "{" Property* "}"  -> Definition {cons("EntityNoSuper")}
     MetaAnno* ID ":" Type "(" {Anno ","}* ")" -> Property {cons("Property")}
     MetaAnno* ID ":" Type                     -> Property {cons("PropertyNoAnnos")}
     ID                              -> Anno {cons("SimpleAnno")}
     "inverse" ":" ID                -> Anno {cons("InverseAnno")}
-  
-  
+

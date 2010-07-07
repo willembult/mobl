@@ -132,6 +132,12 @@ strategies // convert to externals
   definition-to-external :
     Import(s) -> Import(s)
 
+  definition-to-external :
+    Load(p) -> Load(p)
+
+  definition-to-external :
+    Resource(p) -> Resource(p)
+
   definition-to-external =
     ?c#(_)
     ; where(<string-starts-with(|"External")> c)

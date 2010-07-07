@@ -22,7 +22,7 @@ exports
 
     "title" STRING                   -> Setting {cons("TitleSetting")}
     "database" STRING                -> Setting {cons("DatabaseSetting")}
-    "moblapp" STING                  -> Setting {cons("MoblAppId")}
+    "offline"  Exp                   -> Setting {cons("OfflineSetting")}
 
     "import" QId                   -> Definition {cons("Import")}
     "load" Path                    -> Definition {cons("Load")}

@@ -7,6 +7,10 @@ module mobl::ui
 
 import mobl
 
+// Imports are just for resource copying
+import mobl::ui::ios
+import mobl::ui::generic
+
 // Basics
 external control header(text : String, onclick : Callback = null)
 external control button(text : String, onclick : Callback = null)
@@ -27,6 +31,15 @@ external control numField(n : Num, placeholder : String = null, onchange : Callb
 @doc "A tabset, takes a list of tuples as argument, e.g. [(\"Tab 1\", \"icon url\", tab1), (\"Tab 2\", \"icon uri\", tab2)] where tab1 and tab2 are controls with no arguments"
 external control tabSet(tabs : Array<Tuple3<String, String, Control>>)
 external control contextMenu()
+
+
+// Non-specific
+
+control float(side : String = "right", distance : Num = 0) {
+  <span class="float" style="float: " + side + "; " + (side == "left" ? "margin-left: " + distance + "px;" : "margin-right: " + distance + "px;" )>
+    elements()
+  </span>
+}
 
 <javascript>
 if(mobl.isIphone() || mobl.isIpad()) {

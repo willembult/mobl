@@ -59,6 +59,8 @@ strategies
           ; rules (
               CachedImport : path -> defs
             )
+        else
+          defs := <CachedImport> path
         end
       end
 

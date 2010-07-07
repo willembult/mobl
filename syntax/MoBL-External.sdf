@@ -1,6 +1,8 @@
 module MoBL-External
 
-imports Common
+imports
+  Common
+  MoBL
 
 exports
 
