@@ -116,32 +116,14 @@ public class MoblEditorWizard extends Wizard implements INewWizard {
         project.open(null);
         monitor.worked(1);
 
-        // agent.setWorkingDir(project.getLocation().toOSString());
-        String plugindir = mobl.MoblEditorWizard.class.getProtectionDomain().getCodeSource().getLocation().getFile();
-        if (Platform.getOS().equals(Platform.OS_WIN32)) { // FIXME: proper paths
-            // on Windows
-            plugindir = plugindir.substring(1);
-        }
-        /*
-         * if (!jar1.endsWith(".jar")) { // ensure correct jar at development
-         * time String jar1a = jar1 + "/../strategoxt.jar"; if (new
-         * File(jar1a).exists()) jar1 = jar1a; jar1a = jar1 +
-         * "/java/strategoxt.jar"; if (new File(jar1a).exists()) jar1 = jar1a; }
-         */
-        System.out.println("path: " + plugindir);
-
         try {
-            monitor.setTaskName("Copying runtime");
-            
-        	String wwwDir = project.getLocation().toString() + "/www/lib";
-        	createDirs(wwwDir);
-            copyDirectory(new File(plugindir+"www/lib"), new File(wwwDir));
-            
+
             monitor.setTaskName("Generating default app");
             StringBuilder sb = new StringBuilder();
             sb.append("application " + appName + "\n");
             sb.append("\n");
             sb.append("import mobl\n");
+            sb.append("import mobl::ui::generic\n");
             sb.append("\n");
             sb.append("screen root() {\n");
             sb.append("\theader(\"" + appName + "\")\n");

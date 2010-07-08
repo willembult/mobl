@@ -23,6 +23,7 @@ rules
     (?Module(qid, def*) <+ ?Application(qid, _, def*))
     ; {| ModuleName, Imports
        : rules ( ModuleName := qid )
+       ; ensure-mobl-import
        ; import-all
        ; normalize-all
        ; alltd(origin-track-forced(add-tl-namespace))
@@ -39,6 +40,22 @@ rules
          //; debug
        |}
 
+  ensure-mobl-import :
+    Module(qid, def*) -> Module(qid, def2*)
+    where if <fetch(?Import("mobl"))> def* then
+            def2* := def*
+          else
+            def2* := [Import("mobl")|def*]
+          end
+
+  ensure-mobl-import :
+    Application(qid, setting*, def*) -> Application(qid, setting*, def2*)
+    where if <fetch(?Import("mobl"))> def* then
+            def2* := def*
+          else
+            def2* := [Import("mobl")|def*]
+          end
+
   import-all =
     alltd(import-module)
 
@@ -51,6 +68,10 @@ rules
              ; <declare-all> Module(qid, <id>))
          ; rules ( Imports :+= qid )
            )
+
+  compile-import-module :
+    Import(qid) -> Import(qid)
+    where <compile-import-module> QId(qid, "whatever")
 
   compile-import-module =
     ?QId(qid, _)
