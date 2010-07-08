@@ -75,7 +75,7 @@ mobl.call = function (screenName, args, callback) {
         "name": screenName,
         "args": args,
         "callback": callback,
-        "div": screenName.replace('.', '__') + mobl.screenStack.length
+        "div": screenName.replace(/\./g, '__') + mobl.screenStack.length
     };
     mobl.screenStack.push(screenFrame);
     var callbackFn = function () {
@@ -96,7 +96,7 @@ mobl.call = function (screenName, args, callback) {
                 direction: "left"
             }, 100);
             */
-            var n = $("body > #" + screenFrame.div).remove();
+            $("body > #" + screenFrame.div).remove();
             mobl.delayedUpdateScrollers();
             $("body > #" + previousScreen.div).show();
             scrollTo(0, previousScreen.pageYOffset);

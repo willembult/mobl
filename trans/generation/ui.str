@@ -308,9 +308,9 @@ rules
       var [list];
       var [renderList] = function() {
         [list] = [<expression-to-js> e];
-        [list].list(null, function(results) {
+        [list].list(null, function([results]) {
           [node].empty();
-          for(var [i] = 0; [i] < results.length; [i]++) {
+          for(var [i] = 0; [i] < [results].length; [i]++) {
             (function() {
               var [iternode] = $("<span>");
               [node].append([iternode]);
@@ -336,8 +336,9 @@ rules
        ; i := <newname> "i"
        ; renderList := <newname> "renderList"
        ; list := <newname> "list"
+       ; results := <newname> "results"
        ; vardecls := <map(!$[var [<id>]; ]); concat-strings> <lvalue-vars> lvalue
-       ; assigns := <desugar-all; (map(statement-to-js); concat-strings <+ statement-to-js)> Assignment(lvalue, Indexer(Var("results"), Var(i)))
+       ; assigns := <desugar-all; (map(statement-to-js); concat-strings <+ statement-to-js)> Assignment(lvalue, Indexer(Var(results), Var(i)))
        ; subscriptions := <hide-anon-controls; collect-all(?MethodCall(_, _, <id>) <+ ?Call(_, _)); find-watchable-expressions; map(exp-to-watcher-js(|renderList)); concat-strings> e
 
   elems-to-js(|root) :
@@ -370,7 +371,7 @@ rules
     where not(<is-sync> e)*/
 
   elems-to-js(|root) :
-    [VarDecl(x, t, e)|rest] -> <cps-expression(|[$[var [x] = ref(result);
+    [VarDecl(x, t, e)|rest] -> <cps-expression(|[$[var [x] = ref(result__);
                                                    [<elems-to-js(|root)> rest]]])> e
     where not(<is-sync> e)
 
@@ -381,7 +382,7 @@ rules
     where <is-sync> e
 
   elems-to-js(|root) :
-    [DeriveDecl(x, t, e)|rest] -> <cps-expression(|[$[var [x] = ref(result);
+    [DeriveDecl(x, t, e)|rest] -> <cps-expression(|[$[var [x] = ref(result__);
                                                    [subscriptions]
                                                    [<elems-to-js(|root)> rest]]])> e
     where not(<is-sync> e)
@@ -407,7 +408,7 @@ rules
     where not(<is-sync> e)*/
 
   elems-to-js(|root) :
-    [VarDeclInferred(x, e)|rest] -> <cps-expression(|[$[var [x] = ref(result);
+    [VarDeclInferred(x, e)|rest] -> <cps-expression(|[$[var [x] = ref(result__);
                                                         [subscriptions]
                                                         [<elems-to-js(|root)> rest]]])> e
     where not(<is-sync> e)

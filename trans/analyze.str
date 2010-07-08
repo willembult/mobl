@@ -42,7 +42,7 @@ rules
 
   ensure-mobl-import :
     Module(qid, def*) -> Module(qid, def2*)
-    where if <fetch(?Import("mobl"))> def* then
+    where if <"mobl" := qid <+ fetch(?Import("mobl"))> def* then
             def2* := def*
           else
             def2* := [Import("mobl")|def*]
@@ -50,7 +50,7 @@ rules
 
   ensure-mobl-import :
     Application(qid, setting*, def*) -> Application(qid, setting*, def2*)
-    where if <fetch(?Import("mobl"))> def* then
+    where if <"mobl" := qid <+ fetch(?Import("mobl"))> def* then
             def2* := def*
           else
             def2* := [Import("mobl")|def*]

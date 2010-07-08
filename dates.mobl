@@ -38,8 +38,9 @@ function displayLocationAndReturn() : mobl::location::Coordinates {
 }
 
 screen root() {
-  header("People")
-  topRightButton("Add", onclick={ addPerson(); })
+  header("People") {
+    button("Add", onclick={ addPerson(); })
+  }
   group {
     list(p in Person.all()) {
       itemArrow(onclick={personDates(p); }) { label(p.name) }
@@ -50,16 +51,17 @@ screen root() {
 
 screen addPerson() {
   var p = Person{ birthday = now() }
-  header("Add person")
-  topRightButton("Done", onclick={
-    add(p);
-    screen return;
-  })
-  inputs {
-    inputString(p.name, placeholder="Name")
+  header("Add person") {
+    button("Done", onclick={
+      add(p);
+      screen return;
+    })
   }
   group {
-    datePicker(p.birthday)
+    textField(p.name, placeholder="Name")
+  }
+  group {
+    item { datePicker(p.birthday) }
   }
 }
 
@@ -78,8 +80,9 @@ function daysUntil(daysOld : Num, persons : Collection<Person>) : Num {
 }
 
 screen allDates() {
-  header("Group")
+  header("Group") {
   backButton("Back", onclick={ screen return; })
+  }
   table {
     row {
       cell{ <b>"Days"</b> }
