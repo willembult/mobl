@@ -122,8 +122,7 @@ public class MoblEditorWizard extends Wizard implements INewWizard {
             StringBuilder sb = new StringBuilder();
             sb.append("application " + appName + "\n");
             sb.append("\n");
-            sb.append("import mobl\n");
-            sb.append("import mobl::ui::generic\n");
+            sb.append("import mobl::ui\n");
             sb.append("\n");
             sb.append("screen root() {\n");
             sb.append("\theader(\"" + appName + "\")\n");
