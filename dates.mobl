@@ -50,7 +50,7 @@ screen root() {
 }
 
 screen addPerson() {
-  var p = Person{ birthday = now() }
+  var p = Person(birthday = now())
   header("Add person") {
     button("Done", onclick={
       add(p);

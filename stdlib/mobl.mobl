@@ -2,16 +2,16 @@ module mobl
 
 // Runtime Javascript files to be copied to www/
 resource js/gears_init.js
-resource js/gestures.js
-resource js/iscroll.js
 resource js/jquery-1.4.min.js
 resource js/jquery-ui-1.7.2.custom.min.js
+resource js/persistence.js
+resource js/persistence.search.js
+resource js/gestures.js
+resource js/iscroll.js
 resource js/mobl.event.js
 resource js/mobl.load.js
 resource js/mobl.orientation.js
 resource js/mobl.util.js
-resource js/persistence.js
-resource js/persistence.search.js
 resource mobl/loading.gif
 
 /**
@@ -174,7 +174,7 @@ mobl.isPortrait = function() { return window.innerHeight >= window.innerWidth; }
 @doc "Injects given HTML directly into the screen"
 external control html(html : String)
 
-control label(s : String, onclick : Callback = null) {
+control label(s : Object, onclick : Callback = null) {
   <span databind=s onclick=onclick></span>
 }
 

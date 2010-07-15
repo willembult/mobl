@@ -4,10 +4,21 @@ imports
   include/MoBL
   rename
   lookup
+  desugar
 
 strategies
 
   type-of = eq-type-of <+ ?Var(<id>); TypeOf
+
+  type-of-lvalue :
+    s -> <type-of> Var(s)
+    where is-string
+
+   type-of-lvalue :
+     LFieldAccess(e, x) -> <type-of> FieldAccess(e, x)
+
+   type-of-lvalue :
+     LTuple(fst, rest*) -> <type-of> Tuple(fst, rest*)
 
   eq-type-of :
     Num(_) -> SimpleType(QId("mobl", "Num"))
@@ -22,7 +33,7 @@ strategies
     False() -> SimpleType(QId("mobl", "Bool"))
 
   eq-type-of :
-    Null() -> SimpleType(QId("mobl", "Object"))
+    Null() -> SimpleType(QId("mobl", "Nothing"))
 
   eq-type-of :
     Callback(_) -> SimpleType(QId("mobl", "Callback"))
@@ -42,7 +53,7 @@ strategies
         ; t* := <map(type-of)> [fst|rest*]
 
   eq-type-of :
-    List([e|_]) -> GenericType(QId("mobl", "List"), [t])
+    List([e|_]) -> GenericType(QId("mobl", "Array"), [t])
     where t := <type-of> e
 
   eq-type-of :
@@ -55,6 +66,10 @@ strategies
   eq-type-of :
     Call(qid, e*) -> rt
     where ExternalScreen(_, _, _, rt) := <lookup-screen> qid
+
+  eq-type-of :
+    Call(qid, e*) -> SimpleType(qid)
+    where ExternalEntity(_, _, _, _) := <lookup-type> SimpleType(qid)
 
   eq-type-of :
     Call(qid, e*) -> rt
@@ -85,6 +100,10 @@ strategies
     farg* -> GenericType(QId("mobl", $[Control[n]]), t*)
     where t* := <map(?FArg(_, <id>) <+ ?FArgOptional(_, <id>, _))> farg*
         ; n := <length> t*
+        ; not([] := farg*)
+
+  fargs-to-control-type :
+    [] -> SimpleType(QId("mobl", $[Control]))
 
   eq-type-of :
     MethodCall(e, x, e*) -> rt
@@ -105,4 +124,26 @@ strategies
     ?(t, t)
 
   type-compatible =
+    ?(SimpleType(QId("mobl", "Dynamic")), t)
+
+  type-compatible =
+    ?(t, SimpleType(QId("mobl", "Dynamic")))
+
+  type-compatible =
+    ?(t, SimpleType(QId("mobl", "Nothing")))
+
+  type-compatible =
+    ?(GenericType(x, t1*), GenericType(x, t2*))
+    ; <zip(type-compatible)> (t1*, t2*)
+
+  type-compatible =
     ?(t1, t2)
+    ; ExternalType(_, _, super-t, _) := <lookup-type> t2
+    ; <not(eq)> (super-t, t2)
+    ; <type-compatible> (t1, super-t)
+
+  type-compatible =
+    ?(t1, t2)
+    ; ExternalEntity(_, _, _, _) := <lookup-type> t2
+    ; <type-compatible> (t1, GenericType(QId("mobl", "Entity"), [t2]))
+

@@ -108,6 +108,12 @@ rules
         ; [qid2] := <filter({c, newid: ?c; <prefix-qid(|c)> qid; ?newid; lookup-screen-aux; !newid})> [<ModuleName>|<bagof-Imports>]
         ; e2* := <alltd(add-namespace)> e*
 
+  add-namespace :
+    Call(qid, e*) -> Call(qid2, e2*)
+    where not(<lookup-type-aux> SimpleType(qid))
+        ; [qid2] := <filter({c, newid: ?c; <prefix-qid(|c)> qid; ?newid; !SimpleType(newid); lookup-type-aux; !newid})> [<ModuleName>|<bagof-Imports>]
+        ; e2* := <alltd(add-namespace)> e*
+
   prefix-qid(|qid) :
     qid2 -> QId(qid, qid2)
     where is-string

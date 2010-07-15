@@ -11,7 +11,7 @@ builders
 builders
 
   provider : include/mobl.jar
-  provider : include/acoda.jar
+  //provider : include/acoda.jar
 
   observer : editor-analyze
   on save  : generate-artifacts

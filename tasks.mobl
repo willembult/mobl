@@ -28,7 +28,7 @@ screen root() {
 }
 
 screen addTask() {
-  var newTask = Task{ done = false, dueDate=now() }
+  var newTask = Task(done = false, dueDate=now())
   header("Add") {
     backButton("Back", onclick={ screen return; })
   }

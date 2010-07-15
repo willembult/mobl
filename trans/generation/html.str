@@ -6,16 +6,7 @@ imports
   generation/compile
 
 strategies
-
-  generate-index-html :
-    Application(qid, setting*, _) -> $[
-<!DOCTYPE HTML>
-<html [html-manifest]>
-    <head>
-        <title>[<!<un-double-quote> title <+ <qid-to-js> qid>]</title>
-        <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0" />
-        <meta name="apple-mobile-web-app-capable" content="yes" />
-        <meta names="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+/*
         <script src="js/gears_init.js" type="application/x-javascript" charset="utf-8">
         </script>
         <script src="js/jquery-1.4.min.js" type="application/x-javascript" charset="utf-8">
@@ -26,9 +17,8 @@ strategies
         </script>
         <script src="js/persistence.search.js" type="application/x-javascript" charset="utf-8">
         </script>
-        <script type="application/x-javascript" charset="utf-8">
-            persistence.connect('[<!<un-double-quote> dbname <+ <qid-to-js> qid>]', 'mobl database', 5 * 1024 * 1024, '1.0');
-        </script>
+
+
         <script src="js/gestures.js" type="application/x-javascript" charset="utf-8">
         </script>
         <script src="js/mobl.util.js" type="application/x-javascript" charset="utf-8">
@@ -41,7 +31,19 @@ strategies
         </script>
         <script src="js/iscroll.js" type="application/javascript" charset="utf-8">
         </script>
+*/
+  generate-index-html(|res*) :
+    Application(qid, setting*, _) -> $[
+<!DOCTYPE HTML>
+<html [html-manifest]>
+    <head>
+        <title>[<!<un-double-quote> title <+ <qid-to-js> qid>]</title>
+        <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta names="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        [<filter(res-to-script-html)> res*]
         <script type="application/x-javascript" charset="utf-8">
+            persistence.connect('[<!<un-double-quote> dbname <+ <qid-to-js> qid>]', 'mobl database', 5 * 1024 * 1024, '1.0');
             mobl.load('[<qid-to-path> qid].js');
             $(function(){
                 persistence.schemaSync(function(tx) {
@@ -58,6 +60,15 @@ strategies
        ; <filter(?DatabaseSetting(dbname))> setting*
        ; html-manifest := <fetch(?OfflineSetting(True())); !$[manifest="[<qid-to-path> qid].manifest"] <+ !""> setting*
 
+  res-to-script-html :
+    filename -> $[<script src="[filename]" type="application/x-javascript" charset="utf-8"></script>
+]
+    where <string-ends-with(|".js")> filename
+
+  res-to-script-html :
+    filename -> $[<link rel="stylesheet" type="text/css" href="[filename]"/>
+]
+    where <string-ends-with(|".css")> filename
 
   generate-manifest :
     res* -> $[CACHE MANIFEST

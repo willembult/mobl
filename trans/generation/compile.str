@@ -53,12 +53,16 @@ strategies
       ; if !app then
         with(
           fp2 := <fopen <+ debug(!"Could not open file: "); fail> (index-html-filename, "w")
-          ; <fputs> (<generate-index-html <+ debug(!"Could not generate index.html")> app, fp2)
+          ; {| ResourceProcessed
+             : <fputs> (<generate-index-html(|<get-all-resources-no-dynamic> qid) <+ debug(!"Could not generate index.html")> app, fp2)
+             |}
           ; <fclose> fp2
           ; <refresh-workspace-file> index-html-filename
           ; if <fetch(?OfflineSetting(True()))> setting* then
               fp3 := <fopen <+ debug(!"Could not open file: "); fail> (manifest-filename, "w")
-              ; <fputs> (<generate-manifest <+ debug(!"Could not generate index.html")> <get-all-resources> qid, fp3)
+              ; {| ResourceProcessed
+                 : <fputs> (<generate-manifest <+ debug(!"Could not generate index.html")> <get-all-resources> qid, fp3)
+                 |}
               ; <fclose> fp3
               ; <refresh-workspace-file> manifest-filename
             end
@@ -67,12 +71,24 @@ strategies
       ; <refresh-workspace-file> js-filename
 
   get-all-resources :
-    qid -> [$[[<qid-to-path> qid].js], res*, import*]
+    qid -> [res*, import*, $[[<qid-to-path> qid].js]]
+    where not(ResourceProcessed)
+    with rules ( ResourceProcessed : qid )
+       ; def* := <get-module-defs> qid
+       ; res* := <filter((?Resource(<id>) <+ ?Load(<id>)); path-to-string)> def*
+       ; import* := <filter((?Import(<id>) <+ ?DynamicImport(<id>)); get-all-resources); concat> def*
+
+  get-all-resources-no-dynamic :
+    qid -> [res*, import*, $[[<qid-to-path> qid].js]]
     where not(ResourceProcessed)
     with rules ( ResourceProcessed : qid )
        ; def* := <get-module-defs> qid
        ; res* := <filter((?Resource(<id>) <+ ?Load(<id>)); path-to-string)> def*
        ; import* := <filter(?Import(<id>); get-all-resources); concat> def*
+
+  get-all-resources-no-dynamic :
+    qid -> []
+    where ResourceProcessed
 
   get-all-resources :
     qid -> []

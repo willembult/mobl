@@ -24,6 +24,7 @@ exports
     "database" STRING                -> Setting {cons("DatabaseSetting")}
     "offline"  Exp                   -> Setting {cons("OfflineSetting")}
 
+    "dynamic" "import" QId         -> Definition {cons("DynamicImport")}
     "import" QId                   -> Definition {cons("Import")}
     "load" Path                    -> Definition {cons("Load")}
     "resource" Path                -> Definition {cons("Resource")}

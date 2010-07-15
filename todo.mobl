@@ -8,18 +8,18 @@ import mobl::ui::ios
 
 entity Task {
   name        : String (searchable)
-  description : Text   (searchable)
+  description : String (searchable)
   done        : Bool
   date        : DateTime
 }
 
 screen addTask() {
-  var newTask : Task = Task{}
+  var newTask : Task = Task()
 
   backButton("Back", onclick={ screen return; })
   basicView("Add") {
-    inputs {
-      inputString(newTask.name, placeholder="Task name")
+    group {
+      textField(newTask.name, placeholder="Task name")
     }
     button("Add", onclick={
       add(newTask);
@@ -29,11 +29,11 @@ screen addTask() {
 }
 
 screen editTask(t : Task) {
-  topRightButton("Done", onclick={ screen return; })
+  button("Done", onclick={ screen return; })
   basicView("Edit") {
-    inputs {
-      inputString(t.name, placeholder="Task name")
-      inputString(t.description, placeholder="Task description")
+    group {
+      textField(t.name, placeholder="Task name")
+      textField(t.description, placeholder="Task description")
     }
     button("Delete", onclick={
       remove(t);
@@ -45,18 +45,18 @@ screen editTask(t : Task) {
 screen root() {
   control defaultView(t : Task, editing : Bool) {
     item(onswipe={ editing = true; }) {
-      inputCheckbox(t.done, onclick={}) " "
-      outputString(t.name)
+      checkBox(t.done) " "
+      label(t.name)
     }
   }
   control editView(t : Task, editing : Bool) {
     item(onswipe={ editing = false; }) {
-      inputCheckbox(t.done, onclick={}) " "
-      outputString(t.name)
+      checkBox(t.done) " "
+      label(t.name)
       sideButton("Delete", onclick={ remove(t); })
     }
   }
-  topRightButton("Add", onclick={ addTask(); })
+  button("Add", onclick={ addTask(); })
   var searchQuery = ""
   basicView("Tasks") {
     searchBox(searchQuery)

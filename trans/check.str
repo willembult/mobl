@@ -7,6 +7,7 @@ imports
   rename
   desugar
   mobl
+  pp
   generation/compile
 
 rules
@@ -42,6 +43,16 @@ rules
         ; not(<resolve-fargs> (e*, <topdown(try(strip-annos))> farg*))
 
   constraint-error :
+    Call(qid, e*) -> <fargs-type-not-compatible> (farg*, e*)
+    where def := <lookup-function> qid
+        ; (ExternalFunction(_, _, farg*, _) := def <+ ExternalSyncFunction(_, _, farg*, _) := def)
+
+  constraint-error :
+    t@Call(qid, e*) -> (t, $[All arguments of an entity constructors need to be named, e.g. SomeEnt(name="...", age=27).])
+    where ExternalEntity(_, _, _, prop*) := <lookup-type> SimpleType(qid)
+    where not([] := <remove-all(?NamedExp(_, _))> e*)
+
+  constraint-error :
     t@Choice(_, _, _) -> (t, $[Could not determine type of: [<write-to-string> t]])
     where not(type-of)
 
@@ -58,6 +69,10 @@ rules
     ControlCall(e@Var(qid@QId(_, _)), e*, _) -> (e, $[Wrong set  of arguments. Expected arguments are: [<filter(?FArg(<id>, _)); separate-by(!", "); concat-strings> farg*]])
     where ExternalControl(_, _, farg*) := <lookup-control> qid
         ; not(<resolve-fargs> (e*, <topdown(try(strip-annos))> farg*))
+
+  constraint-error :
+    ControlCall(e@Var(qid@QId(_, _)), e*, _) -> <fargs-type-not-compatible> (farg*, e*)
+    where ExternalControl(_, _, farg*) := <lookup-control> qid
 
   constraint-error :
     ControlCall(e@Var(qid@QId(_, _)), e*, _) -> (t, $[Invalid named arguments: [<separate-by(!", "); concat-strings> invalid-args].
@@ -91,9 +106,19 @@ rules
         ; <type-of> e
 
   constraint-error :
+    t@MethodCall(e, x, e*) -> <fargs-type-not-compatible> (farg*, e*)
+    where ExternalMethod(_, _, farg*, _) := <lookup-function> (<type-of> e, x)
+
+  constraint-error :
     Assignment(lhs, e) -> (lhs, $[No such variable '[lhs]' defined])
     where <is-string> lhs
     where not(<type-of> Var(lhs))
+
+  constraint-error :
+    Assignment(lv, e) -> (e, $[Cannot assign an expression of type [<pp-mobl-type> t1] to l-value of type [<pp-mobl-type> t2]])
+    where t1 := <type-of> e
+        ; t2 := <type-of-lvalue> lv
+    where not(<type-compatible> (t2, t1))
 
   constraint-error :
     p@Path(part*) -> (p, $[File not found. Note that paths are relative to the project root.])
@@ -112,6 +137,15 @@ rules
         QId(_, x) := qid
       end
       ; not(<explode-string; Hd; is-upper> x)
+
+
+rules
+
+ fargs-type-not-compatible :
+    (farg*, e*) -> (e, $[Expression should be of type [<pp-mobl-type> t] instead of [<pp-mobl-type> <type-of> e].])
+    where e2* := <resolve-fargs> (e*, <topdown(try(strip-annos))> farg*)
+        ; t* := <map(?FArg(_, <id>) <+ ?FArgOptional(_, <id>, _))> farg*
+        ; (e, t) := <zip; fetch-elem(\ (e, t) -> <id> where <not(type-compatible)> (t, <type-of> e) \)> (e2*, t*)
 
 
 /*  constraint-note:

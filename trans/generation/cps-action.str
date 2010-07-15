@@ -165,6 +165,11 @@ rules
                          [<cps-statements> stat*]]
 
   cps-exp(|stat*) :
+    e@Call(qid, _) -> $[var result__ = [<expression-to-js> e];
+                         [<cps-statements> stat*]]
+    where <lookup-type> SimpleType(qid)
+
+  cps-exp(|stat*) :
     Call(qid, e*) -> <concat-strings> [<qid-to-js> qid, "(", args, ");"]
     where ExternalFunction(_, _, _, _) := <lookup-function> qid
         ; not(<GetScreen> qid)

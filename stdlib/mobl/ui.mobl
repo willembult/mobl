@@ -8,8 +8,8 @@ module mobl::ui
 import mobl
 
 // Imports are just for resource copying
-import mobl::ui::ios
-import mobl::ui::generic
+dynamic import mobl::ui::ios
+dynamic import mobl::ui::generic
 
 // Basics
 external control header(text : String, onclick : Callback = null)

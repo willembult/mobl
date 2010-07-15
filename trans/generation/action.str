@@ -39,9 +39,9 @@ strategies
     qid -> <emit> $[mobl.load('[<qid-to-path> qid].js');
 ]
 
+
   definition-to-js :
-    Load(path@Path(part*)) -> <emit> $[mobl.load('[<path-to-string> path]');
-]
+    Load(path@Path(part*)) -> <emit> $[mobl.load('[<path-to-string> path]');]
     with path-str := <path-to-string> path
        ; <cut-off-last-element; separate-by(|"/"); <concat-strings> [<ProjectPath>, "/www/"|<id>]; ensure-existing-dir> part*
         ; <copy-file> (<resolve-file> path-str, $[[<ProjectPath>]/www/[path-str]])
@@ -244,7 +244,13 @@ rules // Expressions
 
   exp-to-js :
     Call(qid, e*) -> $[[<qid-to-js> qid]([args])]
+    where not(<lookup-type> SimpleType(qid))
     with args := <arguments-to-js; separate-by(!", "); concat-strings> e*
+
+  exp-to-js :
+    Call(qid, named-e*) -> $[new [<qid-to-js> qid]({[propvals]})]
+    where <lookup-type> SimpleType(qid)
+    with propvals := <map(\ NamedExp(x, e) -> $['[x]': [<expression-to-js> e]] \); separate-by(!", "); concat-strings> named-e*
 
   exp-to-js :
     MethodCall(e, x, e*) -> $[[es].[x]([args])]

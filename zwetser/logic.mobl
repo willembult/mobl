@@ -15,7 +15,7 @@ function updateStream() {
 function mapTweet(twupdate : Update) : TwitterUpdate {
   var cached = TwitterUpdate.all().filter("updateId", "=", twupdate.id).one();
   if(cached == null) {
-    var up = TwitterUpdate{
+    var up = TwitterUpdate(
       updateId = twupdate.id,
       screenName = twupdate.user.screen_name,
       iconUrl = twupdate.user.profile_image_url,
@@ -25,7 +25,7 @@ function mapTweet(twupdate : Update) : TwitterUpdate {
       favorite = twupdate.favorited,
       mention = false,
       replyCount = 0
-    };
+    );
     if(twupdate.in_reply_to_status_id) {
        up.conversationRoot = findRoot(twupdate);
        up.conversationRoot.replyCount = up.conversationRoot.replyCount + 1;

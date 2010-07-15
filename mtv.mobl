@@ -48,7 +48,7 @@ control favorites() {
 }
 
 screen root() {
-  tabset([("Search", "lib/toolbar/icon_magnify_glass.png", search), ("Favorites", "lib/toolbar/icon_favorities.png", favorites)])
+  tabSet([("Search", "lib/toolbar/icon_magnify_glass.png", search), ("Favorites", "lib/toolbar/icon_favorities.png", favorites)])
 }
 
 control artistItem(a : Artist) {

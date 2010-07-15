@@ -48,7 +48,7 @@ screen showConversation(update : TwitterUpdate) {
 control tweet(update : TwitterUpdate, onclick : Callback = null) {
   <div class="tweet" onclick=onclick>
    cond(update.replyCount > 0) {
-     float(side="right", distance=20) {
+     floatBox(right=20) {
        <span class="replyCount" databind=update.replyCount/>
      }
    }
