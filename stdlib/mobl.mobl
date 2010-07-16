@@ -288,6 +288,13 @@ persistence.entityDecoratorHooks.push(function(Entity) {
 });
 
 Array.prototype.list = function(tx, callback) {
+  var args = argspec.getArgs(arguments, [
+    {name: 'tx', optional: true, check: function(obj) { return tx.executeSql; } },
+    {name: 'callback', optional: false, check: argspec.isCallback() }
+  ]);
+  tx = args.tx;
+  callback = args.callback;
+
   var valueCopy = [];
   for(var i = 0; i < this.length; i++) {
     valueCopy[i] = this[i];

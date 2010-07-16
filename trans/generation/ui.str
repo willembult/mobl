@@ -308,7 +308,7 @@ rules
       var [list];
       var [renderList] = function() {
         [list] = [<expression-to-js> e];
-        [list].list(null, function([results]) {
+        [list].list(function([results]) {
           [node].empty();
           for(var [i] = 0; [i] < [results].length; [i]++) {
             (function() {

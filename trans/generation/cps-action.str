@@ -105,7 +105,7 @@ strategies
   cps-statements :
     [For(lvalue, _, e, stats)|stat*] ->
       <cps-expression(|[
-        $[[<expression-to-js> e].list(null, function([coll]) {
+        $[[<expression-to-js> e].list(function([coll]) {
             [coll] = [coll].reverse();
             function [processOne]() {
               [vardecls]

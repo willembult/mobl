@@ -112,7 +112,7 @@ mobl.implementInterface = function(sourceModule, targetModule, items) {
 
     Tuple.prototype = new persistence.Observable();
 
-    function List() {
+    /*function List() {
         this.values = [];
         for(var i = 0; i < arguments.length; i++) {
             this.values.push(arguments[i]);
@@ -133,12 +133,16 @@ mobl.implementInterface = function(sourceModule, targetModule, items) {
     };
 
     List.prototype.list = function(tx, callback) {
+        var args = argspec.getArgs(arguments, [
+          {name: 'tx', optional: true, check: function(obj) { return tx.executeSql; } },
+          {name: 'callback', optional: false, check: argspec.isCallback() }
+        ]);
         var valueCopy = [];
         for(var i = 0; i < this.values.length; i++) {
             valueCopy[i] = this.values[i];
         }
         callback(valueCopy);
-    };
+    };*/
 
     function Template(renderFn) {
         this.render = renderFn;
@@ -285,7 +289,7 @@ mobl.implementInterface = function(sourceModule, targetModule, items) {
     };
 
     mobl.Tuple = Tuple;
-    mobl.List = List;
+    //mobl.List = List;
     mobl.LinkedMap = LinkedMap;
     mobl.Reference = Reference;
 }());

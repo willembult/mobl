@@ -220,7 +220,7 @@ rules // Expressions
     where not([] := e*)
 
   exp-to-js :
-    List(e*) -> <concat-strings> ["new mobl.List(", <map(expression-to-js); separate-by(!", "); concat-strings> e*, ")"]
+    List(e*) -> <concat-strings> ["[", <map(expression-to-js); separate-by(!", "); concat-strings> e*, "]"]
 
   /*ref-exp-to-js :
     Var(qid) -> $[ref(scope, '[<qid-to-js> qid]')]
