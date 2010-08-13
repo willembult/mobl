@@ -1,7 +1,7 @@
 A Brief Tutorial
 ----------------
 
-Alright now that we're all set up, let's get moblin'! In this chapter
+Alright, now that we're all set up, let's get moblin'! In this chapter
 we are going to build a simple task manager.
 
 ### A data model
@@ -39,7 +39,7 @@ Modify the definition of the `root` screen as follows:
       }
     }
 
-This definition declares the `root` screen with no arguments. The
+This definition declares a `root` screen with no arguments. The
 screen consists of a number of controls. The first is a `header`
 control that appears as bar along the top of the screen. The `group`
 control groups together a number of `item`s. Rather than enumerating
@@ -59,7 +59,7 @@ to be empty -- we need a screen to add tasks.
 The screen to add a new task looks as follows:
 
     screen addTask() {
-      var newTask = Task { done=false, created=now() }
+      var newTask = Task(done=false, created=now())
       header("Add") {
         button("Done")
       }
@@ -67,3 +67,52 @@ The screen to add a new task looks as follows:
         item { textField(newTask.name) }
       }
     }
+
+This `addTask` screen uses a local variable called `newTask`. It
+initializes that variable with a fresh `Task` object and initializes
+its `done` property to `false` (the task has not yet been completed)
+and `created` property to `now()`, which -- surprisingly -- sets this
+property to the current time. In this screen, the header is used as a
+container, it contains a button that says "Done".  A `textField`
+control for the `name` property of `newTask` is wrapped inside a group
+and item control.
+
+Before we proceed, let's focus on an important concept to understand:
+data binding. The following line defines a `textField` control, and
+passes `newTask.name` to it. However, unlike many programming languages you
+may know we do not pass the _value_ of `newTask.name` to the control;
+instead we pass a _reference_ to it. A reference that enables to control
+to make changes to the `name` property of `newTask`:
+
+    textField(newTask.name)
+
+And this is what a `textField` control will do: whenever the text in
+the text field changes (upon every key press that updates the value),
+the new text value of the text field will be written back to
+`newTask.name`. Similarly, whenever the value `newTask.name` is updated
+from elsewhere, the `textField` will immediately reflect this update.
+This synchronization of data and control is what we call _data
+binding_. Data binding does not only happen with form fields, but with
+other controls as well. For instance, if we choose to pass a string
+_variable_ to the header, rather than a string _literal_, we can change
+the header on the fly. The following lines demonstrate this:
+
+    var headerTitle = "My header";
+    header(headerTitle)
+    group {
+      item { textField(headerTitle) }
+    }
+
+Whenever the user changes the text in the text field, the header will
+immediately reflect this change.
+
+Ok, we now have a screen that instantiates a task and allows to edit
+its `name`, however, there is no way to leave from this screen and the
+created task is not persisted to the database yet. To do that, we need
+to add an `onclick` event to the button, as follows:
+
+    button("Done", onclick={
+      // Your code here
+    })
+
+
