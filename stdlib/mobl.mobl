@@ -99,6 +99,25 @@ external type DateTime {
   sync function getTime() : Num
 }
 
+external type Math {
+  static sync function round(n : Num) : Num
+  static sync function floor(n : Num) : Num
+  static sync function ceil(n : Num) : Num
+  static sync function abs(n : Num) : Num
+  static sync function acos(n : Num) : Num
+  static sync function asin(n : Num) : Num
+  static sync function atan(n : Num) : Num
+  static sync function atan2(n : Num) : Num
+  static sync function cos(n : Num) : Num
+  static sync function exp(n : Num) : Num
+  static sync function log(n : Num) : Num
+  static sync function pow(n1 : Num, n2 : Num) : Num
+  static sync function random() : Num
+  static sync function sin(n : Num) : Num
+  static sync function sqrt(n : Num) : Num
+  static sync function tan(n : Num) : Num
+}
+
 external sync function now() : DateTime
 
 external type Object {
@@ -237,6 +256,8 @@ mobl.DateTime = {
 Date.prototype.toDateString = function() {
   return "" + (this.getMonth()+1) + "/" + this.getDate() + "/" + this.getFullYear();
 };
+
+mobl.Math = Math;
 
 mobl.formatDate = function(date) {
   var diff = (((new Date()).getTime() - date.getTime()) / 1000);
