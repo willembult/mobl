@@ -175,7 +175,7 @@ rules // Statements
        ; length := <newname> "length"
        ; i := <newname> "i"
        ; vardecls := <map(!$[var [<id>]; ]); concat-strings> <lvalue-vars> lvalue
-       ; assigns := <desugar-all; (map(statement-to-js); concat-strings <+ statement-to-js)> Assignment(lvalue, MethodCall(Var(coll), "get", [Var("i")]))
+       ; assigns := <desugar-all; (map(statement-to-js); concat-strings <+ statement-to-js)> Assignment(lvalue, MethodCall(Var(coll), "get", [Var(i)]))
 
 
   stat-to-js :
