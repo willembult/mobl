@@ -86,7 +86,7 @@ rules
 ]
     with elem-root := <newname> "root"
        ; nodes := <newname> "nodes"
-       ; elems-fun := $[function(elements, callback) {
+       ; elems-fun := $[function(_, callback) {
                           var [elem-root] = $("<span>");
                           [<elems-to-js-callback(|elem-root)> elems]
                         }]
