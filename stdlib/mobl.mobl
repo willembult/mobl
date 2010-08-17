@@ -25,6 +25,7 @@ external type String : Object {
   length : Num
 
   sync function substr(start : Num, length : Num) : String
+  sync function slice(start : Num, end : Num) : String
 }
 
 @doc "Numeric type, represents both integers and floating point numbers"
