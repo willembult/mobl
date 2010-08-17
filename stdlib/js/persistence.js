@@ -37,6 +37,13 @@ try {
 }
 
 var persistence = (window && window.persistence) ? window.persistence : {}; 
+
+/**
+ * Check for immutable fields
+ */
+persistence.isImmutable = function(fieldName) {
+	return (fieldName == "id");
+};
  
 /**
  * Default implementation for entity-property 
@@ -54,6 +61,7 @@ persistence.defineProp = function(scope, field, setterCallback, getterCallback) 
  * Default implementation for entity-property setter  
  */
 persistence.set = function(scope, fieldName, value) { 
+    if (persistence.isImmutable(fieldName)) throw "immutable field: "+fieldName;
     scope[fieldName] = value; 
 };
 
@@ -978,7 +986,11 @@ persistence.get = function(arg1, arg2) {
               var ent = new Entity();
               for(var p in instance) {
                 if(instance.hasOwnProperty(p)) {
-                  ent[p] = instance[p];
+                  if (persistence.isImmutable(p)) {
+                    ent[p] = instance[p];  
+                  } else {
+                    persistence.set(ent, p, instance[p])
+                  }  
                 }
               }
               this.add(ent);
@@ -1003,8 +1015,8 @@ persistence.get = function(arg1, arg2) {
       /**
        * Loads data from a JSON string (as dumped by `dumpToJson`)
        * @param tx transaction to use, use `null` to start a new one
-       * @param entities a list of entity constructor functions to serialize, use `null` for all
-       * @param callback (jsonDump) the callback function called with the results.
+       * @param jsonDump JSON string
+       * @param callback the callback function called when done.
        */
       persistence.loadFromJson = function(tx, jsonDump, callback) {
         this.load(tx, JSON.parse(jsonDump), callback);
