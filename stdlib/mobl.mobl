@@ -22,6 +22,7 @@ external type void {}
 
 @doc "String type"
 external type String : Object {
+  length : Num
   sync function substr(start : Num, length : Num) : String
   sync function slice(start : Num, end : Num) : String
 }
