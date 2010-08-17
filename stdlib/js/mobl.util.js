@@ -279,8 +279,8 @@ mobl.implementInterface = function(sourceModule, targetModule, items) {
                     }
                 });
             } else {
-                console.log("Could not rebind for: " + this.prop);
-                console.log(this.ref.get());
+                //console.log("Could not rebind for: " + this.prop);
+                //console.log(this.ref.get());
             }
         }
         for(var i = 0; i < this.childRefs.length; i++) {

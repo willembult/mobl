@@ -328,6 +328,7 @@ rules
       };
       [renderList]();
       [list].addEventListener('change', function() { [renderList](true); });
+      [<ref-expression-to-js> e].addEventListener('change', function() { [renderList](true); });
       [subscriptions]
       [<elems-to-js(|root)> rest*]
     ]
