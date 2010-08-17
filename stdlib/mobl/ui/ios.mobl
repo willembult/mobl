@@ -23,6 +23,7 @@ resource mobl/ui/ios/sw-slot-border.png
 resource mobl/ui/ios/tabbg.png
 resource mobl/ui/ios/whiteButton.png
 resource mobl/ui/ios/search.png
+resource mobl/ui/ios/empty.png
 
 load mobl/ui/ios.css
 
