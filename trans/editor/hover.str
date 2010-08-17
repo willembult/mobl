@@ -36,3 +36,7 @@ rules
   editor-hover:
     (c@MethodCall(_, _, _), position, ast, path, project-path) -> <get-doc> <lookup-method> (<type-of> e, x)
     where MethodCall(e, x, _) := <lookup-node> (position, ast)
+
+  editor-hover:
+    (e, position, ast, path, project-path) -> t
+    where t := <type-of> <lookup-node> (position, ast)

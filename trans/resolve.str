@@ -97,6 +97,13 @@ rules
         ; t2* := <alltd(add-namespace)> t*
 
   add-namespace :
+    CollectionCons(qid, t*, e*) -> CollectionCons(qid2, t2*, e2*)
+    where not(<lookup-type-aux> GenericType(qid, t*))
+        ; [qid2] := <filter({c, newid: ?c; <prefix-qid(|c)> qid; ?newid; <lookup-type-aux> GenericType(<id>, t*); !newid})> [<ModuleName>|<bagof-Imports>]
+        ; t2* := <alltd(add-namespace)> t*
+        ; e2* := <alltd(add-namespace)> e*
+
+  add-namespace :
     Call(qid, e*) -> Call(qid2, e2*)
     where not(<lookup-function-aux> qid)
         ; [qid2] := <filter({c, newid: ?c; <prefix-qid(|c)> qid; ?newid; lookup-function-aux; !newid})> [<ModuleName>|<bagof-Imports>]
