@@ -27,7 +27,7 @@ rules
         ; position' := <desugar-position(normalize|ast)> position
     where FieldAccess(e, _) := <term-at-position(|position')> ast'
        <+ FieldAccess(e, _) := <parent-at-position(|position')> ast'
-    where t := <type-of> e
+    where t := <debug(!"The e: "); type-of> e
         ; method* := <get-all-methods; map(\ meth@c#([_, x, args|_]) -> (<concat> [[x, "("], <filter(?FArg(<id>, _)); separate-by(!", ")> args, [")"]], <get-doc> meth) \)> t
         ; if GenericType("Type", _) := t then
             prop* := []

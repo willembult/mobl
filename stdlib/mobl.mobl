@@ -37,6 +37,7 @@ external type Dynamic : Object { }
 external type Array<T> {
   sync function get(n : Num) : T
   sync function push(item : T) : void
+  sync function join(sep : String) : String
   function one() : T
 }
 
