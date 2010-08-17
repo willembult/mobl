@@ -249,7 +249,12 @@ rules // Expressions
 
   exp-to-js :
     Call(qid, named-e*) -> $[new [<qid-to-js> qid]({[propvals]})]
-    where <lookup-type> SimpleType(qid)
+    where ExternalEntity(_, _, _, _) := <lookup-type> SimpleType(qid)
+    with propvals := <map(\ NamedExp(x, e) -> $['[x]': [<expression-to-js> e]] \); separate-by(!", "); concat-strings> named-e*
+
+  exp-to-js :
+    Call(qid, named-e*) -> $[mobl.instantiate([<qid-to-js> qid], {[propvals]})]
+    where ExternalType(_, _, _, _) := <lookup-type> SimpleType(qid)
     with propvals := <map(\ NamedExp(x, e) -> $['[x]': [<expression-to-js> e]] \); separate-by(!", "); concat-strings> named-e*
 
   exp-to-js :

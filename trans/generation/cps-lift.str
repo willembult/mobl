@@ -245,7 +245,11 @@ strategies
 
   is-sync =
     ?Call(qid, e*)
-    ; ExternalSyncFunction(_, _, _, _) := <lookup-function> qid
+    ; (
+         ExternalSyncFunction(_, _, _, _) := <lookup-function> qid
+      <+ ExternalType(_, _, _, _) := <lookup-type> qid
+      <+ ExternalEntity(_, _, _, _) := <lookup-type> qid
+      )
     ; <map(is-sync)> e*
 
   is-sync =

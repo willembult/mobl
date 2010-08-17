@@ -72,6 +72,10 @@ strategies
     where ExternalEntity(_, _, _, _) := <lookup-type> SimpleType(qid)
 
   eq-type-of :
+    Call(qid, e*) -> SimpleType(qid)
+    where ExternalType(_, _, _, _) := <lookup-type> SimpleType(qid)
+
+  eq-type-of :
     Call(qid, e*) -> rt
     where rt@SimpleType(QId("mobl", "Callback")) := <type-of> Var(qid)
 

@@ -6,6 +6,7 @@ imports
   MoBL-Data
   MoBL-Action
   MoBL-Service
+  MoBL-Type
   MoBL-External
 
 exports
