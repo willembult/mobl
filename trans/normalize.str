@@ -26,6 +26,9 @@ rules
     ExternalTypeNoSuper(manno*, qid, method*) -> ExternalType(manno*, qid, SimpleType(QId("mobl", "Object")), method*)
 
   normalize :
+    TypeNoSuper(manno*, qid, def*) -> Type(manno*, qid, SimpleType(QId("mobl", "Object")), def*)
+
+  normalize :
     PropertyNoAnnos(manno*, x, t) -> Property(manno*, x, t, [])
 
   normalize :

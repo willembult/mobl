@@ -90,6 +90,39 @@ mobl.remoteCollection = function(uri, datatype, processor) {
   };
 };
 
+mobl.instantiate = function(sup, props) {
+  function F(){}
+  F.prototype = sup;
+  var obj = new F();
+  for(var p in props) {
+    if(props.hasOwnProperty(p)) {
+      obj[p] = props[p];
+    }
+  }
+  return obj;
+};
+
+mobl.ObservableObject = function(props) {
+  this._data = props;
+  var that = this;
+  for(var property in props) {
+    if(props.hasOwnProperty(property)) {
+      (function() {
+        var p = property;
+        that.__defineGetter__(p, function() {
+          return that._data[p];
+        });
+        that.__defineSetter__(p, function(val) {
+          that._data[p] = val;
+          that.triggerEvent('change', that, p, val);
+        });
+      }());
+    }
+  }
+};
+
+mobl.ObservableObject.prototype = new persistence.Observable();
+
 function log(s) {
     console.log(s);
 }
@@ -111,38 +144,6 @@ mobl.implementInterface = function(sourceModule, targetModule, items) {
     }
 
     Tuple.prototype = new persistence.Observable();
-
-    /*function List() {
-        this.values = [];
-        for(var i = 0; i < arguments.length; i++) {
-            this.values.push(arguments[i]);
-        }
-        this.length = this.values.length;
-        this.subscribers = {}; // Observable
-    }
-
-    List.prototype = new persistence.Observable();
-
-    List.prototype.get = function(idx) {
-        return this.values[idx];
-    };
-
-    List.prototype.add = function(item) {
-        this.values.push(item);
-        this.length = this.values.length;
-    };
-
-    List.prototype.list = function(tx, callback) {
-        var args = argspec.getArgs(arguments, [
-          {name: 'tx', optional: true, check: function(obj) { return tx.executeSql; } },
-          {name: 'callback', optional: false, check: argspec.isCallback() }
-        ]);
-        var valueCopy = [];
-        for(var i = 0; i < this.values.length; i++) {
-            valueCopy[i] = this.values[i];
-        }
-        callback(valueCopy);
-    };*/
 
     function Template(renderFn) {
         this.render = renderFn;

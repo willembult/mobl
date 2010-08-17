@@ -8,7 +8,7 @@ exports
 
   context-free syntax
     MetaAnno* "external" "type" QId "{" ExternalMemberDecl* "}"                          -> Definition {cons("ExternalTypeNoSuper")}
-    MetaAnno* "external" "type" QId ":" Type "{" ExternalMemberDecl* "}"                          -> Definition {cons("ExternalType")}
+    MetaAnno* "external" "type" QId ":" Type "{" ExternalMemberDecl* "}"                 -> Definition {cons("ExternalType")}
     MetaAnno* "external" "type" QId "<" {ID ","}* ">" "{" ExternalMemberDecl* "}"        -> Definition {cons("ExternalGenericType")}
 
     MetaAnno* "static" "function" ID "(" {FArg ","}* ")" ":" Type          -> ExternalMemberDecl {cons("ExternalStaticMethod")}

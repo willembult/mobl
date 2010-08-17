@@ -1,0 +1,28 @@
+module generation/type
+
+imports
+  include/MoBL
+  generation/emit
+  generation/ui
+  generation/action
+  generation/sql
+  lookup
+
+strategies
+
+  definition-to-js :
+    Type(_, qid, super, def*) -> <emit> $[
+      [<qid-to-js> qid] = new mobl.ObservableObject({
+        [body]
+      });
+      ]
+    with body := <filter(type-def-to-js); separate-by(|",\n")> def*
+
+  type-def-to-js :
+    fn@SyncFunction(_, x, _, _, _) -> $[[x]: [<function-to-js-exp> fn]]
+
+  type-def-to-js :
+    fn@Function(_, x, _, _, _) -> $[[x]: [<function-to-js-exp> fn]]
+
+  type-def-to-js :
+    Property(_, x, _, _) -> $[[x]: null]

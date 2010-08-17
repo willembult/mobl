@@ -1,0 +1,16 @@
+module MoBL-Type
+
+imports
+  Common
+  MoBL
+  MoBL-Action
+
+exports
+
+  context-free syntax
+
+    MetaAnno* "type" QId "{" TypeMemberDecl* "}"                          -> Definition {cons("TypeNoSuper")}
+    MetaAnno* "type" QId ":" Type "{" TypeMemberDecl* "}"                 -> Definition {cons("Type")}
+
+    FunctionDef                                                           -> TypeMemberDecl
+    Property                                                              -> TypeMemberDecl

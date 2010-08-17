@@ -14,6 +14,7 @@ imports
   generation/script
   generation/html
   generation/service
+  generation/type
   include/MoBL
   lib/editor-common
   sync-analysis
