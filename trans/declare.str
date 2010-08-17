@@ -133,7 +133,13 @@ strategies // convert to externals
     Service(manno*, qid, selem*) -> ExternalType(manno*, qid, SimpleType(QId("mobl", "Object")), <filter(service-elem-to-external)> selem*)
 
   definition-to-external :
-    Type(manno*, qid, super, def*) -> ExternalType(manno*, qid, super, <map(definition-to-external <+ debug(!"Could not externalize: "); fail)> def*)
+    Type(manno*, qid, super, def*) -> ExternalType(manno*, qid, super, <map(type-def-to-external <+ definition-to-external)> def*)
+
+  type-def-to-external :
+    Function(manno*, x, farg*, rt, _) -> ExternalMethod(manno*, x, farg*, rt)
+
+  type-def-to-external :
+    SyncFunction(manno*, x, farg*, rt, _) -> ExternalSyncMethod(manno*, x, farg*, rt)
 
   // For signatures we turn a webservice into an external type and resources into external methods
   service-elem-to-external :

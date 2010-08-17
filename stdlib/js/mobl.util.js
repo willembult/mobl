@@ -105,15 +105,18 @@ mobl.instantiate = function(sup, props) {
 mobl.ObservableObject = function(props) {
   this._data = props;
   var that = this;
-  for(var p in props) {
-    if(props.hasOwnProperty(p)) {
-      this.__defineGetter__(p, function() {
-        return that._data[p];
-      });
-      this.__defineSetter__(p, function(val) {
-        that._data[p] = val;
-        that.triggerEvent('change', that, p, val);
-      });
+  for(var property in props) {
+    if(props.hasOwnProperty(property)) {
+      (function() {
+        var p = property;
+        that.__defineGetter__(p, function() {
+          return that._data[p];
+        });
+        that.__defineSetter__(p, function(val) {
+          that._data[p] = val;
+          that.triggerEvent('change', that, p, val);
+        });
+      }());
     }
   }
 };
