@@ -14,15 +14,15 @@ imports
 
 rules
 
-  editor-complete:
+  editor-complete :
     (SimpleType(COMPLETION(prefix)), position, ast, path, project-path) ->
     proposals
     where
       all-types := <get-all-types>;
       proposals    := <map(type-name-to-proposal); flatten-list> all-types
 
-  editor-complete:
-    (FieldAccess(_, COMPLETION(prefix)), position, ast, path, project-path) -> [prop*, method*]
+  editor-complete :
+    (FieldAccess(_, COMPLETION(_)), position, ast, _, _) -> [prop*, method*]
     where ast' := <analyze; store-result> ast
         ; position' := <desugar-position(normalize|ast)> position
     where FieldAccess(e, _) := <term-at-position(|position')> ast'
@@ -35,7 +35,7 @@ rules
             prop* := <get-all-properties; map(\ prop@Property(_, x, _, _) -> ([x], <get-doc> prop) \)> t
           end
 
-  editor-complete:
+  editor-complete :
     (Var(COMPLETION(_)), position, ast, path, project-path) -> [type*, var*, function*]
     where {| CompletionVars
            : ast' := <analyze; store-result> ast
@@ -81,13 +81,20 @@ rules
   // My guess is control call
   editor-complete:
     (NOCONTEXT(COMPLETION(prefix)), position, ast, path, project-path) -> control*
-    where control* := <get-all-controls; map(control-to-proposal); flatten-list>
+    where control* := <get-all-controls; map(control-to-proposal <+ debug(!"Could not map to a proposal: "); fail); flatten-list>
 
   control-to-proposal :
     tpl@ExternalControl(_, qid@QId(_, x), args) -> [
       (<concat> [[x, "("], fargs, [")"]], <get-doc> tpl),
       (<concat> [[<pp-mobl-qid> qid, "("], fargs, [")"]], <get-doc> tpl)
     ]
+    with fargs := <map(farg-to-proposal); separate-by(!", ")> args
+
+  control-to-proposal :
+    tpl@ExternalControl(_, x, args) -> [
+      (<concat> [[x, "("], fargs, [")"]], <get-doc> tpl)
+    ]
+    where <is-string> x
     with fargs := <map(farg-to-proposal); separate-by(!", ")> args
 
   farg-to-proposal :
@@ -100,16 +107,9 @@ rules
   farg-to-proposal :
     FArgOptional(x, SimpleType(QId("mobl", "Callback")), e) -> $[[x]={}]
 
-  editor-complete:
-    (Javascript(COMPLETION(_)), _, _, _, _) -> []
-
   type-name-to-proposal:
     x -> ([x], "")
     where is-string
 
   type-name-to-proposal:
     qid@QId(_, x) -> [([x], ""), ([<pp-mobl-qid> qid], "")]
-
-
-  editor-complete =
-    debug(!"Editor complete: "); fail
