@@ -20,11 +20,39 @@ resource mobl/loading.gif
 @doc "A value representing nothing"
 external type void {}
 
+@doc "RegExp type"
+external type RegExp : Object {
+    global : Bool
+    ignoreCase : Bool
+    lastIndex : Num
+    multiline : Bool
+    source : String
+    sync function compile(regexp : RegExp) : void 
+    sync function compile(regexp : RegExp, modifier : String) : void 
+    sync function exec(string : String) : String
+    sync function test(string : String) : Bool 
+}
+
 @doc "String type"
 external type String : Object {
   length : Num
-  sync function substr(start : Num, length : Num) : String
+// functions with variable nr of arguments:
+// concat()    Joins two or more strings, and returns a copy of the joined strings
+// fromCharCode()  Converts Unicode values to characters
+  sync function charAt(index : Num) : String
+  sync function charCodeAt(index : Num) : Num
+  sync function indexOf(searchstring : String, start : Num = 0) : Num
+  sync function lastIndexOf(searchstring : String, start : Num = 0) : Num
+  sync function match(regexp : RegExp) : Array<String>
+  sync function replace(regexp : RegExp, newstring : String) : String
+  sync function replace(substr : String, newstring : String) : String
+  sync function search(regexp : RegExp) : Num
   sync function slice(start : Num, end : Num) : String
+  sync function split(separator : String, limit : Num) : Array<String>
+  sync function substr(start : Num, length : Num) : String
+  sync function substring(from : Num, to : Num) : String
+  sync function toLowerCase() : String
+  sync function toUpperCase() : String
 }
 
 @doc "Numeric type, represents both integers and floating point numbers"
