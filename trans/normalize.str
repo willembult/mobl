@@ -42,3 +42,9 @@ rules
 
   normalize :
     EntityNoSuper(manno*, qid, prop*) -> Entity(manno*, qid, GenericType(QId("mobl", "Entity"), [SimpleType(qid)]), prop*)
+
+  normalize :
+    TupleType(t*) -> GenericType(QId("mobl", $[Tuple[<length> t*]]), t*)
+
+  normalize :
+    ArrayType(t) -> GenericType(QId("mobl", "Array"), [t])

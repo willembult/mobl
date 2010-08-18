@@ -39,7 +39,6 @@ strategies
     qid -> <emit> $[mobl.load('[<qid-to-path> qid].js');
 ]
 
-
   definition-to-js :
     Load(path@Path(part*)) -> <emit> $[mobl.load('[<path-to-string> path]');]
     with path-str := <path-to-string> path

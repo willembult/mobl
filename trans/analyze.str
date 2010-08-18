@@ -35,9 +35,6 @@ rules
        ; add-namespace-all
        ; analyze-sync
        ; declare-all
-       //; declare-all
-       //; rename-all
-         //; debug
        |}
 
   ensure-mobl-import :

@@ -36,6 +36,8 @@ exports
 
     QId                            -> Type {cons("SimpleType")}
     QId "<" {Type ","}* ">"        -> Type {cons("GenericType")}
+    "(" {Type ","}* ")"            -> Type {cons("TupleType")}
+    "[" Type "]"                   -> Type {cons("ArrayType")}
 
     "@doc" STRING                  -> MetaAnno {cons("DocAnno")}
     "@cond" Exp                    -> MetaAnno {cons("ConditionalAnno")}
