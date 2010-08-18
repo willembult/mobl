@@ -68,6 +68,7 @@ external type Array<T> {
   sync function join(sep : String) : String
   function one() : T
   sync function map(fn : Function1<Dynamic, T>) : [Dynamic]
+  sync function filter(fn : Function1<Bool, T>) : [T]
 }
 
 external type Tuple1<T1> {
