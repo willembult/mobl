@@ -263,6 +263,8 @@ strategies
     ; <is-sync> e-true
     ; <is-sync> e-false
 
+  is-sync = ?RegExp(_)
+
   is-sync =
     ?List(e*)
     ; <map(is-sync)> e*

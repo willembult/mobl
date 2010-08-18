@@ -7,6 +7,7 @@ imports
   MoBL-Action
   MoBL-Service
   MoBL-Type
+  MoBL-Regex
   MoBL-External
 
 exports

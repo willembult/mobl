@@ -27,10 +27,10 @@ external type RegExp : Object {
     lastIndex : Num
     multiline : Bool
     source : String
-    sync function compile(regexp : RegExp) : void 
-    sync function compile(regexp : RegExp, modifier : String) : void 
+    sync function compile(regexp : RegExp) : void
+    sync function compile(regexp : RegExp, modifier : String) : void
     sync function exec(string : String) : String
-    sync function test(string : String) : Bool 
+    sync function test(string : String) : Bool
 }
 
 @doc "String type"
@@ -192,8 +192,8 @@ external type Entity<T> {
   function fetch(rel : String) : T
 }
 
-external sync function log(s : String) : void
-external sync function alert(s : String) : void
+external sync function log(o : Object) : void
+external sync function alert(o : Object) : void
 
 external sync function add(e : Object) : void
 external sync function remove(e : Object) : void
