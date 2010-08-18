@@ -44,7 +44,6 @@ exports
 
     "list" "(" LValue ":" Type "in" Exp ")" "{" ScreenElem* "}"       -> ScreenElem {cons("List")}
     "list" "(" LValue "in" Exp ")" "{" ScreenElem* "}"                -> ScreenElem {cons("ListInferred")}
-    "placeholder"  ID "{" ScreenElem* "}"                             -> ScreenElem {cons("PlaceHolder")}
     "cond" "(" Exp ")" "{" ScreenElem* "}"                            -> ScreenElem {cons("ConditionalDisplay")}
 
     "var" ID ":" Type "=" Exp                                         -> ScreenElem {cons("ScreenVarDecl")}

@@ -11,3 +11,65 @@ completions
     completion trigger  : "\."
     completion trigger  : "::"
 
+completions
+
+    completion template : Definition =
+      "control " <name> "() {\n\t\n}" (blank)
+
+    completion template : Definition =
+      "screen " <name> "() {\n\t\n}" (blank)
+
+    completion template : Definition =
+      "entity " <name> " {\n\t\n}" (blank)
+
+    completion template : Definition =
+      "service " <name> " {\n\tresource someResource() : Dynamic {\n\t\turi = \"/someResource\"\n\t}\n}" (blank)
+
+    completion template : Definition =
+      "import " <some::module> (blank)
+
+    completion template : Definition =
+      "resource " <some/file.png> (blank)
+
+    completion template : Definition =
+      "load " <some/file.js> (blank)
+
+    completion template : Definition =
+      "external type " <name> "{\n\t\n}" (blank)
+
+    completion template : Definition =
+      "type " <name> "{\n\t\n}" (blank)
+
+    completion template : Definition =
+      "external function " <name> "() {\n\t\n\}" (blank)
+
+completions
+
+    completion template : Statement =
+      "if" "(" <e> ") {\n\t\n}" (blank)
+
+    completion template : Statement =
+      "if" "(" <e> ") {\n\t\n} else {\n\t\n}" (blank)
+
+    completion template : Statement =
+      "for" "(" <x> " in " <coll> ") {\n\t\n}" (blank)
+
+    completion template : Statement =
+      "var " <x> " = " <value> ";" (blank)
+
+    completion template : Statement =
+      "return " <value> ";" (blank)
+
+    completion template : Statement =
+      "screen return " <value> ";" (blank)
+
+completions
+
+    completion template : ScreenElem =
+      "var " <x> " = " <value> (blank)
+
+    completion template : ScreenElem =
+      "list" "(" <x> " in " <coll> ") {\n\t\n}" (blank)
+
+    completion template : ScreenElem =
+      "cond" "(" <e> ") {\n\t\n}" (blank)
