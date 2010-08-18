@@ -22,10 +22,6 @@ rules
     where t2 := <lookup-node> (position, ast)
 
   editor-hover:
-    (e@Var(x), position, ast, path, project-path) -> $[Variable '[x]' has type [<type-of; pp-mobl-type> e2]]
-    where e2 := <lookup-node> (position, ast)
-
-  editor-hover:
     (c@Call(_, _), position, ast, path, project-path) -> <get-doc> <lookup-function> qid
     where Call(qid, _) := <lookup-node> (position, ast)
 
@@ -38,5 +34,5 @@ rules
     where MethodCall(e, x, _) := <lookup-node> (position, ast)
 
   editor-hover:
-    (e, position, ast, path, project-path) -> t
+    (e, position, ast, path, project-path) -> <pp-mobl-type> t
     where t := <type-of> <lookup-node> (position, ast)

@@ -19,41 +19,26 @@ rules
     (Import(qid), position, ast, path, project-path) -> <parse-file> <resolve-file> <concat-strings> [<qid-to-path> qid, ".mobl"]
 
   editor-resolve:
-    (SimpleType(_), position, ast, path, project-path) -> target
-    where ast' := <analyze; store-result> ast
-        ; position' := <desugar-position(normalize|ast)> position
-    where t@SimpleType(qid) := <term-at-position(|position')> ast'
+    (t@SimpleType(qid), position, ast, path, project-path) -> target
     where target := <ensure-origin(lookup-type|qid)> t
 
   editor-resolve:
-    (GenericType(_, _), position, ast, path, project-path) -> target
-    where ast' := <analyze; store-result> ast
-        ; position' := <desugar-position(normalize|ast)> position
-    where t@GenericType(qid, _) := <term-at-position(|position')> ast'
+    (t@GenericType(qid, _), position, ast, path, project-path) -> target
     where target := <ensure-origin(lookup-type|qid)> t
 
   editor-resolve:
-    (Call(_, _), position, ast, path, project-path) -> target
-    where ast' := <analyze; store-result> ast
-        ; position' := <desugar-position(normalize|ast)> position
-    where Call(qid, _) := <term-at-position(|position')> ast'
+    (Call(qid, _), position, ast, path, project-path) -> target
     where target := <ensure-origin(lookup-function <+ lookup-screen|qid)> qid
 
   editor-resolve:
-    (MethodCall(_, _, _), position, ast, path, project-path) -> target
-    where ast' := <analyze; store-result> ast
-        ; position' := <desugar-position(normalize|ast)> position
-    where MethodCall(e, x, _) := <term-at-position(|position')> ast'
+    (MethodCall(e, x, _), position, ast, path, project-path) -> target
     where (   SimpleType(qid) := <type-of> e
            <+ GenericType(qid, _) := <type-of> e)
           ; ?t
     where target := <ensure-origin(lookup-method|qid)> (t, x)
 
   editor-resolve:
-    (FieldAccess(_, _), position, ast, path, project-path) -> target
-    where ast' := <analyze; store-result> ast
-        ; position' := <desugar-position(normalize|ast)> position
-    where FieldAccess(e, x) := <term-at-position(|position')> ast'
+    (FieldAccess(e, x), position, ast, path, project-path) -> target
     where (   SimpleType(qid) := <type-of> e
            <+ GenericType(qid, _) := <type-of> e)
           ; ?t
@@ -65,29 +50,18 @@ rules
 
   // For actual variables
   editor-resolve:
-    (Var(_), position, ast, path, project-path) -> target
-    where ast' := <analyze; store-result> ast
-        ; position' := <desugar-position(normalize|ast)> position
-    where Var(x) := <term-at-position(|position')> ast'
+    (Var(x), position, ast, path, project-path) -> target
     where target := <VarLookup> x
 
   // For controls
   editor-resolve:
-    (Var(_), position, ast, path, project-path) -> target
-    where ast' := <analyze; store-result> ast
-        ; position' := <desugar-position(normalize|ast)> position
-    where Var(qid) := <term-at-position(|position')> ast'
+    (Var(qid), position, ast, path, project-path) -> target
     where target := <ensure-origin(lookup-control|qid)> qid
 
   // For entities
   editor-resolve:
-    (Var(_), position, ast, path, project-path) -> target
-    where ast' := <analyze; store-result> ast
-        ; position' := <desugar-position(normalize|ast)> position
-    where Var(qid) := <term-at-position(|position')> ast'
+    (Var(qid), position, ast, path, project-path) -> target
     where target := <ensure-origin(lookup-type|qid)> SimpleType(qid)
-
-  editor-resolve = debug(!"Editor resolve: "); fail
 
 rules
 
