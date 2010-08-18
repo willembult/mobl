@@ -67,6 +67,7 @@ external type Array<T> {
   sync function push(item : T) : void
   sync function join(sep : String) : String
   function one() : T
+  sync function map(fn : Function1<Dynamic, T>) : [Dynamic]
 }
 
 external type Tuple1<T1> {
