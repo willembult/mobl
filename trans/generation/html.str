@@ -6,32 +6,7 @@ imports
   generation/compile
 
 strategies
-/*
-        <script src="js/gears_init.js" type="application/x-javascript" charset="utf-8">
-        </script>
-        <script src="js/jquery-1.4.min.js" type="application/x-javascript" charset="utf-8">
-        </script>
-        <script src="js/jquery-ui-1.7.2.custom.min.js" type="application/x-javascript" charset="utf-8">
-        </script>
-        <script src="js/persistence.js" type="application/x-javascript" charset="utf-8">
-        </script>
-        <script src="js/persistence.search.js" type="application/x-javascript" charset="utf-8">
-        </script>
 
-
-        <script src="js/gestures.js" type="application/x-javascript" charset="utf-8">
-        </script>
-        <script src="js/mobl.util.js" type="application/x-javascript" charset="utf-8">
-        </script>
-        <script src="js/mobl.orientation.js" type="application/x-javascript" charset="utf-8">
-        </script>
-        <script src="js/mobl.event.js" type="application/x-javascript" charset="utf-8">
-        </script>
-        <script src="js/mobl.load.js" type="application/x-javascript" charset="utf-8">
-        </script>
-        <script src="js/iscroll.js" type="application/javascript" charset="utf-8">
-        </script>
-*/
   generate-index-html(|res*) :
     Application(qid, setting*, _) -> $[
 <!DOCTYPE HTML>
@@ -43,7 +18,7 @@ strategies
         <meta names="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         [<filter(res-to-script-html)> res*]
         <script type="application/x-javascript" charset="utf-8">
-            persistence.connect('[<!<un-double-quote> dbname <+ <qid-to-js> qid>]', 'mobl database', 5 * 1024 * 1024, '1.0');
+            persistence.store.websql.config(persistence, '[<!<un-double-quote> dbname <+ <qid-to-js> qid>]', 'mobl database', 5 * 1024 * 1024, '1.0');
             mobl.load('[<qid-to-path> qid].js');
             $(function(){
                 persistence.schemaSync(function(tx) {

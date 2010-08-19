@@ -5,6 +5,8 @@ resource js/gears_init.js
 resource js/jquery-1.4.min.js
 resource js/jquery-ui-1.7.2.custom.min.js
 resource js/persistence.js
+resource js/persistence.store.sql.js
+resource js/persistence.store.websql.js
 resource js/persistence.search.js
 resource js/gestures.js
 resource js/iscroll.js
