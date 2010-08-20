@@ -7,7 +7,7 @@ resource taskicon.png
 
 import mobl
 import mobl::ui::generic
-import mobl::notify
+import mobl::imagecache
 
 entity Task {
   name    : String (searchable)
@@ -19,7 +19,6 @@ screen root() {
   header("Todo") {
     button("Add", onclick={
       addTask();
-      notify("Task added!");
      })
   }
   control itemMaster(t : Task) {

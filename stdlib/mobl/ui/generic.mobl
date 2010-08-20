@@ -35,6 +35,10 @@ control group() {
   </ul>
 }
 
+control image(url : String, onclick : Callback = null) {
+  <img src=url onclick=onclick/>
+}
+
 control item(onclick : Callback = null, onswipe : Callback = null) {
   <li class="item" onclick=onclick>
     elements()

@@ -133,6 +133,7 @@ rules
 
   hide-anon-controls =
     alltd(\ AnonymousControl(_) -> Null() \)
+    ; alltd(\ Callback(_) -> Null() \)
 
   find-watchable-expressions =
         not(?Var(_))
