@@ -85,6 +85,6 @@ mobl.imagefetch.downloadImageAsBase64 = function(url, callback) {
     error: function() {
       callback(null);
     }
-    });
+  });
 };
 </javascript>

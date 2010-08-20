@@ -2,11 +2,14 @@ module sync-analysis
 
 imports include/MoBL
         generation/cps-lift
+        type
+        declare
 
 strategies
 
   analyze-sync =
     topdown(try(mark-all-sync))
+    ; declare-all
     //; debug
     ; repeat(analyze-sync-code)
 
@@ -19,9 +22,12 @@ strategies
     ; not(?t-before)
 
   analyze-sync-function :
-    SyncFunction(anno*, qid, arg*, rt, stat*) -> Function(anno*, qid, arg*, rt, stat*)
+    SyncFunction(anno*, qid, arg*, rt, stat*) -> <try(declare)> Function(anno*, qid, arg*, rt, stat*)
     where not([] := <collect(async-exp)> stat*)
-        //; <debug(!"Function is async: ")> qid
+
+  analyze-sync-function :
+    Function(anno*, qid, arg*, rt, stat*) -> <try(declare)> SyncFunction(anno*, qid, arg*, rt, stat*)
+    where [] := <collect(async-exp)> stat*
 
   async-exp :
     Call(_, _) -> <not(is-sync)>
@@ -30,4 +36,5 @@ strategies
     MethodCall(_, _, _) -> <not(is-sync)>
 
   async-exp :
-    For(_, _, _, _) -> <id>
+    For(_, _, e, _) -> <id>
+    where GenericType(QId("mobl", "Collection"), _) := <type-of> e

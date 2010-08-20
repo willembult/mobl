@@ -37,13 +37,13 @@ rules
     where not(type-of)
 
   constraint-error :
-    Call(qid, e*) -> (qid, $[Wrong set  of arguments. Expected arguments are: [<filter(?FArg(<id>, _)); separate-by(!", "); concat-strings> farg*]])
+    Call(qid{}, e*) -> (qid, $[Wrong set  of arguments. Expected arguments are: [<filter(?FArg(<id>, _)); separate-by(!", "); concat-strings> farg*]])
     where def := <lookup-function> qid
         ; (ExternalFunction(_, _, farg*, _) := def <+ ExternalSyncFunction(_, _, farg*, _) := def)
         ; not(<resolve-fargs> (e*, <topdown(try(strip-annos))> farg*))
 
   constraint-error :
-    Call(qid, e*) -> <fargs-type-not-compatible> (farg*, e*)
+    Call(qid{}, e*) -> <fargs-type-not-compatible> (farg*, e*)
     where def := <lookup-function> qid
         ; (ExternalFunction(_, _, farg*, _) := def <+ ExternalSyncFunction(_, _, farg*, _) := def)
 
@@ -88,7 +88,7 @@ rules
     where not(type-of)
 
   constraint-error :
-    t@Call(qid, arg*) -> (t, $[Function not defined])
+    t@Call(qid{}, arg*) -> (t, $[Function not defined])
     where <map(type-of)> arg*
     where not(type-of)
 

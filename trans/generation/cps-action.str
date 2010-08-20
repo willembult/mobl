@@ -126,6 +126,21 @@ strategies
        ; vardecls := <map(!$[var [<id>]; ]); concat-strings> <lvalue-vars> lvalue
        ; assigns := <desugar-all; (map(statement-to-js); concat-strings <+ statement-to-js)> Assignment(lvalue, MethodCall(Var(coll), "pop", []))
 
+  cps-statements :
+    [While(e, stats)|stat*] ->
+      <cps-expression(|[
+        $[function [processOne]() {
+            [<concat; cps-statements> [stats, [$[
+              if([<expression-to-js> e]) [processOne](); else [rest]();
+            ]]]]
+          }
+          function [rest]() {
+            [<cps-statements> stat*]
+          }
+          if([<expression-to-js> e]) [processOne](); else [rest]();
+]])> e
+    with processOne := <newname> "oneIteration"
+       ; rest := <newname> "rest"
 
   cps-statements :
     [s|stat*] -> <concat-strings> [s, <cps-statements> stat*]

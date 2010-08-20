@@ -258,3 +258,57 @@ div.scroller {
   -webkit-box-flex: 1;
   overflow: hidden;
 }
+
+table {
+  padding: 8px 10px 8px 10px;
+  width: 100%;
+  border-spacing: 0;
+}
+
+td {
+  padding: 8px;
+}
+
+tr:nth-child(even) {
+  background: #eeeeee
+}
+
+tr:nth-child(odd) {
+  background: #ffffff
+}
+
+tbody tr:first-child td:first-child {
+  -webkit-border-top-left-radius: 8px;
+  -moz-border-radius-topleft: 8px;
+  border-left: 1px solid #000;
+  border-top: 1px solid #000;
+}
+
+tbody tr:first-child td:last-child {
+  -webkit-border-top-right-radius: 8px;
+  -moz-border-radius-topright: 8px;
+  border-right: 1px solid #000;
+  border-top: 1px solid #000;
+}
+
+tbody tr:last-child td:first-child {
+  -webkit-border-bottom-left-radius: 8px;
+  -moz-border-radius-bottomleft: 8px;
+  border-left: 1px solid #000;
+  border-bottom: 1px solid #000;
+}
+
+tbody tr:last-child td:last-child {
+  -webkit-border-bottom-right-radius: 8px;
+  -moz-border-radius-bottomright: 8px;
+  border-right: 1px solid #000;
+  border-bottom: 1px solid #000;
+}
+
+tbody tr td:first-child {
+  border-left: 1px solid #000;
+}
+
+tbody tr td:last-child {
+  border-right: 1px solid #000;
+}

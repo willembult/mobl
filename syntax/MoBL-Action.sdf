@@ -31,6 +31,7 @@ exports
     "if" "(" Exp ")" "{" Statement* "}"                           -> Statement {cons("IfNoElse")}
     "for" "(" LValue ":" Type "in" Exp ")" "{" Statement* "}"         -> Statement {cons("For")}
     "for" "(" LValue "in" Exp ")" "{" Statement* "}"                  -> Statement {cons("ForInferred")}
+    "while" "(" Exp ")" "{" Statement* "}"                           -> Statement {cons("While")}
 
     "return" Exp ";"                            -> Statement {cons("Return")}
     "screen" "return" Exp ";"                   -> Statement {cons("ScreenReturn")}
@@ -48,10 +49,11 @@ exports
     QId "(" {NamedExp ","}* ")"   -> Exp {cons("Call")}
 
     QId                           -> LimitedExp {cons("Var")}
+    "(" Exp ")"                   -> LimitedExp {cons("Brackets")}
+
     Exp "." ID "(" {NamedExp ","}* ")" -> LimitedExp {cons("MethodCall")}
     Exp "." ID                    -> LimitedExp {cons("FieldAccess")}
     Exp "[" Exp "]"               -> LimitedExp {left, cons("Indexer")}
-    "(" Exp ")"                   -> LimitedExp {cons("Brackets")}
 
     LimitedExp                    -> Exp
 

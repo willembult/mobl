@@ -69,6 +69,9 @@ strategies
   rename :
     Call(x, e*) -> Call(<RenameFunction> x, <rename-all> e*)
 
+  rename :
+    Call(x, e*) -> Call(<RenameId> x, <rename-all> e*)
+
   /*rename :
     c#([Var(qid)|rest]) -> c#([Var(<RenameControl> qid)|<rename-all> rest])
     where <string-starts-with(|"ControlCall")> c*/

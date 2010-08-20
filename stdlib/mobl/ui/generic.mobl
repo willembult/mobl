@@ -52,7 +52,7 @@ control itemArrow(onclick : Callback = null, onswipe : Callback = null) {
 }
 
 control checkBox(b : Bool, label : String = "") {
-  <input type="checkbox" databind=b/>
+  <input type="checkbox" databind=b onclick={}/>
   " "
   <span databind=label onclick={ b = b ? false : true; }/>
 }
@@ -67,7 +67,9 @@ control numField(n : Num, placeholder : String = null, onchange : Callback = nul
 
 @doc "A tabset, takes a list of tuples as argument, e.g. [(\"Tab 1\", \"icon url\", tab1), (\"Tab 2\", \"icon uri\", tab2)] where tab1 and tab2 are controls with no arguments"
 control tabSet(tabs : Array<Tuple3<String, String, Control>>) {
-  var activeTabName : String = tabs.get(0)._1
+  var activeTabName : String = (tabs.get(0)._1)
+  
+  var s = ""
 
   <div class="tabbar">
     list((tabName, tabIcon, tabControl) in tabs) {
@@ -194,6 +196,19 @@ mobl.ui.generic.setupFloatBox = function(top, right, bottom, left) {
   }, 200);
 };
 </javascript>
+
+@doc "Renders a table, use row { } rows and cell { } for cells"
+control table() {
+  <table>elements()</table>
+}
+
+control row() {
+  <tr>elements()</tr>
+}
+
+control cell(width : String = null) {
+  <td width=width>elements()</td>
+}
 
 // SCROLLERS
 

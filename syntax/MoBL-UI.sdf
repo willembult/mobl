@@ -51,4 +51,6 @@ exports
     LimitedExp "(" {NamedExp ","}* ")" "{" ScreenElem* "}"   -> ScreenElem {prefer, cons("ControlCall")}
     LimitedExp "(" {NamedExp ","}* ")"                       -> ScreenElem {cons("ControlCallNoBody")}
     LimitedExp "{" ScreenElem* "}"                           -> ScreenElem {cons("ControlCallNoArgs")}
+
+    Exp "." ID "(" {NamedExp ","}* ")"                       -> ScreenElem {reject}
     %%QId                                               -> ScreenElem {cons("ControlCallNoArgsNoBody")}

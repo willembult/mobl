@@ -151,7 +151,6 @@ rules // Statements
           [<statements-to-js> false-stat*]
         }]
 
-  // Never used, currently
   stat-to-js :
     For(lvalue, _, e, stat*) ->
       $[var [coll] = [<expression-to-js> e];
@@ -169,6 +168,13 @@ rules // Statements
        ; vardecls := <map(!$[var [<id>]; ]); concat-strings> <lvalue-vars> lvalue
        ; assigns := <desugar-all; (map(statement-to-js); concat-strings <+ statement-to-js)> Assignment(lvalue, MethodCall(Var(coll), "get", [Var(i)]))
 
+  stat-to-js :
+    While(e, stat*) ->
+      $[while([<expression-to-js> e]) {
+          (function() {
+            [<statements-to-js> stat*]
+          }());
+        }]
 
   stat-to-js :
     Assignment(qid, e) -> $[[<qid-to-js> qid].set([<expression-to-js> e]);]
