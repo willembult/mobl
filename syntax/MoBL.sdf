@@ -25,6 +25,8 @@ exports
     "title" STRING                   -> Setting {cons("TitleSetting")}
     "database" STRING                -> Setting {cons("DatabaseSetting")}
     "offline"  Exp                   -> Setting {cons("OfflineSetting")}
+    "icon" Path                      -> Setting {cons("IconSetting")}
+    "version" STRING                 -> Setting {cons("VersionSetting")}
 
     "dynamic" "import" QId         -> Definition {cons("DynamicImport")}
     "import" QId                   -> Definition {cons("Import")}

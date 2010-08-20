@@ -4,6 +4,7 @@ imports
   include/MoBL
   generation/action
   generation/compile
+  pp
 
 strategies
 
@@ -19,6 +20,7 @@ strategies
         [<filter(res-to-script-html)> res*]
         <script type="application/x-javascript" charset="utf-8">
             persistence.store.websql.config(persistence, '[<!<un-double-quote> dbname <+ <qid-to-js> qid>]', 'mobl database', 5 * 1024 * 1024, '1.0');
+            mobl.icon = "[<<path-to-string> icon <+ !"img/default-icon.png">]";
             mobl.load('[<qid-to-path> qid].js');
             $(function(){
                 persistence.schemaSync(function(tx) {
@@ -33,7 +35,34 @@ strategies
     ]
     with <filter(?TitleSetting(title))> setting*
        ; <filter(?DatabaseSetting(dbname))> setting*
+       ; <filter(?IconSetting(icon))> setting*
        ; html-manifest := <fetch(?OfflineSetting(True())); !$[manifest="[<qid-to-path> qid].manifest"] <+ !""> setting*
+
+
+  generate-chrome-manifest(|res*) :
+    Application(qid, setting*, _) -> $[
+{
+  "name": "[<!<un-double-quote> title <+ <qid-to-js> qid>]",
+  "version": "[<!<un-double-quote> version <+ !"1">]",
+  "app": {
+    "launch": {
+      "local_path": "[<qid-to-path> qid].html"
+    }
+  },
+  "icons": {
+    "24": "[<<path-to-string> icon <+ !"img/default-icon.png">]",
+    "128": "[<<path-to-string> icon <+ !"img/default-icon.png">]"
+  },
+  "permissions": $[$
+    "unlimited_storage",
+    "geolocation",
+    "notifications"
+  $]$
+}
+    ]
+    with <filter(?TitleSetting(title))> setting*
+       ; <filter(?IconSetting(icon))> setting*
+       ; <filter(?VersionSetting(version))> setting*
 
   res-to-script-html :
     filename -> $[<script src="[filename]" type="application/x-javascript" charset="utf-8"></script>

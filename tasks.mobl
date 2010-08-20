@@ -1,7 +1,13 @@
 application tasks
 
+version "0.1.1"
+icon taskicon.png
+
+resource taskicon.png
+
 import mobl
 import mobl::ui::generic
+import mobl::notify
 
 entity Task {
   name    : String (searchable)
@@ -11,7 +17,10 @@ entity Task {
 
 screen root() {
   header("Todo") {
-    button("Add", onclick={ addTask(); })
+    button("Add", onclick={
+      addTask();
+      notify("Task added!");
+     })
   }
   control itemMaster(t : Task) {
     checkBox(t.done, label=t.name)

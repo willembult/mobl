@@ -15,6 +15,7 @@ resource js/mobl.load.js
 resource js/mobl.orientation.js
 resource js/mobl.util.js
 resource mobl/loading.gif
+resource img/default-icon.png
 
 /**
  * Built-in types

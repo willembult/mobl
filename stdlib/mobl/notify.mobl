@@ -5,10 +5,26 @@ load mobl/jquery.jgrowl.css
 
 import mobl
 
-external sync function notify(message : String) : void
+external sync function notify(message : String, title : String = "Notification") : void
 
 <javascript>
-mobl.notify.notify = function(message) {
-  $.jGrowl(message);
+mobl.notify.notify = function(message, title) {
+  function requestPermission (callback) {
+     window.webkitNotifications.requestPermission(callback);
+  }
+
+  function showNotification(){
+    if (window.webkitNotifications.checkPermission() > 0) {
+      requestPermission(showNotification);
+    }
+    else {
+      window.webkitNotifications.createNotification(mobl.icon, title, message).show();
+    }
+  }
+  if(window.webkitNotifications) {
+    showNotification();
+  } else {
+    $.jGrowl(message);
+  }
 };
 </javascript>
