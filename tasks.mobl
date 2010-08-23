@@ -7,7 +7,6 @@ resource taskicon.png
 
 import mobl
 import mobl::ui::generic
-import mobl::imagecache
 
 entity Task {
   name    : String (searchable)
