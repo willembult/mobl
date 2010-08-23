@@ -91,19 +91,23 @@ mobl.remoteCollection = function(uri, datatype, processor) {
 };
 
 mobl.instantiate = function(sup, props) {
-  function F(){}
-  F.prototype = sup;
-  var obj = new F();
+  var obj = {};
+  for(var p in sup) {
+    if(sup.hasOwnProperty(p)) {
+      obj[p] = sup[p];
+    }
+  }
   for(var p in props) {
     if(props.hasOwnProperty(p)) {
       obj[p] = props[p];
     }
   }
-  return obj;
+  return new mobl.ObservableObject(obj);
 };
 
 mobl.ObservableObject = function(props) {
   this._data = props;
+  this.subscribers = {};
   var that = this;
   for(var property in props) {
     if(props.hasOwnProperty(property)) {

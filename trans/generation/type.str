@@ -12,9 +12,9 @@ strategies
 
   definition-to-js :
     Type(_, qid, super, def*) -> <emit> $[
-      [<qid-to-js> qid] = new mobl.ObservableObject({
+      [<qid-to-js> qid] = {
         [body]
-      });
+      };
       ]
     with body := <filter(type-def-to-js); separate-by(|",\n")> def*
 

@@ -73,6 +73,7 @@ external type Array<T> {
   function one() : T
   sync function map(fn : Function1<T, Dynamic>) : [Dynamic]
   sync function filter(fn : Function1<T, Bool>) : [T]
+  sync function contains(el : T) : Bool
 }
 
 external type Tuple1<T1> {
@@ -243,7 +244,7 @@ mobl.alert = function(s, _, callback) {
     if(callback) callback();
 };
 mobl.log = function(s, _, callback) {
-    console.log(s);
+    console.log("DEBUG: ", s);
     if(callback) callback();
 };
 mobl.add = function(e, _, callback) {
@@ -373,6 +374,15 @@ Array.prototype.one = function(callback) {
   } else {
     callback(this[0]);
   }
+};
+
+Array.prototype.contains = function(el) {
+  for(var i = 0; i < this.length; i++) {
+    if(this[i] === el) {
+      return true;
+    }
+  }
+  return false;
 };
 
 Array.prototype.addEventListener = function() {}
