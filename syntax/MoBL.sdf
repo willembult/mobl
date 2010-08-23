@@ -36,10 +36,12 @@ exports
     ID ":" Type                    -> FArg {cons("FArg")}
     ID ":" Type "=" Exp            -> FArg {cons("FArgOptional")}
 
-    QId                            -> Type {cons("SimpleType")}
-    QId "<" {Type ","}* ">"        -> Type {cons("GenericType")}
-    "(" {Type ","}* ")"            -> Type {cons("TupleType")}
-    "[" Type "]"                   -> Type {cons("ArrayType")}
+    QId                            -> NFType {cons("SimpleType")}
+    QId "<" {Type ","}* ">"        -> NFType {cons("GenericType")}
+    "(" {Type ","}* ")"            -> NFType {cons("TupleType")}
+    "[" Type "]"                   -> NFType {cons("ArrayType")}
+    NFType                         -> Type
+    {NFType "*"}+ "->" NFType      -> Type {cons("FunctionType"), avoid}
 
     "@doc" STRING                  -> MetaAnno {cons("DocAnno")}
     "@cond" Exp                    -> MetaAnno {cons("ConditionalAnno")}

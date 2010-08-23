@@ -48,3 +48,7 @@ rules
 
   normalize :
     ArrayType(t) -> GenericType(QId("mobl", "Array"), [t])
+
+  normalize :
+    FunctionType(t*, rt) -> GenericType(QId("mobl", $[Function[n]]), [t*, rt])
+    where n := <length> t*

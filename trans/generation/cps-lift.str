@@ -247,11 +247,10 @@ strategies
     ?Call(qid, e*)
     ; (
          ExternalSyncFunction(_, _, _, _) := <lookup-function> qid
-      <+ ExternalType(_, _, _, _) := <lookup-type> qid
-      <+ ExternalEntity(_, _, _, _) := <lookup-type> qid
+      <+ <lookup-type> SimpleType(qid)
       <+ _{_} := qid
       )
-    ; <map(is-sync)> e*
+    ; <map(is-sync <+ debug(!"Non-sync arg: "); fail)> e*
 
   is-sync =
     ?Tuple(e, e*)
