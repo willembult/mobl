@@ -1,0 +1,42 @@
+module mobl::canvas
+
+external type Graphics {
+  fillStyle : String
+  strokeStyle : String
+
+  sync function restore() : void
+  sync function save() : void
+
+  sync function clearRect(x : Num, y : Num, w : Num, h : Num) : void
+  sync function fillRect(x : Num, y : Num, w : Num, h : Num) : void
+  sync function strokeRect(x : Num, y : Num, w : Num, h : Num) : void
+
+  sync function arc(x : Num, y : Num, radius : Num, startAngle : Num, endAngle : Num, anticlockwise : Bool = false) : void
+
+  sync function beginPath() : void
+  sync function closePath() : void
+  sync function fill() : void
+}
+
+external function setupCanvas(id : String) : Graphics
+
+control canvas(g : Graphics, width : Num = 300, height : Num = 300, ontouchstart : Callback = null, ontouchmove : Callback = null, ontouchend : Callback = null) {
+  var id = "canvas" + random(999)
+  script {
+    async {
+      g = setupCanvas(id);
+    }
+  }
+  <canvas id=id width=width height=height ontouchdown=ontouchstart ontouchdrag=ontouchmove ontouchup=ontouchend>
+  </canvas>
+}
+
+<javascript>
+mobl.canvas.setupCanvas = function(id, callback) {
+  setTimeout(function() {
+    var canvas = $("#" + id)[0];
+    callback(canvas.getContext('2d'));
+  }, 200);
+};
+</javascript>
+

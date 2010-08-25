@@ -169,7 +169,10 @@ strategies
 
   rename :
     Callback(body) -> Callback(body2)
-    with action-scope(body2 := <rename-all> body)
+    with action-scope(
+           <rename-var> ("event", SimpleType(QId("mobl", "Dynamic")))
+           ; body2 := <rename-all> body
+         )
 
   rename :
     AnonymousControl(body) -> AnonymousControl(body2)

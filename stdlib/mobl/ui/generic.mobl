@@ -3,9 +3,10 @@ module mobl::ui::generic
 import mobl
 
 load mobl/ui/generic.css
+/*
 load mobl/ui/generic/css-beziers.js
 load mobl/ui/generic/touchscroll.js
-load mobl/ui/generic/touchscroll.css
+load mobl/ui/generic/touchscroll.css*/
 
 resource mobl/ui/generic/arrow.png
 resource mobl/ui/generic/contextmenu.png
@@ -27,6 +28,12 @@ control sideButton(text : String, onclick : Callback = null) {
 
 control backButton(text : String = "Back", onclick : Callback = { screen return; }) {
   <span class="backButton" onclick=onclick databind=text/>
+}
+
+control block() {
+  <div>
+  elements()
+  </div>
 }
 
 control group() {

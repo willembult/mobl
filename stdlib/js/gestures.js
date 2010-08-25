@@ -130,3 +130,60 @@ jQuery.fn.tap = function (callback) {
      this.click(callback);
     // }
 };
+
+$.event.special.touchdown = {
+    add: function (callback) {
+      var that = $(this);
+      that.mousedown(function(event) {
+        this.dragging = true;
+        event.x = event.offsetX || event.layerX - that.offset().left;
+        event.y = event.offsetY || event.layerY - that.offset().top;
+        callback(event);
+      });
+      that.bind('touchstart', function(event) {
+        event = event.originalEvent;
+        if(event.touches.length === 1) {
+          var touch = event.touches[0];
+          event.x = touch.pageX - that.offset().left;
+          event.y = touch.pageY - that.offset().top;
+          callback(event);
+        }
+      });
+    }
+};
+
+$.event.special.touchdrag = {
+    add: function (callback) {
+      var that = $(this);
+      that.mousemove(function(event) {
+        if(this.dragging) {
+          event.x = event.offsetX || event.layerX - that.offset().left;
+          event.y = event.offsetY || event.layerY - that.offset().top;
+          callback(event);
+        }
+      });
+      that.bind('touchmove', function(event) {
+        event = event.originalEvent;
+        if(event.touches.length === 1) {
+          var touch = event.touches[0];
+          event.x = touch.pageX - that.offset().left;
+          event.y = touch.pageY - that.offset().top;
+          callback(event);
+        }
+      });
+    }
+};
+
+$.event.special.touchup = {
+    add: function (callback) {
+      var that = $(this);
+      that.mouseup(function(event) {
+        this.dragging = false;
+        callback(event);
+      });
+      that.bind('touchend', function(event) {
+        event = event.originalEvent;
+        callback(event);
+      });
+    }
+};

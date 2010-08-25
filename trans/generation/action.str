@@ -311,8 +311,8 @@ rules // Expressions
     Choice(e, e-true, e-false) -> $[[<expression-to-js> e] ? [<expression-to-js> e-true] : [<expression-to-js> e-false]]
 
   exp-to-js :
-    Callback(stat*) -> $[function(evt) {
-                           if(evt) evt.stopPropagation();
+    Callback(stat*) -> $[function(event) {
+                           if(event) event.stopPropagation();
                            [<cps-lift-expressions; cps-statements> stat*]
                          }]
 
