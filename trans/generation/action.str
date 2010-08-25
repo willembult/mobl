@@ -312,7 +312,7 @@ rules // Expressions
 
   exp-to-js :
     Callback(stat*) -> $[function(event) {
-                           if(event) event.stopPropagation();
+                           if(event && event.stopPropagation) event.stopPropagation();
                            [<cps-lift-expressions; cps-statements> stat*]
                          }]
 

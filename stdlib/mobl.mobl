@@ -7,6 +7,7 @@ resource js/jquery-ui-1.7.2.custom.min.js
 resource js/persistence.js
 resource js/persistence.store.sql.js
 resource js/persistence.store.websql.js
+resource js/persistence.store.memory.js
 resource js/persistence.search.js
 resource js/gestures.js
 resource js/iscroll.js
@@ -137,6 +138,9 @@ external type DateTime {
   sync function getTime() : Num
 }
 
+external function sleep(ms : Num) : void
+external sync function repeat(ms : Num, fn : Callback) : void
+
 external type Math {
   static sync function round(n : Num) : Num
   static sync function floor(n : Num) : Num
@@ -239,6 +243,14 @@ control label(s : Object, onclick : Callback = null) {
 }
 
 <javascript>
+mobl.sleep = function(time, callback) {
+  setTimeout(callback, time);
+};
+
+mobl.repeat = function(time, callback) {
+  setInterval(callback, time);
+};
+
 mobl.alert = function(s, _, callback) {
     alert(s);
     if(callback) callback();

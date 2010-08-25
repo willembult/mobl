@@ -19,7 +19,11 @@ strategies
         <meta names="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         [<filter(res-to-script-html)> res*]
         <script type="application/x-javascript" charset="utf-8">
-            persistence.store.websql.config(persistence, '[<!<un-double-quote> dbname <+ <qid-to-js> qid>]', 'mobl database', 5 * 1024 * 1024, '1.0');
+            if (window && window.google && google.gears || window.openDatabase) {
+              persistence.store.websql.config(persistence, '[<!<un-double-quote> dbname <+ <qid-to-js> qid>]', 'mobl database', 5 * 1024 * 1024, '1.0');
+            } else {
+              persistence.store.memory.config(persistence);
+            }
             mobl.icon = "[<<path-to-string> icon <+ !"img/default-icon.png">]";
             mobl.load('[<qid-to-path> qid].js');
             $(function(){

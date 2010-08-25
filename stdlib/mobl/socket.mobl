@@ -11,7 +11,7 @@ external type Socket {
 
 mobl.socket.Socket = function(fn) {
   this.sock = new io.Socket(null, {transports: [
-    //'websocket', //breaks chrome5, should be preferred :(
+    'websocket', //breaks chrome5, should be preferred :(
     'server-events', //i assume used in Opera, never seen it used
     //'flashsocket', //breaks android 2.1, chrome5
     'htmlfile', //preferred in IE8

@@ -134,7 +134,9 @@ jQuery.fn.tap = function (callback) {
 $.event.special.touchdown = {
     add: function (callback) {
       var that = $(this);
+
       that.mousedown(function(event) {
+        event.preventDefault();
         this.dragging = true;
         event.x = event.offsetX || event.layerX - that.offset().left;
         event.y = event.offsetY || event.layerY - that.offset().top;
@@ -142,6 +144,7 @@ $.event.special.touchdown = {
       });
       that.bind('touchstart', function(event) {
         event = event.originalEvent;
+        event.preventDefault();
         if(event.touches.length === 1) {
           var touch = event.touches[0];
           event.x = touch.pageX - that.offset().left;
@@ -156,6 +159,7 @@ $.event.special.touchdrag = {
     add: function (callback) {
       var that = $(this);
       that.mousemove(function(event) {
+        event.preventDefault();
         if(this.dragging) {
           event.x = event.offsetX || event.layerX - that.offset().left;
           event.y = event.offsetY || event.layerY - that.offset().top;
@@ -164,12 +168,16 @@ $.event.special.touchdrag = {
       });
       that.bind('touchmove', function(event) {
         event = event.originalEvent;
+        event.preventDefault();
         if(event.touches.length === 1) {
           var touch = event.touches[0];
           event.x = touch.pageX - that.offset().left;
           event.y = touch.pageY - that.offset().top;
           callback(event);
         }
+      });
+      that.mouseup(function() {
+        this.dragging = false;
       });
     }
 };
@@ -178,11 +186,13 @@ $.event.special.touchup = {
     add: function (callback) {
       var that = $(this);
       that.mouseup(function(event) {
+        event.preventDefault();
         this.dragging = false;
         callback(event);
       });
       that.bind('touchend', function(event) {
         event = event.originalEvent;
+        event.preventDefault();
         callback(event);
       });
     }
