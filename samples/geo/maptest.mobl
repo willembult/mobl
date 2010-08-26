@@ -1,7 +1,7 @@
-application maptest
+application samples::geo::maptest
 
 import mobl::location
-import mobl
+import mobl::maps
 import mobl::ui::generic
 
 screen root() {
@@ -11,9 +11,12 @@ screen root() {
       position = getPosition();
     }
   }
-  header("A map")
+  header("Your location")
   cond(position != null) {
     label("Position: " + position.latitude + ", " + position.longitude)
-    mobl::maps::map(position)
+    map(position, zoom=15)
+  }
+  cond(position == null) {
+    "Determining current location... (requires recent webkit or Firefox)"
   }
 }

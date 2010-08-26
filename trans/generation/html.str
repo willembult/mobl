@@ -14,6 +14,7 @@ strategies
 <html [html-manifest]>
     <head>
         <title>[<!<un-double-quote> title <+ <qid-to-js> qid>]</title>
+        <base href="[<qid-to-parent-dir; separate-by(|"/")> qid]" />
         <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta names="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -42,6 +43,12 @@ strategies
        ; <filter(?IconSetting(icon))> setting*
        ; html-manifest := <fetch(?OfflineSetting(True())); !$[manifest="[<qid-to-path> qid].manifest"] <+ !""> setting*
 
+  qid-to-parent-dir :
+    s -> []
+    where is-string
+
+  qid-to-parent-dir :
+    QId(qid, x) -> [".."|<qid-to-parent-dir> qid]
 
   generate-chrome-manifest(|res*) :
     Application(qid, setting*, _) -> $[

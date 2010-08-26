@@ -48,6 +48,7 @@ exports
 
   context-free syntax %% Paths
     {FILENAME "/"}+                  -> Path {cons("Path")}
+    STRING                           -> Path {cons("QuotedPath")}
 
   context-free syntax %% native javascript
 

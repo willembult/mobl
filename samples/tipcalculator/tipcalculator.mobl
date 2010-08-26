@@ -1,4 +1,4 @@
-application tipcalculator
+application samples::tipcalculator::tipcalculator
 
 import mobl::ui
 

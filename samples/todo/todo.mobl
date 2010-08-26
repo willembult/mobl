@@ -1,0 +1,70 @@
+application samples::todo::todo
+
+title "Todo"
+database "todo"
+
+import mobl
+import mobl::ui::ios
+
+entity Task {
+  name        : String (searchable)
+  description : String (searchable)
+  done        : Bool
+  date        : DateTime
+}
+
+screen addTask() {
+  var newTask : Task = Task()
+
+  header("Add") {
+    backButton("Back", onclick={ screen return; })
+  }
+  group {
+    item { textField(newTask.name, placeholder="Task name") }
+  }
+  button("Add", onclick={
+    add(newTask);
+    screen return;
+  })
+}
+
+screen editTask(t : Task) {
+  header("Edit") {
+    button("Done", onclick={ screen return; })
+  }
+  group {
+    item { textField(t.name, placeholder="Task name") }
+    item { textField(t.description, placeholder="Task description") }
+  }
+  button("Delete", onclick={
+    remove(t);
+    screen return;
+  })
+}
+
+screen root() {
+  control defaultView(t : Task, editing : Bool) {
+    item(onswipe={ editing = true; }) {
+      checkBox(t.done) " "
+      label(t.name)
+    }
+  }
+  control editView(t : Task, editing : Bool) {
+    item(onswipe={ editing = false; }) {
+      checkBox(t.done) " "
+      label(t.name)
+      sideButton("Delete", onclick={ remove(t); })
+    }
+  }
+  var searchQuery = ""
+  header("Tasks") {
+    button("Add", onclick={ addTask(); })
+  }
+  searchBox(searchQuery)
+  group {
+    list(t in Task.searchPrefix(searchQuery)) {
+      var editing = false
+      (editing ? editView : defaultView)(t, editing)
+    }
+  }
+}

@@ -40,7 +40,7 @@ strategies
 ]
 
   definition-to-js :
-    Load(path@Path(part*)) -> <emit> $[mobl.load('[<path-to-string> path]');]
+    Load(path@Path(part*)) -> <emit> $[mobl.loadjs('[<path-to-string> path]');]
     with path-str := <path-to-string> path
        ; <cut-off-last-element; separate-by(|"/"); <concat-strings> [<ProjectPath>, "/www/"|<id>]; ensure-existing-dir> part*
         ; <copy-file> (<resolve-file> path-str, $[[<ProjectPath>]/www/[path-str]])
@@ -53,6 +53,9 @@ strategies
 
   path-to-string :
     Path(s*) -> <separate-by(|"/"); concat-strings> s*
+
+  path-to-string :
+    QuotedPath(s) -> <un-double-quote> s
 
   definition-to-js =
     function-to-js
