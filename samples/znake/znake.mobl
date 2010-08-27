@@ -1,7 +1,7 @@
 application znake
 
 import mobl::canvas
-import mobl::socket2
+import mobl::peersocket
 import mobl::ui::generic
 import data
 

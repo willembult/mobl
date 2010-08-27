@@ -1,0 +1,91 @@
+module mobl::peersocket
+
+load mobl/socketio.js
+
+external type Socket {
+  static sync function join(name : String, onmessage : Dynamic -> void, ondisconnect : Function0<void> = null) : Socket
+  sync function send(obj : Dynamic) : void
+}
+
+external type ServerSocket {
+  static sync function create(name : String, onmessage : Num * Dynamic -> void, onconnect : Num -> void = null, ondisconnect : Num -> void = null) : ServerSocket
+  sync function broadcast(obj : Dynamic) : void
+}
+
+<javascript>
+
+mobl.peersocket.clientConnections = {};
+mobl.peersocket.serverConnections = {};
+
+mobl.peersocket.socket = new io.Socket(null, {transports: [
+    'websocket', //breaks chrome5, should be preferred :(
+    'server-events', //i assume used in Opera, never seen it used
+    //'flashsocket', //breaks android 2.1, chrome5
+    'htmlfile', //preferred in IE8
+    'xhr-multipart', //not supported on android 2.1, chrome5, preferred in FF3.6
+    'xhr-polling' //preferred in chrome5, android 2.1, iPhone
+]});
+mobl.peersocket.socket.connect();
+mobl.peersocket.socket.on('message', function(msg) {
+  var parsed = JSON.parse(msg);
+  var conn;
+  switch(parsed.type) {
+    case 'message':
+      conn = mobl.peersocket.serverConnections[parsed.server];
+      conn.onmessage(parsed.client, parsed.message);
+      break;
+    case 'connect':
+      conn = mobl.peersocket.serverConnections[parsed.server];
+      conn.onconnect(parsed.client);
+      break;
+    case 'disconnect':
+      conn = mobl.peersocket.serverConnections[parsed.server];
+      conn.ondisconnect(parsed.client);
+      break;
+    case 'broadcast':
+      conn = mobl.peersocket.clientConnections[parsed.server];
+      conn.onmessage(parsed.message);
+      break;
+    case 'server-disconnect':
+      conn = mobl.peersocket.clientConnections[parsed.server];
+      conn.ondisconnect(parsed.client);
+      break;
+  }
+});
+
+mobl.peersocket.ServerSocket = function(name, onmessage, onconnect, ondisconnect) {
+  this.onmessage = onmessage || function() {};
+  this.onconnect = onconnect || function() {};
+  this.ondisconnect = ondisconnect || function() {};
+  this.name = name;
+};
+
+mobl.peersocket.ServerSocket.create = function(name, onmessage, onconnect, ondisconnect) {
+  mobl.peersocket.socket.send(JSON.stringify({type: 'create', name: name}));
+  var sock = new mobl.peersocket.ServerSocket(name, onmessage, onconnect, ondisconnect);
+  mobl.peersocket.serverConnections[name] = sock;
+  return sock;
+};
+
+mobl.peersocket.ServerSocket.prototype.broadcast = function(obj) {
+  mobl.peersocket.socket.send(JSON.stringify({type: 'broadcast', server: this.name, message: obj}));
+};
+
+mobl.peersocket.Socket = function(name, onmessage, ondisconnect) {
+  this.onmessage = onmessage || function() {};
+  this.ondisconnect = ondisconnect || function() {};
+  this.name = name;
+};
+
+mobl.peersocket.Socket.join = function(name, onmessage, ondisconnect) {
+  mobl.peersocket.socket.send(JSON.stringify({type: 'join', name: name}));
+  var sock = new mobl.peersocket.Socket(name, onmessage, ondisconnect);
+  mobl.peersocket.clientConnections[name] = sock;
+  return sock;
+};
+
+mobl.peersocket.Socket.prototype.send = function(obj) {
+  mobl.peersocket.socket.send(JSON.stringify({type: 'message', server: this.name, message: obj}));
+};
+
+</javascript>

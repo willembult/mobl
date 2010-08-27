@@ -1,6 +1,6 @@
 application server
 
-import mobl::socket2
+import mobl::peersocket
 import mobl::ui::generic
 import data
 
@@ -23,7 +23,7 @@ screen root() {
   var sock : ServerSocket = null
   var FIELD_WIDTH = 50
   var FIELD_HEIGHT = 50
-  var COLORS = ["black", "red", "blue", "green", "orange", "darkgrey"]
+  var COLORS = ["black", "red", "blue", "green", "orange", "darkgrey", "purple"]
   var players : [LocalPlayer] = []
   var apples  : [Apple] = []
   var droppings  : [Dropping] = []
@@ -31,7 +31,6 @@ screen root() {
 
   function receiveMessage(clientId : Num, message : String) {
     var player : LocalPlayer = clientToPlayer.get(clientId);
-    log("Got message from " + clientId + ": " + message);
     if(message == "left") {
       if(player.dx == -1 && player.dy == 0) {
         (player.dx, player.dy) = (0, 1);
@@ -212,5 +211,5 @@ screen root() {
     });
   }
   header("Server")
-  button("Turn", onclick={ turn(); })
+  "It's running..."
 }
