@@ -40,7 +40,7 @@ strategies
 ]
 
   definition-to-js :
-    Load(path@Path(part*)) -> <emit> $[mobl.loadjs('[<path-to-string> path]');]
+    Load(path@Path(part*)) -> <emit> $[mobl.load('[<path-to-string> path]');]
     with path-str := <path-to-string> path
        ; <cut-off-last-element; separate-by(|"/"); <concat-strings> [<ProjectPath>, "/www/"|<id>]; ensure-existing-dir> part*
         ; <copy-file> (<resolve-file> path-str, $[[<ProjectPath>]/www/[path-str]])
@@ -147,23 +147,22 @@ rules // Statements
     VarDeclInferred(x, e) -> $[var [x] = [<expression-to-js> e];]
 
   stat-to-js :
-    If(e, true-stat*, false-stat*) ->
-      $[if([<expression-to-js> e]) {
-          [<statements-to-js> true-stat*]
-        } else {
-          [<statements-to-js> false-stat*]
-        }]
+    Block(stat*) ->
+    $[{
+        [<statements-to-js> stat*]
+      }]
+
+  stat-to-js :
+    If(e, true-stat, false-stat) -> <concat-strings> ["if(", <expression-to-js> e, ") ", <statement-to-js> true-stat, " else ", <statement-to-js> false-stat]
 
   stat-to-js :
     For(lvalue, _, e, stat*) ->
       $[var [coll] = [<expression-to-js> e];
         var [length] = [coll].length;
         for(var [i] = 0; [i] < [length]; [i]++) {
-          (function() {
-            [vardecls]
-            [assigns]
-            [<statements-to-js> stat*]
-          }());
+          [vardecls]
+          [assigns]
+          [<statements-to-js> stat*]
         }]
     with coll := <newname> "coll"
        ; length := <newname> "length"
@@ -278,9 +277,11 @@ rules // Expressions
     with args := <map(expression-to-js); separate-by(!", "); concat-strings> e*
 
   exp-to-js :
-    CollectionCons(qid, _, e*) -> $[$[$[args]$]$]
-    where not(QId("mobl", "Collection") := qid)
+    CollectionCons(QId("mobl", "Array"), _, e*) -> $[$[$[args]$]$]
     with args := <map(expression-to-js); separate-by(!", "); concat-strings> e*
+
+  exp-to-js :
+    CollectionCons(QId("mobl", "Map"), _, e*) -> $[new mobl.Map()]
 
   exp-to-js :
     EntityCons(SimpleType(qid), propval*) -> $[new [<qid-to-js> qid]({[propvals]})]

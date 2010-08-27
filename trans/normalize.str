@@ -14,7 +14,7 @@ rules
     SyncFunctionNoReturnType(manno*, name, farg*, stat*) -> SyncFunction(manno*, name, farg*, SimpleType(QId("mobl", "void")), stat*)
 
   normalize :
-    IfNoElse(e, stat*) -> If(e, stat*, [])
+    IfNoElse(e, block) -> If(e, block, Block([]))
 
   normalize :
     HtmlShort(tag, attr*) -> Html(tag, attr*, [], tag)

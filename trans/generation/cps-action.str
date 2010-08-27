@@ -93,14 +93,16 @@ strategies
     [ExpStat(e)|stat*] -> <cps-expression(|stat*)> e
 
   cps-statements :
-    [If(e, true-stat*, false-stat*)|stat*] ->
+    [If(e, true-stat, false-stat)|stat*] ->
       <cps-expression(|[
-        $[if(result__) {
-            [<cps-statements> [true-stat*, stat*]]
-          } else {
-            [<cps-statements> [false-stat*, stat*]]
-          }
-]])> e
+        <concat-strings> ["if(result__) ", <cps-statements> [true-stat|stat*], " else ", <cps-statements> [false-stat|stat*]]])> e
+
+
+  cps-statements :
+    [Block(stats)|stats2] ->
+        $[{
+            [<concat; cps-statements> [stats, stats2]]
+          }]
 
   cps-statements :
     [For(lvalue, _, e, stats)|stat*] ->

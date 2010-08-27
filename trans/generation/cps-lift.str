@@ -70,13 +70,17 @@ strategies
     [Async(<cps-lift-expressions> stat*)|<cps-lift-expressions> stats]
 
   cps-lift-exprs :
-    [If(e, true-stat*, false-stat*)|stats] ->
-    <concat> [stats2, [If(e2, <cps-lift-expressions> true-stat*, <cps-lift-expressions> false-stat*)|<cps-lift-expressions> stats]]
+    [If(e, true-stat, false-stat)|stats] ->
+    <concat> [stats2, [If(e2, <cps-lift-expressions> [true-stat], <cps-lift-expressions> [false-stat])|<cps-lift-expressions> stats]]
     where not(<is-sync> e)
     with {| Exp
           : stats2 := <cps-lift-expression> e
           ; e2 := <Exp>
           |}
+
+  cps-lift-exprs :
+    [Block(stat*)|stats] ->
+    [Block(<cps-lift-expressions> stat*)|<cps-lift-expressions> stats]
 
   cps-lift-exprs :
     [For(x, t, e, stat*)|stats] ->
@@ -88,8 +92,8 @@ strategies
           |}
 
   cps-lift-exprs :
-    [If(e, true-stat*, false-stat*)|stats] ->
-    [If(e, <cps-lift-expressions> true-stat*, <cps-lift-expressions> false-stat*)|<cps-lift-expressions> stats]
+    [If(e, true-stat, false-stat)|stats] ->
+    [If(e, <cps-lift-expressions; ?[<id>]> [true-stat], <cps-lift-expressions; !Block(<id>)> [false-stat])|<cps-lift-expressions> stats]
     where <is-sync> e
 
   cps-lift-exprs :

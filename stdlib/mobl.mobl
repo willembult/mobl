@@ -75,6 +75,15 @@ external type Array<T> {
   sync function map(fn : Function1<T, Dynamic>) : [Dynamic]
   sync function filter(fn : Function1<T, Bool>) : [T]
   sync function contains(el : T) : Bool
+  sync function splice(idx : Num, numToDelete : Num) : Array<T>
+  sync function insert(idx : Num, item : T) : void
+  sync function remove(item : T) : void
+}
+
+external type Map<K, V> {
+  sync function get(k : K) : V
+  sync function set(k : K, v : V) : void
+  sync function keys() : [K]
 }
 
 external type Tuple1<T1> {
@@ -376,6 +385,10 @@ Array.prototype.list = function(tx, callback) {
   callback(valueCopy);
 };
 
+Array.prototype.insert = function(idx, item) {
+  this.splice(idx, 0, item);
+};
+
 Array.prototype.get = function(idx) {
   return this[idx];
 };
@@ -397,9 +410,41 @@ Array.prototype.contains = function(el) {
   return false;
 };
 
+Array.prototype.remove = function(el) {
+  for(var i = 0; i < this.length; i++) {
+    if(this[i] === el) {
+      this.splice(i, 1);
+      return;
+    }
+  }
+};
+
 Array.prototype.addEventListener = function() {}
 
 mobl.dummyMapper = function(data, callback) {
   callback(data);
 };
+
+mobl.Map = function() {
+  this.data = {};
+};
+
+mobl.Map.prototype.set = function(k, v) {
+  this.data[k] = v;
+};
+
+mobl.Map.prototype.get = function(k) {
+  return this.data[k];
+};
+
+mobl.Map.prototype.keys = function() {
+  var keys = [];
+  for(var p in this.data) {
+    if(this.data.hasOwnProperty(p)) {
+      keys.push(p);
+    }
+  }
+  return keys;
+};
+
 </javascript>
