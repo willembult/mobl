@@ -127,6 +127,16 @@ mobl.ObservableObject = function(props) {
 
 mobl.ObservableObject.prototype = new persistence.Observable();
 
+mobl.ObservableObject.prototype.toJSON = function() {
+  var obj = {};
+  for(var p in this._data) {
+    if(this._data.hasOwnProperty(p)) {
+      obj[p] = this._data[p];
+    }
+  }
+  return obj;
+};
+
 function log(s) {
     console.log(s);
 }
@@ -148,6 +158,13 @@ mobl.implementInterface = function(sourceModule, targetModule, items) {
     }
 
     Tuple.prototype = new persistence.Observable();
+    Tuple.prototype.toJSON = function() {
+      var obj = {};
+      for(var i = 0; i < this.length; i++) {
+        obj['_' + (i+1)] = this['_' + (i+1)];
+      }
+      return obj;
+    };
 
     function Template(renderFn) {
         this.render = renderFn;
