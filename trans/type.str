@@ -45,6 +45,9 @@ strategies
     Choice(e, e1, e2) -> <type-of> e1
 
   eq-type-of :
+    Not(e) -> SimpleType(QId("mobl", "Bool"))
+
+  eq-type-of :
     Brackets(e) -> <type-of> e
 
   eq-type-of :

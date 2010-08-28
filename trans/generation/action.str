@@ -227,6 +227,9 @@ rules // Expressions
     where not(<is-ref> qid)*/
 
   exp-to-js :
+    Not(e) -> $[![<expression-to-js> e]]
+
+  exp-to-js :
     Var(qid) -> <qid-to-js> qid
     where not(<is-ref> qid)
 

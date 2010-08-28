@@ -20,6 +20,24 @@ type LocalPlayer {
 }
 
 screen root() {
+  var name = ""
+  header("Run a server") {
+    button("Run", onclick={
+      if(name) {
+        runServer(name.substr(0, 20));
+      } else {
+        alert("Please fill in a name (max 20 characters)");
+      }
+    })
+  }
+  group {
+    item {
+      textField(name, placeholder="Pick a server name")
+    }
+  }
+}
+
+screen runServer(name : String) {
   var sock : ServerSocket = null
   var FIELD_WIDTH = 50
   var FIELD_HEIGHT = 50
@@ -200,7 +218,10 @@ screen root() {
   }
 
   script {
-    sock = ServerSocket.create("znake", onmessage=receiveMessage, onconnect=onConnect, ondisconnect=onDisconnect);
+    sock = ServerSocket.create(name, onmessage=receiveMessage, onconnect=onConnect, ondisconnect=onDisconnect);
+    if(!sock) {
+      alert("Could not start a server with that name, maybe it's already in use?");
+    }
     placeApple();
     placeApple();
     placeApple();
@@ -211,5 +232,7 @@ screen root() {
     });
   }
   header("Server")
-  "It's running..."
+  cond(sock) {
+    "It's running..."
+  }
 }

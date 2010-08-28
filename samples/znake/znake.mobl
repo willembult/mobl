@@ -9,11 +9,28 @@ resource apple.gif
 resource dropping.gif
 
 screen root() {
+  header("ZNake")
+  var servers = Socket.listServers()
+  "Pick a server from the list"
+  group {
+    list(s in servers) {
+      item(onclick={ choosePlayer(s); }) { label(s) }
+    }
+    cond(servers.length == 0) {
+      item { "No servers are running currently. Run your own (click link below)." }
+    }
+  }
+  link("server.html", target="_blank") {
+    "Run your own server (from your browser!)"
+  }
+}
+
+screen choosePlayer(serverName : String) {
   var playerName = ""
-  header("Snake MMOG") {
+  header("Player name") {
     button("Play", onclick={
       if(playerName != "") {
-        play(playerName.substr(0, 20).replace(/<[^>]*>/, ""));
+        play(serverName, playerName.substr(0, 20).replace(/<[^>]*>/, ""));
       } else {
         alert("Name cannot be empty.");
       }
@@ -26,9 +43,7 @@ screen root() {
   }
 }
 
-external sync function registerKeyPress(handler : Callback) : void
-
-screen play(playerName : String) {
+screen play(serverName : String, playerName : String) {
   var g : Graphics = null
   var appleImg = loadImage("apple.gif")
   var droppingImg = loadImage("dropping.gif")
@@ -72,7 +87,7 @@ screen play(playerName : String) {
   }
 
   function disconnected() {
-    alert("Disconnected.");
+    alert("Disconnected from server (maybe server shut down?)");
   }
 
   var socket : Socket = null
@@ -80,7 +95,7 @@ screen play(playerName : String) {
   script {
     async {
       sleep(200);
-      socket = Socket.join("znake", onmessage=receiveUpdate, ondisconnect=disconnected);
+      socket = Socket.join(serverName, onmessage=receiveUpdate, ondisconnect=disconnected);
       socket.send(playerName);
     }
     registerKeyPress({
@@ -108,6 +123,8 @@ screen play(playerName : String) {
   }
   canvas(g, 500, 500)
 }
+
+external sync function registerKeyPress(handler : Callback) : void
 
 <javascript>
 znake.registerKeyPress = function(cb) {

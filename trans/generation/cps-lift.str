@@ -219,6 +219,15 @@ rules
          |}
        ; rules ( Exp :+= Var(v) )
 
+  cps-lift-expression :
+    Not(e1) -> <concat> [stats1, [VarDeclInferred(v, Not(e2))]]
+    with v := <newname> "tmp"
+       ; {| Exp
+          : stats1 := <cps-lift-expression> e1
+          ; e2 := <Exp>
+         |}
+       ; rules ( Exp :+= Var(v) )
+
 strategies
 
   is-sync = ?Num(_)
@@ -272,6 +281,10 @@ strategies
   is-sync =
     ?List(e*)
     ; <map(is-sync)> e*
+
+  is-sync =
+    ?Not(e)
+    ; <is-sync> e
 
   is-sync =
     ?MethodCall(e, x, e*)

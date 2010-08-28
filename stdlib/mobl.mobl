@@ -251,6 +251,12 @@ control label(s : Object, onclick : Callback = null) {
   <span databind=s onclick=onclick></span>
 }
 
+control link(url : String, target : String = null) {
+  <a href=url target=target>
+  elements()
+  </a>
+}
+
 <javascript>
 mobl.sleep = function(time, callback) {
   setTimeout(callback, time);

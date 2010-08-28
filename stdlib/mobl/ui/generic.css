@@ -14,7 +14,7 @@ div.screen {
   /*height: 100%;*/
 }
 
-div.header {
+div.screen div.header {
   background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#5c98f6),
     to(#3440e4) );
   background: -moz-linear-gradient(top, #5c98f6, #3440e4);
@@ -31,13 +31,13 @@ div.header {
   z-index: 2;
 }
 
-div.headerContainer {
+div.screen div.headerContainer {
   width: 150px;
   position: absolute;
   left: 50%;
 }
 
-div.headerText {
+div.screen div.headerText {
   position: absolute;
   left: -75px;
   width: 150px;
@@ -46,7 +46,7 @@ div.headerText {
   text-overflow: ellipsis;
 }
 
-span.button {
+div.screen span.button {
   font-family: Arial, Helvetica, sans-serif;
   text-shadow: white 0px 1px 0px;
   font-weight: bold;
@@ -64,7 +64,7 @@ span.button {
   background: -moz-linear-gradient(top, #fff, #c6def2);
 }
 
-span.sideButton {
+div.screen span.sideButton {
   position: absolute;
   right: 0.4em;
   padding: 0.3em 0.8em 0.3em 0.8em;
@@ -79,7 +79,7 @@ span.sideButton {
   background: -moz-linear-gradient(top, #fff, #c6def2);
 }
 
-span.backButton {
+div.screen span.backButton {
   -moz-border-radius: 5px;
   -webkit-border-radius: 5px;
   background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#fff),
@@ -100,11 +100,12 @@ span.backButton {
   text-shadow: white 0px 1px 0px;
   z-index: 3;
 }
-span.backButton:before {
+
+div.screen span.backButton:before {
   content: "\00ab\00a0";
 }
 
-div.header span.button {
+div.screen div.header span.button {
   float: right;
   /*height: 30px;*/
   font-size: 0.7em;
@@ -137,18 +138,18 @@ div.screen input[type=text] {
   width: 100%;
 }
 
-img.checkbox {
+div.screen img.checkbox {
   margin: 0 7px 0 3px;
   vertical-align: top;
 }
 
-ul.group {
+div.screen ul.group {
   list-style: none;
   margin: 0;
   padding: 0;
 }
 
-li.item {
+div.screen li.item {
   background-color: #FFFFFF;
   border: 1px solid #cccccc;
   border-left: 0;
@@ -165,7 +166,7 @@ li.item {
   text-overflow: ellipsis;
 }
 
-li.itemArrow {
+div.screen li.itemArrow {
   background-color: #FFFFFF;
   border: 1px solid #cccccc;
   border-left: 0;
@@ -185,11 +186,11 @@ li.itemArrow {
   text-overflow: ellipsis;
 }
 
-div.contextMenu {
+div.screen div.contextMenu {
   position: absolute;
 }
 
-div.contextMenu span.button {
+div.screen div.contextMenu span.button {
   font-family: Arial, Helvetica, sans-serif;
   text-shadow: white 0px 1px 0px;
   font-weight: bold;
@@ -208,7 +209,7 @@ div.contextMenu span.button {
 
 /* TAB BAR */
 
-div.tabbar {
+div.screen div.tabbar {
   text-align: left;
   font-size: 16px;
   z-index: 3;
@@ -218,12 +219,12 @@ div.tabbar {
   margin-bottom: 0;
 }
 
-div.tabbar > span {
+div.screen div.tabbar > span {
   margin: 0;
   padding: 0;
 }
 
-div.tabbar span.tab {
+div.screen div.tabbar span.tab {
   padding-right: 15px;
   padding-left: 15px;
   padding-top: 10px;
@@ -243,72 +244,72 @@ div.tabbar span.tab {
   -moz-border-radius-topleft: 8px;
 }
 
-div.inActiveTab {
+div.screen div.inActiveTab {
   display: none;
 }
 
-div.tabbar span.activeTabButton {
+div.screen div.tabbar span.activeTabButton {
   background-color: #5c98f6;
   color: #fefefe;
   position: relative;
   top: 1px;
 }
 
-div.scroller {
+div.screen div.scroller {
   -webkit-box-flex: 1;
   overflow: hidden;
 }
 
-table {
+div.screen table {
   padding: 8px 10px 8px 10px;
   width: 100%;
   border-spacing: 0;
 }
 
-td {
+div.screen td {
   padding: 8px;
 }
 
-tr:nth-child(even) {
+div.screen tr:nth-child(even) {
   background: #eeeeee
 }
 
-tr:nth-child(odd) {
+div.screen tr:nth-child(odd) {
   background: #ffffff
 }
 
-tbody tr:first-child td:first-child {
+div.screen tbody tr:first-child td:first-child {
   -webkit-border-top-left-radius: 8px;
   -moz-border-radius-topleft: 8px;
   border-left: 1px solid #000;
   border-top: 1px solid #000;
 }
 
-tbody tr:first-child td:last-child {
+div.screen tbody tr:first-child td:last-child {
   -webkit-border-top-right-radius: 8px;
   -moz-border-radius-topright: 8px;
   border-right: 1px solid #000;
   border-top: 1px solid #000;
 }
 
-tbody tr:last-child td:first-child {
+div.screen tbody tr:last-child td:first-child {
   -webkit-border-bottom-left-radius: 8px;
   -moz-border-radius-bottomleft: 8px;
   border-left: 1px solid #000;
   border-bottom: 1px solid #000;
 }
 
-tbody tr:last-child td:last-child {
+div.screen tbody tr:last-child td:last-child {
   -webkit-border-bottom-right-radius: 8px;
   -moz-border-radius-bottomright: 8px;
   border-right: 1px solid #000;
   border-bottom: 1px solid #000;
 }
 
-tbody tr td:first-child {
+div.screen tbody tr td:first-child {
   border-left: 1px solid #000;
 }
 
-tbody tr td:last-child {
+div.screen tbody tr td:last-child {
   border-right: 1px solid #000;
 }

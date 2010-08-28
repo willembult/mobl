@@ -48,6 +48,7 @@ exports
     "false"                       -> Exp {cons("False")}
     "null"                        -> Exp {cons("Null")}
     QId "(" {NamedExp ","}* ")"   -> Exp {cons("Call")}
+    "!" Exp                       -> Exp {cons("Not")}
 
     QId                           -> LimitedExp {cons("Var")}
     "(" Exp ")"                   -> LimitedExp {cons("Brackets")}
