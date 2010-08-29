@@ -37,6 +37,10 @@ rules
     where not(type-of)
 
   constraint-error :
+    VarDeclInferred(x, e) -> (x, $[Not able to infer type, please declare type explicitly, e.g. var [x] : SomeType = ...])
+    where not(<type-of> Var(x))
+
+  constraint-error :
     Call(qid, e*) -> (<id>, $[Wrong set of arguments. Expected arguments are: [<filter(?FArg(<id>, _)); separate-by(!", "); concat-strings> farg*]])
     where def := <lookup-function> qid
         ; (ExternalFunction(_, _, farg*, _) := def <+ ExternalSyncFunction(_, _, farg*, _) := def)

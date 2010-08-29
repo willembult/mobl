@@ -47,7 +47,7 @@ screen play(serverName : String, playerName : String) {
   var g : Graphics = null
   var appleImg = loadImage("apple.gif")
   var droppingImg = loadImage("dropping.gif")
-  var playerInfo : String = ""
+  var playerInfo = ""
 
   function drawPlayer(p : Player) {
     if(p.isDead) {
