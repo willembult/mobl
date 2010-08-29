@@ -49,28 +49,27 @@ screen play(serverName : String, playerName : String) {
   var droppingImg = loadImage("dropping.gif")
   var playerInfo : String = ""
 
-  function drawElement(e : Dynamic) {
-    if(e.type == 0) { // Player
-      var p : Player = e;
-      if(p.isDead) {
-        g.fillStyle = "red";
-        g.fillText(p.name + " is dead", 0, 10);
-      } else {
-        g.fillStyle = p.color;
-        for((x, y) in p.tail) {
-          g.fillRect(x * 10, y * 10, 10, 10);
-        }
-        g.fillStyle = "black";
-        g.fillText(p.name, p.tail.get(0)._1 * 10, p.tail.get(0)._2 * 10);
-      }
-      playerInfo = playerInfo + "<tr><td>" + p.name + ":</td><td>" + p.score + "</td></tr>";
-    } else if(e.type == 1) { // Apple
-      var apple : Apple = e;
-      g.drawImage(appleImg, apple.x*10, apple.y*10);
+  function drawPlayer(p : Player) {
+    if(p.isDead) {
+      g.fillStyle = "red";
+      g.fillText(p.name + " is dead", 0, 10);
     } else {
-      var dropping : Dropping = e;
-      g.drawImage(droppingImg, dropping.x*10, dropping.y*10);
+      g.fillStyle = p.color;
+      for((x, y) in p.tail) {
+        g.fillRect(x * 10, y * 10, 10, 10);
+      }
+      g.fillStyle = "black";
+      g.fillText(p.name, p.tail.get(0)._1 * 10, p.tail.get(0)._2 * 10);
     }
+    playerInfo = playerInfo + "<tr><td>" + p.name + ":</td><td>" + p.score + "</td></tr>";
+  }
+
+  function drawApple(apple : Apple) {
+    g.drawImage(appleImg, apple.x*10, apple.y*10);
+  }
+
+  function drawDropping(dropping : Dropping) {
+    g.drawImage(droppingImg, dropping.x*10, dropping.y*10);
   }
 
   function clear() {
@@ -78,11 +77,17 @@ screen play(serverName : String, playerName : String) {
     g.fillRect(0, 0, 500, 500);
   }
 
-  function receiveUpdate(elements : [Dynamic]) {
+  function receiveUpdate(update : Update) {
     clear();
     playerInfo = "";
-    for(e in elements) {
-      drawElement(e);
+    for(a in update.apples) {
+      drawApple(a);
+    }
+    for(d in update.droppings) {
+      drawDropping(d);
+    }
+    for(p in update.players) {
+      drawPlayer(p);
     }
   }
 

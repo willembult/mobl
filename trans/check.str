@@ -37,20 +37,28 @@ rules
     where not(type-of)
 
   constraint-error :
-    Call(qid{}, e*) -> (qid, $[Wrong set  of arguments. Expected arguments are: [<filter(?FArg(<id>, _)); separate-by(!", "); concat-strings> farg*]])
+    Call(qid, e*) -> (<id>, $[Wrong set of arguments. Expected arguments are: [<filter(?FArg(<id>, _)); separate-by(!", "); concat-strings> farg*]])
     where def := <lookup-function> qid
         ; (ExternalFunction(_, _, farg*, _) := def <+ ExternalSyncFunction(_, _, farg*, _) := def)
         ; not(<resolve-fargs> (e*, <topdown(try(strip-annos))> farg*))
 
   constraint-error :
-    Call(qid{}, e*) -> <fargs-type-not-compatible> (farg*, e*)
+    Call(qid, e*) -> <fargs-type-not-compatible> (farg*, e*)
     where def := <lookup-function> qid
         ; (ExternalFunction(_, _, farg*, _) := def <+ ExternalSyncFunction(_, _, farg*, _) := def)
 
   constraint-error :
     t@Call(qid, e*) -> (t, $[All arguments of an entity constructors need to be named, e.g. SomeEnt(name="...", age=27).])
-    where ExternalEntity(_, _, _, prop*) := <lookup-type> SimpleType(qid)
+    where ExternalEntity(_, _, _, _) := <lookup-type> SimpleType(qid)
+       <+ ExternalType(_, _, _, _) := <lookup-type> SimpleType(qid)
     where not([] := <remove-all(?NamedExp(_, _))> e*)
+
+  constraint-error :
+    t@Call(qid, e*) -> (arg, $[No such property: [arg]])
+    where ExternalEntity(_, _, _, prop*) := <lookup-type> SimpleType(qid)
+       <+ ExternalType(_, _, _, prop*) := <lookup-type> SimpleType(qid)
+    where args := <map(?NamedExp(<id>, _))> e*
+        ; arg := <fetch-elem(\ a -> a where [] := <filter(?Property(_, a, _, _))> prop* \)> args
 
   constraint-error :
     t@Choice(_, _, _) -> (t, $[Could not determine type of: [<write-to-string> t]])

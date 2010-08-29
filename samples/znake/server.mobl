@@ -71,7 +71,7 @@ screen runServer(name : String) {
       }
     } else if(message == "drop") {
       if(player.droppings > 0) {
-        droppings.push(Dropping(type=2,x=player.tail.get(player.tail.length-1)._1, y=player.tail.get(player.tail.length-1)._2));
+        droppings.push(Dropping(x=player.tail.get(player.tail.length-1)._1, y=player.tail.get(player.tail.length-1)._2));
         player.droppings = player.droppings - 1;
       }
     } else {
@@ -152,10 +152,10 @@ screen runServer(name : String) {
         }
       }
     }
-    apples.push(Apple(x=x, y=y, type=1));
+    apples.push(Apple(x=x, y=y));
   }
 
-  function handleAteApple(player : LocalPlayer, updates : [Dynamic]) {
+  function handleAteApple(player : LocalPlayer) {
     for(a in apples) {
       if(player.x == a.x && player.y == a.y) {
         apples.remove(a);
@@ -167,7 +167,7 @@ screen runServer(name : String) {
   }
 
   function turn() {
-    var updates : [Dynamic] = [];
+    var update = Update(apples=apples, droppings=droppings, players=[]);
     for(player in players) {
       if(player.deadFor == 0) {
         var maxTailLength = Math.floor(player.turns / 10) + 5;
@@ -180,41 +180,34 @@ screen runServer(name : String) {
         if(player.x < 0) {
           initPlayer(player);
           player.deadFor = 10;
-          updates.push(Player(name=player.name, isDead=true, type=0, score=player.score));
+          update.players.push(Player(name=player.name, isDead=true, score=player.score));
         } else if(player.x == FIELD_WIDTH) {
           initPlayer(player);
           player.deadFor = 10;
-          updates.push(Player(name=player.name, isDead=true, type=0, score=player.score));
+          update.players.push(Player(name=player.name, isDead=true,score=player.score));
         } else if(player.y < 0) {
           initPlayer(player);
           player.deadFor = 10;
-          updates.push(Player(name=player.name, isDead=true, type=0, score=player.score));
+          update.players.push(Player(name=player.name, isDead=true, score=player.score));
         } else if(player.y == FIELD_HEIGHT) {
           initPlayer(player);
           player.deadFor = 10;
-          updates.push(Player(name=player.name, isDead=true, type=0, score=player.score));
+          update.players.push(Player(name=player.name, isDead=true, score=player.score));
         } else if(collides(player)) {
           initPlayer(player);
           player.deadFor = 10;
-          updates.push(Player(name=player.name, isDead=true, type=0, score=player.score));
+          update.players.push(Player(name=player.name, isDead=true,  score=player.score));
         } else {
           player.tail.insert(0, (player.x, player.y));
-          updates.push(Player(name=player.name, color=player.color, tail=player.tail, isDead=false, type=0, score=player.score));
+          update.players.push(Player(name=player.name, color=player.color, tail=player.tail, isDead=false, score=player.score));
         }
-        handleAteApple(player, updates);
+        handleAteApple(player);
       } else {
         player.deadFor = player.deadFor - 1;
-        updates.push(Player(name=player.name, isDead=true, type=0, score=player.score));
+        update.players.push(Player(name=player.name, isDead=true, score=player.score));
       }
     }
-    for(a in apples) {
-      updates.push(a);
-    }
-    for(d in droppings) {
-      updates.push(d);
-    }
-    //log(updates);
-    sock.broadcast(updates);
+    sock.broadcast(update);
   }
 
   script {
