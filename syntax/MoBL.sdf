@@ -20,7 +20,7 @@ exports
     ID                               -> QId
     QId "::" ID                      -> QId {cons("QId")}
     "module" QId Definition*         -> Start {cons("Module")}
-    "application" QId Setting* Definition* -> Start {cons("Application")}
+    "application" ID Setting* Definition* -> Start {cons("Application")}
 
     "title" STRING                   -> Setting {cons("TitleSetting")}
     "database" STRING                -> Setting {cons("DatabaseSetting")}
@@ -52,7 +52,6 @@ exports
 
   context-free syntax %% native javascript
 
-    "<script>" JSString "</script>"  -> Definition {cons("Javascript"), prefer, deprecated("Please use <javascript> instead.")}
     "<javascript>" JSString "</javascript>"  -> Definition {cons("Javascript"), prefer}
 
   lexical syntax
@@ -70,7 +69,7 @@ exports
   lexical syntax
     "control" -> ID {reject}
     "var" -> ID {reject}
-    "init" -> ID {reject}
+    "script" -> ID {reject}
     "screen" -> ID {reject}
     "entity" -> ID {reject}
     "function" -> ID {reject}

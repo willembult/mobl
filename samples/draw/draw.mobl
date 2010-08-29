@@ -1,4 +1,4 @@
-application samples::draw::draw
+application draw
 
 import mobl::canvas
 import mobl::socket

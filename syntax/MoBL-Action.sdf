@@ -113,6 +113,7 @@ exports
   > Exp OperatorMethodId Exp -> Exp
   > Exp CompareMethodId Exp -> Exp
   > Exp BoolMethodId Exp -> Exp
+  > "!" Exp -> Exp
   > Exp "?" Exp ":" Exp -> Exp
 
 

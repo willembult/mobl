@@ -106,6 +106,7 @@ strategies
 
   get-all-functions =
     dr-all-keys(|"GetFunction")
+    ; filter(?_{})
 
   lookup-method :
     (t, x) -> extern

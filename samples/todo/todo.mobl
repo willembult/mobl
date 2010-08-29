@@ -1,4 +1,4 @@
-application samples::todo::todo
+application todo
 
 title "Todo"
 database "todo"

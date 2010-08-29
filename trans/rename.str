@@ -104,7 +104,7 @@ strategies
 
   rename :
     COMPLETION(_) -> <id>
-    where vars := <dr-all-keys(|"RenameId")>
+    where vars := <concat> [<all-keys-RenameId>, <all-keys-RenameFunction>]
         ; rules ( CompletionVars := vars )
 
   rename :

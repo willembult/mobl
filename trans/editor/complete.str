@@ -30,7 +30,6 @@ rules
 
   editor-complete-proposal :
     FieldAccess(e, COMPLETION(_)) -> [prop*, method*]
-    where debug(!"Completing: ")
     where t := <type-of> e
         ; method* := <get-all-methods; map(\ meth@c#([_, x, args|_]) -> (<concat> [[x, "("], <filter(?FArg(<id>, _)); separate-by(!", ")> args, [")"]], <get-doc> meth) \)> t
         ; if GenericType("Type", _) := t then
