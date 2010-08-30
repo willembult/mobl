@@ -115,4 +115,79 @@ to add an `onclick` event to the button, as follows:
       // Your code here
     })
 
+If you know other programming languages, such as Javascript, C or
+Java, you will know the `return` construct that is used to return a
+result from a _function_. Mobl has `return`s for functions as well, but
+it has `screen return`s too. Screens in mobl are just like functions,
+they take arguments, you can call them and they can return a value. 
 
+From the `root()` screen we will now call the `addTask()` screen, and
+when `addTask()` has finished whatever it needs to do, we will `screen
+return` back to `root()` (or whever it was called from).
+
+So, in the `root()` screen, adapt the header a bit. We will add an "Add" button:
+
+    header("Tasks") {
+      button("Add", onclick={
+        addTask();
+      })
+    }
+
+So, whenever somebody clicks the "Add" button, the `addTask()` screen
+will be invoked. However, there currently no way to return from it. We
+already added the "Done" button, but it doesn't do anything yet. Let's
+change that:
+
+    screen addTask() {
+      var newTask = Task(done=false, created=now())
+      header("Add") {
+        button("Done", onclick={
+          add(newTask);
+          screen return;
+        })
+      }
+      group {
+        item { textField(newTask.name) }
+      }
+    }
+
+In the `onclick` event script for the "Done" button we do two things:
+
+1. We add `newTask` to the database. This new task will now be persisted.
+2. We `screen return` back to wherever we came from (in this case the
+   `root` screen), yielding no value.
+
+### Ticking Off Tasks
+
+So, we have now created a task list where we can add tasks. But that
+is not very useful. What we need, is a way to tick items off the list.
+We want a little checkbox in front of every item to mark it as done.
+
+That requires only a small change in our `root()` screen.
+
+    list(t in Task.all()) {
+      item { 
+        checkBox(t.done)
+        " "
+        label(t.name)
+      }
+    }
+
+Every item in the list is now prefixed with a `checkBox` control (for
+the task's `done` property) and a space. That's it.
+
+It would be nice to also be able to archive those items though,
+wouldn't it? Let's add another button to do that:
+
+
+    header("Tasks") {
+      button("Archive", onclick={
+        Task.all().filter("done", "=", true).destroyAll();
+      })
+      button("Add", onclick={
+        addTask();
+      })
+    }
+
+That should do it! When you push the "Archive" button, it will remove
+all tasks objects in the database where `done` is set to `true`.

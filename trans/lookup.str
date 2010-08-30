@@ -111,7 +111,7 @@ strategies
   lookup-method :
     (t, x) -> extern
     where not(GenericType("Type", _) := t)
-    where ExternalType(_, _, super, method*) := <lookup-type> t
+    where debug(!"Lookup method: "); ExternalType(_, _, super, method*) := <lookup-type> t
         ; [esm@ExternalSyncMethod(manno*, _, _, _)] := <filter(?ExternalSyncMethod(_, x, farg*, rt))> method*
         ; !esm
         ; origin-track-forced(

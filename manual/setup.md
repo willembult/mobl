@@ -25,7 +25,7 @@ sure it says:
 
 and after the `-vmargs` line add the following:
 
-    -ss512m
+    -ss16m
     -Xms200m
     -Xmx1024m
 

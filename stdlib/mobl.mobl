@@ -24,19 +24,6 @@ resource img/default-icon.png
 @doc "A value representing nothing"
 external type void {}
 
-@doc "RegExp type"
-external type RegExp : Object {
-    global : Bool
-    ignoreCase : Bool
-    lastIndex : Num
-    multiline : Bool
-    source : String
-    sync function compile(regexp : RegExp) : void
-    sync function compile(regexp : RegExp, modifier : String) : void
-    sync function exec(string : String) : String
-    sync function test(string : String) : Bool
-}
-
 @doc "String type"
 external type String : Object {
   length : Num
@@ -65,6 +52,21 @@ external type Num : Object { }
 external type Bool : Object { }
 
 external type Dynamic : Object { }
+
+@doc "RegExp type"
+external type RegExp : Object {
+    global : Bool
+    ignoreCase : Bool
+    lastIndex : Num
+    multiline : Bool
+    source : String
+    sync function compile(regexp : RegExp) : void
+    sync function compile(regexp : RegExp, modifier : String) : void
+    sync function exec(string : String) : String
+    sync function test(string : String) : Bool
+}
+
+
 
 external type Array<T> {
   length : Num
@@ -177,7 +179,8 @@ external type Object {
 
 @doc "A virtual queryable collection"
 external type Collection<T> {
-  //function get() : Array<T>
+  function get() : Array<T>
+
   @doc "Return one item in the collection, or null if the collection is empty"
   function one() : T
 

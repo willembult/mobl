@@ -1,5 +1,13 @@
-Data
-----------
+Persistent Data
+---------------
+
+There is two kinds of data in mobl: _persistent_ data and _transient_
+data. Persistent data is stored in `entities`, data objects that are
+_tracked_ by the persistence system -- any change to them is saved
+to the database. Transient data is data that is volatile, it disappears
+when the application is shut down or when the variable goes out of scope.
+This chapter will focus on persistent data, later chapter will talk
+more about all the transient data types that mobl has to offer.
 
 Persistent data in mobl is stored locally at the device, in a
 [SQLite](http://sqlite.org) database. Rather than executing SQL
@@ -47,7 +55,7 @@ entities. The following code creates a new `Task` object and initializes
 a few properties:
 
     function createTask() {
-      var newTask = Task{}; // create Task instance
+      var newTask = Task(); // create Task instance
       newTask.done = false; // set properties
       newTask.date = now();
     }
@@ -68,7 +76,7 @@ The previous statements, plus the marking for persistence can be more
 concisely written as follows:
 
     function createTask() {
-      add(Task{ done = false, date = now() });
+      add(Task(done=false, date=now()));
     }
 
 Whenever an entity object is marked for persistence (using an `add`
@@ -120,7 +128,7 @@ over, e.g. using a `for`-loop. For instance in this `screen` definition:
 Although `Collection`s are virtual, they can be manipulated using its
 `add` and `remove` methods:
 
-    var newTask = Task{ name="New Task" };
+    var newTask = Task(name="New Task");
     category.tasks.add(newTask);
 
 This code will create a new `Task` object and add it to the `tasks`
