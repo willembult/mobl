@@ -33,6 +33,14 @@ strategies
            |}
            ; not([] := inits )
 
+  ui-lift :
+    ConditionalDisplay(e, elem*) -> <concat> [inits, [ConditionalDisplay(e2, elem*)]]
+    where {| Elems
+           : e2 := <ui-lift-expression> e
+           ; inits := <bagof-Elems>
+           |}
+           ; not([] := inits )
+
   ui-lift-expression :
     NamedExp(x, e) -> NamedExp(x, <ui-lift-expression> e)
 

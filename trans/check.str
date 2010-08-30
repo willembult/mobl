@@ -19,12 +19,12 @@ rules
 rules
 
   constraint-error :
-    t@SimpleType(_) -> (t, $[Type is not defined: [<write-to-string> t]])
+    t@SimpleType(_) -> (t, $[Type is not defined: [<pp-mobl-type> t]])
     where not(<lookup-type> t) // no entity for this type
         ; not(_{"ControlType"} := t)
 
   constraint-error :
-    t@GenericType(_, _) -> (t, $[Type is not defined: [<write-to-string> t]])
+    t@GenericType(_, _) -> (t, $[Type is not defined: [<pp-mobl-type> t]])
     where not(<lookup-type> t) // no entity for this type
 
   constraint-error :
@@ -32,7 +32,7 @@ rules
     where not(<eq> (tag, closeTag))
 
   constraint-error :
-    t@Var(qid) -> (t, $[Variable not defined: [<write-to-string> t]])
+    t@Var(qid) -> (t, $[Variable not defined: [<pp-mobl-exp> t]])
     where not("elements" := qid)
     where not(type-of)
 

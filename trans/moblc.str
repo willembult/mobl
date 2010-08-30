@@ -9,6 +9,8 @@ imports
   generation/compile
   editor-common
   include/MoBL
+  analyze
+  check
 
 strategies
 
@@ -32,7 +34,14 @@ strategies
               IncludePaths    := [".", stdlib-path])
     ; (Module(mod-name, _)  := ast <+ Application(mod-name, _, _) := ast)
     ; rules ( CompilingModule := mod-name )
-    ; <compile> ast
+    ; ast2 := <analyze> ast
+    ; errors   := <collect-all(constraint-error, conc); map(?(_, <id>); <concat-strings> ["Error: ", <id>])> ast2
+    ; warnings := <collect-all(constraint-warning, conc); map(?(_, <id>); <concat-strings> ["Warning: ", <id>])> ast2
+    ; notes    := <collect-all(constraint-note, conc); map(?(_, <id>); <concat-strings> ["Note: ", <id>])> ast2
+    ; <concat; map(debug)> [errors, warnings, notes]
+    ; if [] := errors then
+        <compile> ast2
+      end
     ; <exit> 0
 
   moblc-options =
