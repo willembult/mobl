@@ -50,14 +50,13 @@
   <!-- Stratego to Java compiler -->
   <target name="moblc" depends="rtg2sig,utils-files">
     <mkdir dir="${compiler-src-gen}/trans"/>
-    <java classname="org.strategoxt.strj.Main" failonerror="true">
+    <java classname="org.strategoxt.strj.Main" classpath="utils/strategoxt.jar" failonerror="true">
         <arg value="-i"/>
         <arg value="${trans}/${strmodule}c.str"/>
         <arg value="-o"/>
         <arg value="${compiler-src-gen}/trans/Main.java"/>
         <arg value="-p"/>
         <arg value="trans"/>
-        <!-- <arg value="-library"/> -->
         <arg value="--clean"/>
         <arg line="${build.moblc.args}"/>
         <arg line="${externaljarflags}"/>
@@ -66,10 +65,10 @@
     </java>
     <mkdir dir="${compiler-build}"/>
     <javac classpath="utils/strategoxt.jar:java-src${externaljarimport}" srcdir="${compiler-src-gen}" includes="trans/**" destdir="${compiler-build}" source="1.5" target="1.5" debug="on"/>
-      <!-- copy imported terms -->
-      <copy todir="${compiler-build}/trans">
-          <fileset dir="${compiler-src-gen}/trans" excludes="**/*.java"/>
-      </copy>
-      <jar basedir="${compiler-build}" includes="trans/**" destfile="${strmodule}c.jar"/>
+    <!-- copy imported terms -->
+    <copy todir="${compiler-build}/trans">
+        <fileset dir="${compiler-src-gen}/trans" excludes="**/*.java"/>
+    </copy>
+    <jar basedir="${compiler-build}" includes="trans/**" destfile="${strmodule}c.jar"/>
   </target>
 </project>
