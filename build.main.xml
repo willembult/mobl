@@ -48,7 +48,7 @@
 
 
   <!-- Stratego to Java compiler -->
-  <target name="moblc" depends="sdf2table,ppgen,pppack,sdf2imp">
+  <target name="moblc" depends="sdf2table,ppgen,pppack,sdf2imp,rtg2sig">
     <mkdir dir="${compiler-src-gen}/trans"/>
     <java classname="org.strategoxt.strj.Main" classpath="utils/strategoxt.jar" failonerror="true">
         <arg value="-i"/>
