@@ -25,10 +25,11 @@ strategies
     ; filename := <get-config> "-i"
     ; ast := <parse-file> filename
     ; output-path := $[[<getcwd>]/[<OutputPath <+ !"www">]]
+    ; stdlib-path := <StdLibPath <+ !$[[<getcwd>]/stdlib"]>
     ;  rules ( ProjectPath     := "."
               CachedParseAst  : filename -> ast
               OutputPath      := output-path
-              IncludePaths    := [".", "./stdlib"])
+              IncludePaths    := [".", stdlib-path])
     ; (Module(mod-name, _)  := ast <+ Application(mod-name, _, _) := ast)
     ; rules ( CompilingModule := mod-name )
     ; <compile> ast
@@ -37,13 +38,19 @@ strategies
   moblc-options =
     ArgOption("-d"
     , ?path; rules( OutputPath := path )
-    , !HelpString("-d path", "Output path")
+    , !HelpString("-d path", "Relative path to desired output directory")
+    )
+
+  moblc-options =
+    ArgOption("--stdlib"
+    , ?path; rules( StdLibPath := path )
+    , !HelpString("--stdlib path", "Absolute path to mobl standard library")
     )
 
   moblc-usage =
     <tool-doc>
       [ Usage("moblc -i foo.pil [OPTIONS]")
-      , Summary("Generates an application from a PIL definition")
+      , Summary("Generates an application from a mobl definition")
       , OptionUsage()
       , AutoReportBugs()
       ]
