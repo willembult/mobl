@@ -8,13 +8,14 @@ var connect = require('connect');
 var express = require('express');
 var io = require('socket.io');
 var repl = require('repl');
+var fs = require('fs')
 
 function log(o) {
   sys.print(sys.inspect(o) + "\n");
 }
 
 var app = express.createServer(
-  connect.staticProvider('../../www')
+  connect.staticProvider('./www')
 );
 
 app.listen(8888);
@@ -23,6 +24,15 @@ var socket = io.listen(app);
 
 clients = [];
 history = [];
+
+var buf = fs.readFileSync('dump.json');
+history = JSON.parse(buf.toString('utf-8'));
+
+saveHistory = function() {
+  var f = fs.openSync('dump.json', 'w');
+  fs.writeSync(f, JSON.stringify(history));
+  fs.closeSync(f);
+};
 
 socket.on('connection', function(client) {
     clients.push(client);

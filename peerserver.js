@@ -1,4 +1,4 @@
-/**
+tes/**
  * The server component
  * Requires node.js (http://nodejs.org) and npm (http://npmjs.org)
  * to install required libraries: npm install connect express socket.io

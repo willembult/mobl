@@ -45,7 +45,7 @@ screen runServer(name : String) {
   var players : [LocalPlayer] = []
   var apples  : [Apple] = []
   var droppings  : [Dropping] = []
-  var clientToPlayer : Map<Num, LocalPlayer> = Map<Num, LocalPlayer>()
+  var clientToPlayer = Map<Num, LocalPlayer>()
 
   function receiveMessage(clientId : Num, message : String) {
     var player : LocalPlayer = clientToPlayer.get(clientId);

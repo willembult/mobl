@@ -1,0 +1,64 @@
+module moblc
+
+imports
+  libstratego-lib
+  libstratego-xtc
+  libstratego-tool-doc
+
+imports
+  generation/compile
+  editor-common
+  include/MoBL
+
+strategies
+
+  main =
+    xtc-io-wrap(
+        moblc-options
+      , moblc-usage
+      , moblc-about
+      , ![] // xtc dependencies
+      , moblc-main
+    )
+
+  moblc-main = id
+    ; filename := <get-config> "-i"
+    ; ast := <parse-file> filename
+    ; output-path := $[[<getcwd>]/[<OutputPath <+ !"www">]]
+    ;  rules ( ProjectPath     := "."
+              CachedParseAst  : filename -> ast
+              OutputPath      := output-path
+              IncludePaths    := [".", "./stdlib"])
+    ; (Module(mod-name, _)  := ast <+ Application(mod-name, _, _) := ast)
+    ; rules ( CompilingModule := mod-name )
+    ; <compile> ast
+    ; <exit> 0
+
+  moblc-options =
+    ArgOption("-d"
+    , ?path; rules( OutputPath := path )
+    , !HelpString("-d path", "Output path")
+    )
+
+  moblc-usage =
+    <tool-doc>
+      [ Usage("moblc -i foo.pil [OPTIONS]")
+      , Summary("Generates an application from a PIL definition")
+      , OptionUsage()
+      , AutoReportBugs()
+      ]
+
+  moblc-about =
+    <tool-doc>
+      [ AutoProgram()
+      , Program("mobl compiler")
+      , Author(Person("Zef Hemel", "zef@zefhemel.com"))
+      , GNU_LGPL("2010", "Zef Hemel <zef@zefhemel>")
+      //, WebHome("http://www.webdsl.org")
+      ]
+
+    /*
+    ; pil-info(|<pp-pil-to-string> <id>)
+    ; ![]
+    */
+    //; output-pil-to-file(|<get-config <+ !"rewritten.pil"> "-o")

@@ -90,7 +90,7 @@ strategies
   import-cache-path:
     full-path -> cache-path
     with
-      project-path := <prim("SSL_EXT_projectpath")>;
+      project-path := "."; // <prim("SSL_EXT_projectpath")>;
       cache-dir    := <file-exists <+ mkdir> $[[project-path]/.cache];
       full-path'   := <string-replace(|"/", "+"); string-replace(|"\\", "+"); string-replace(|":", "+")> full-path;
       cache-path   := $[[cache-dir]/[full-path'].sig]
@@ -102,7 +102,7 @@ strategies
 
 strategies
 
-  refresh-workspace-file:
+  refresh-workspace-file :
     f -> <prim("SSL_EXT_refreshresource", f)>
 
   project-path = prim("SSL_EXT_projectpath")

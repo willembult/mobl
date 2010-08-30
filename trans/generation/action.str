@@ -42,14 +42,14 @@ strategies
   definition-to-js :
     Load(path@Path(part*)) -> <emit> $[mobl.load('[<path-to-string> path]');]
     with path-str := <path-to-string> path
-       ; <cut-off-last-element; separate-by(|"/"); <concat-strings> [<ProjectPath>, "/www/"|<id>]; ensure-existing-dir> part*
-        ; <copy-file> (<resolve-file> path-str, $[[<ProjectPath>]/www/[path-str]])
+       ; <cut-off-last-element; separate-by(|"/"); <concat-strings> [<OutputPath>, "/"|<id>]; ensure-existing-dir> part*
+        ; <copy-file> (<resolve-file> path-str, $[[<OutputPath>]/[path-str]])
 
   definition-to-js :
     Resource(path@Path(part*)) -> <id>
     with path-str := <path-to-string> path
-       ; <cut-off-last-element; separate-by(|"/"); <concat-strings> [<ProjectPath>, "/www/"|<id>]; ensure-existing-dir> part*
-       ; <copy-file> (<resolve-file> path-str, $[[<ProjectPath>]/www/[path-str]])
+       ; <cut-off-last-element; separate-by(|"/"); <concat-strings> [<OutputPath>, "/"|<id>]; ensure-existing-dir> part*
+       ; <copy-file> (<resolve-file> path-str, $[[<OutputPath>]/[path-str]])
 
   path-to-string :
     Path(s*) -> <separate-by(|"/"); concat-strings> s*

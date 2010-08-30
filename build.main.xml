@@ -15,11 +15,17 @@
   <property name="lib" location="lib" />
   <property name="build" location="bin" />
   <property name="dist" location="bin/dist" />
+  <property name="compiler-build" location="compiler/bin" />
+  <property name="compiler-src-gen" location="compiler/src" />
 
   <!-- Imports -->
   <property name="build.sdf.imports" value="" />
   <property name="build.stratego.args" value="--library
                         -I &quot;${trans}&quot; -I &quot;${basedir}&quot;
+                        -la stratego-lib -la stratego-sglr -la stratego-gpp -la stratego-xtc -la stratego-aterm" />
+
+  <property name="build.moblc.args" value="-I &quot;${trans}&quot; -I &quot;${basedir}&quot;
+    -la stratego-tool-doc
                         -la stratego-lib -la stratego-sglr -la stratego-gpp -la stratego-xtc -la stratego-aterm" />
 
   <!-- External .def and .jar locations
@@ -40,4 +46,30 @@
   <!--<target name="all" depends="sdf2table,ppgen,pppack,stratego.aster,stratego.jar,sdf2imp,refresh" /> -->
   <target name="all" depends="sdf2table,ppgen,pppack,stratego.aster,java.jar,stratego.jar,sdf2imp,refresh" />
 
+
+  <!-- Stratego to Java compiler -->
+  <target name="moblc" depends="rtg2sig,utils-files">
+    <mkdir dir="${compiler-src-gen}/trans"/>
+    <java classname="org.strategoxt.strj.Main" failonerror="true">
+        <arg value="-i"/>
+        <arg value="${trans}/${strmodule}c.str"/>
+        <arg value="-o"/>
+        <arg value="${compiler-src-gen}/trans/Main.java"/>
+        <arg value="-p"/>
+        <arg value="trans"/>
+        <!-- <arg value="-library"/> -->
+        <arg value="--clean"/>
+        <arg line="${build.moblc.args}"/>
+        <arg line="${externaljarflags}"/>
+        <arg line="${externaldefimport}"/>
+        <arg line="-I &quot;${lib}&quot; -I &quot;${include}&quot;  --cache-dir &quot;${basedir}/.cache&quot;"/>
+    </java>
+    <mkdir dir="${compiler-build}"/>
+    <javac classpath="utils/strategoxt.jar:java-src${externaljarimport}" srcdir="${compiler-src-gen}" includes="trans/**" destdir="${compiler-build}" source="1.5" target="1.5" debug="on"/>
+      <!-- copy imported terms -->
+      <copy todir="${compiler-build}/trans">
+          <fileset dir="${compiler-src-gen}/trans" excludes="**/*.java"/>
+      </copy>
+      <jar basedir="${compiler-build}" includes="trans/**" destfile="${strmodule}c.jar"/>
+  </target>
 </project>

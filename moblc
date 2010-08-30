@@ -1,0 +1,3 @@
+#!/bin/bash
+
+java -ss8m -cp moblc.jar:utils/strategoxt.jar trans.Main $*
