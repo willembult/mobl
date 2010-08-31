@@ -1,0 +1,65 @@
+module generation/server
+
+imports
+  include/MoBL
+  analyze
+  declare
+  rename
+  desugar
+  mobl
+  editor/editor
+  generation/compile
+  generation/emit
+  generation/ui
+  generation/action
+  generation/data
+  generation/script
+  generation/html
+  generation/service
+  generation/type
+  include/MoBL
+  lib/editor-common
+  sync-analysis
+
+strategies
+
+  compile =
+      (?ServerApplication(qid, setting*, def*))
+      ; where(<debug(!"Now compiling: ")> qid
+              ; rules ( Compiled : qid ))
+      ; analyze
+      ; {| ServerContext, OutputPath
+         : rules ( ServerContext := True()
+                   OutputPath    := <ServerOutputPath> )
+         ; where(alltd(compile-import-module))
+         ; desugar-all
+         ; module-to-js
+         |}
+      ; where(path := <qid-to-path> qid
+              ; js-filename   := <concat-strings; guarantee-extension(|"js")> [<ServerOutputPath>, "/", path]
+              ; <dirname; ensure-existing-dir> js-filename)
+      ; fp := <fopen> (js-filename, "w")
+      ; <fputs> ($[var [qid] = {};
+], fp)
+      ; <fputs> (<get-all>, fp)
+      ; <fputs> ($[exports.[qid] = [qid];
+], fp)
+      ; <fclose> fp
+
+  qid-to-js :
+    QId(qid, x) -> $[[qids].[x]]
+    where ServerContext
+    with qids := <qid-to-js-server> qid
+
+  qid-to-js-server :
+    QId(qid, x) -> $[[qids]__[x]]
+    with qids := <qid-to-js-server> qid
+
+  qid-to-js-server :
+    s -> s
+    where is-string
+
+  import-to-js :
+    qid -> <emit> $[var [<qid-to-js-server> qid] = require('./[<qid-to-path> qid].js');
+]
+  where ServerContext

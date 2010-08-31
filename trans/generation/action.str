@@ -8,12 +8,14 @@ imports
   lib/editor-common
   desugar
   generation/emit
+  generation/server
   generation/ui
   generation/cps-lift
   generation/cps-action
   generation/sql
   generation/data
   generation/compile
+  generation/server
   rename
   declare
   lookup
@@ -24,7 +26,7 @@ imports
 strategies
 
   module-to-js =
-    (?Module(qid, def*) <+ ?Application(qid, _, def*))
+    (?Module(qid, def*) <+ ?Application(qid, _, def*) <+ ?ServerApplication(qid, _, def*))
     ; entities := <filter(?Entity(_, _, _, _))> def*
     ; rest := <filter(not(?Entity(_, _, _, _) <+ ?Import(_)))> def*
     ; to-import := <filter(not(?Import(_))); collect-om(?QId(<id>, _)); filter(not(?qid))> def*
@@ -38,6 +40,7 @@ strategies
   import-to-js :
     qid -> <emit> $[mobl.load('[<qid-to-path> qid].js');
 ]
+	where not(ServerContext)
 
   definition-to-js :
     Load(path@Path(part*)) -> <id> //<emit> $[mobl.load('[<path-to-string> path]');]
@@ -358,4 +361,5 @@ rules // util
 
   qid-to-js :
     QId(qid, x) -> $[[qids].[x]]
+    where not(ServerContext)
     with qids := <qid-to-js> qid

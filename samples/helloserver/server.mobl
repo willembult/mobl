@@ -1,0 +1,8 @@
+server server
+
+import mobl::location
+
+function sayHello() : String {
+  var pos = getPosition();
+  return "Hello";
+}

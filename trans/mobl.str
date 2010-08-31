@@ -14,7 +14,6 @@ imports
   check
   generation/compile
   generation/emit
-  generation/compile
   normalize
   lookup
   resolve
@@ -57,8 +56,9 @@ rules // Main editor interface (defined by editor/MoBL-Builders and -References.
       rules ( ProjectPath     := project-path
               CachedParseAst  : path -> ast
               OutputPath      := <concat-strings> [project-path, "/www"]
+              ServerOutputPath      := <concat-strings> [project-path, "/server"]
               IncludePaths    := [project-path, <concat-strings> [<plugin-path>, "/stdlib"]])
-      ; (Module(mod-name, _)  := ast <+ Application(mod-name, _, _) := ast)
+      ; (Module(mod-name, _)  := ast <+ Application(mod-name, _, _) := ast <+ ServerApplication(mod-name, _, _) := ast)
       ; rules ( CompilingModule := mod-name )
       ; <compile> ast
 

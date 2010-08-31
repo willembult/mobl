@@ -19,6 +19,12 @@ strategies
       [<map(pp-mobl-def); separate-by(|"\n\n"); concat-strings> def*]]
 
   pp-mobl :
+    ServerApplication(qid, setting*, def*) ->
+    $[server [<pp-mobl-qid> qid]["\n"]
+      [<map(pp-mobl-setting); separate-by(|"\n"); concat-strings> setting*]
+      [<map(pp-mobl-def); separate-by(|"\n\n"); concat-strings> def*]]
+
+  pp-mobl :
     Module(qid, def*) ->
     $[module [<pp-mobl-qid> qid]["\n"]
       [<map(pp-mobl-def); separate-by(|"\n\n"); concat-strings> def*]]

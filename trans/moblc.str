@@ -32,7 +32,7 @@ strategies
               CachedParseAst  : filename -> ast
               OutputPath      := output-path
               IncludePaths    := [".", stdlib-path])
-    ; (Module(mod-name, _)  := ast <+ Application(mod-name, _, _) := ast)
+    ; (Module(mod-name, _)  := ast <+ Application(mod-name, _, _) := ast <+ ServerApplication(mod-name, _, _) := ast)
     ; rules ( CompilingModule := mod-name )
     ; ast2 := <analyze> ast
     ; errors   := <collect-all(constraint-error, conc); map(?(_, <id>); <concat-strings> ["Error: ", <id>])> ast2

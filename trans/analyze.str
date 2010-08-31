@@ -20,7 +20,7 @@ rules
   // Analysis: does a topdown traversal of the tree,
   // and try to apply the record-entity rule.
   analyze =
-    (?Module(qid, def*) <+ ?Application(qid, _, def*))
+    (?Module(qid, def*) <+ ?Application(qid, _, def*) <+ ?ServerApplication(qid, _, def*))
     ; {| ModuleName, Imports
        : rules ( ModuleName := qid )
        ; ensure-mobl-import
@@ -47,6 +47,14 @@ rules
 
   ensure-mobl-import :
     Application(qid, setting*, def*) -> Application(qid, setting*, def2*)
+    where if <"mobl" := qid <+ fetch(?Import("mobl"))> def* then
+            def2* := def*
+          else
+            def2* := [Import("mobl")|def*]
+          end
+
+  ensure-mobl-import :
+    ServerApplication(qid, setting*, def*) -> ServerApplication(qid, setting*, def2*)
     where if <"mobl" := qid <+ fetch(?Import("mobl"))> def* then
             def2* := def*
           else
@@ -104,3 +112,6 @@ rules
     Application(qid, _, def*) -> def2*
     with def2* := <analyze; ?Application(_, _, <id>); filter(definition-to-external)>
 
+  externalize-module :
+    ServerApplication(qid, _, def*) -> def2*
+    with def2* := <analyze; ?ServerApplication(_, _, <id>); filter(definition-to-external)>
