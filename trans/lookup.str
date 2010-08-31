@@ -62,7 +62,7 @@ strategies
     type -> props
     where c#([_, _, super, members]) := <lookup-type> type
         ; own-props := <filter(?Property(_, _, _, _))> members
-        ; if not(SimpleType(QId("mobl", "Object")) := super) then
+        ; if not(SimpleType(QId("mobl", "Object")) := type) then
             props := <concat> [own-props, <get-all-properties> super]
           else
             props := own-props
@@ -179,10 +179,10 @@ strategies
 
   get-all-methods :
     type -> methods
-    where not(GenericType("Type", [t@SimpleType(qid)]) := type) // for static methods
+    where not(GenericType("Type", [t@SimpleType(qid)]) := type) // for non-static methods
     where c#([_, _, super, members]) := <lookup-type> type
         ; own-methods := <filter(?ExternalMethod(_, _, _, _) <+ ?ExternalSyncMethod(_, _, _, _))> members
-        ; if not(SimpleType(QId("mobl", "Object")) := super) then
+        ; if not(SimpleType(QId("mobl", "Object")) := type) then
             methods := <concat> [own-methods, <get-all-methods> super]
           else
             methods := own-methods

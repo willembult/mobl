@@ -1,8 +1,6 @@
 application shopping
 
-import mobl
 import mobl::ui
-//import mobl::ui::ios
 
 entity Item {
   name     : String
