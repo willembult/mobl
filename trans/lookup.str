@@ -111,16 +111,17 @@ strategies
   lookup-method :
     (t, x) -> extern
     where not(GenericType("Type", _) := t)
-    where debug(!"Lookup method: "); ExternalType(_, _, super, method*) := <lookup-type> t
-        ; [esm@ExternalSyncMethod(manno*, _, _, _)] := <filter(?ExternalSyncMethod(_, x, farg*, rt))> method*
-        ; !esm
+    where ExternalType(_, _, super, method*) := <lookup-type> t
+        ; <filter(?ExternalSyncMethod(_, x, farg*, rt))> method*
+        ; try(?[esm@ExternalSyncMethod(manno*, _, _, _)]; ?[<id>])
         ; origin-track-forced(
             if not(!farg*); not(super := t) then // could not find a method
               <lookup-method> (super, x)
+            else
+              rt2 := <alltd(add-namespace)> rt
+              ; farg2* := <alltd(add-namespace)> farg*
+              ; !ExternalSyncMethod(manno*, x, farg2*, rt2)
             end
-            ; rt2 := <alltd(add-namespace)> rt
-            ; farg2* := <alltd(add-namespace)> farg*
-            ; !ExternalSyncMethod(manno*, x, farg2*, rt2)
           )
         ; ?extern
 
@@ -128,15 +129,16 @@ strategies
     (t, x) -> extern
     where not(GenericType("Type", _) := t)
     where ExternalType(_, _, super, method*) := <lookup-type> t
-        ; [em@ExternalMethod(manno*, _, _, _)] := <filter(?ExternalMethod(_, x, farg*, rt))> method*
-        ; !em
+        ; <filter(?ExternalMethod(_, x, farg*, rt))> method*
+        ; try(?[esm@ExternalMethod(manno*, _, _, _)]; ?[<id>])
         ; origin-track-forced(
             if not(!farg*); not(super := t) then // could not find a method
               <lookup-method> (super, x)
+            else
+              rt2 := <alltd(add-namespace)> rt
+              ; farg2* := <alltd(add-namespace)> farg*
+              ; !ExternalSyncMethod(manno*, x, farg2*, rt2)
             end
-            ; rt2 := <alltd(add-namespace)> rt
-            ; farg2* := <alltd(add-namespace)> farg*
-            ; !ExternalMethod(manno*, x, farg2*, rt2)
           )
         ; ?extern
 

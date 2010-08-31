@@ -41,8 +41,10 @@ strategies
     ; <concat; map(debug)> [errors, warnings, notes]
     ; if [] := errors then
         <compile> ast2
+        ; <exit> 0
+      else
+        <exit> 1
       end
-    ; <exit> 0
 
   moblc-options =
     ArgOption("-d"
