@@ -605,7 +605,7 @@ persistence.store.sql.config = function(persistence, dialect) {
               for ( var j = 0; j < that._prefetchFields.length; j++) {
                 var prefetchField = that._prefetchFields[j];
                 var thisMeta = meta.hasOne[prefetchField].type.meta;
-                e[prefetchField] = rowToEntity(session, thisMeta.name, r, prefetchField + '_');
+                e._data_obj[prefetchField] = rowToEntity(session, thisMeta.name, r, prefetchField + '_');
               }
               results.push(e);
               session.add(e);
@@ -655,10 +655,16 @@ persistence.store.sql.config = function(persistence, dialect) {
     var whereSql = "WHERE "
     + [ this._filter.sql("", args) ].concat(additionalWhereSqls).join(' AND ');
 
-    var sql = "DELETE FROM `" + entityName + "` " + joinSql + ' ' + whereSql;
+    var selectSql = "SELECT id FROM `" + entityName + "` " + joinSql + ' ' + whereSql;
+    var deleteSql = "DELETE FROM `" + entityName + "` " + joinSql + ' ' + whereSql;
 
     session.flush(tx, function () {
-        tx.executeSql(sql, args, callback);
+        tx.executeSql(selectSql, args, function(results) {
+            for(var i = 0; i < results.length; i++) {
+              delete session.trackedObjects[results[i].id];
+            }
+            tx.executeSql(deleteSql, args, callback);
+          });
       });
   };
 

@@ -263,7 +263,7 @@ strategies
       <+ <lookup-type> SimpleType(qid)
       <+ _{_} := qid
       )
-    ; <map(is-sync <+ debug(!"Non-sync arg: "); fail)> e*
+    ; <map(is-sync)> e*
 
   is-sync =
     ?Tuple(e, e*)

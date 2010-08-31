@@ -42,5 +42,4 @@ strategies
 
   async-exp :
     For(_, _, e, _) -> <id>
-    where debug(!"For loop: ")
     where GenericType(QId("mobl", "Collection"), _) := <type-of> e
