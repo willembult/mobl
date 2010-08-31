@@ -82,9 +82,7 @@ strategies
   // TODO: This assumes that the expressions are all synchronous, needs to be checked!
 
   function-to-js :
-    fn@SyncFunction(_, qid, _, _, _) -> $[
-      [varname] = [<function-to-js-exp> fn];
-    ]
+    fn@SyncFunction(_, qid, _, _, _) -> <concat-strings> [varname, " = ", <function-to-js-exp> fn, ";\n"]
     with if <is-string> qid then
            varname := $[var [qid]]
          else
@@ -92,9 +90,7 @@ strategies
          end
 
   function-to-js :
-    fn@Function(_, qid, _, _, _) -> $[
-      [varname] = [<function-to-js-exp> fn];
-    ]
+    fn@Function(_, qid, _, _, _) -> <concat-strings> [varname, " = ", <function-to-js-exp> fn, ";\n"]
     with if <is-string> qid then
            varname := $[var [qid]]
          else
