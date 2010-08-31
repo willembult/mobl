@@ -24,6 +24,7 @@ resource img/default-icon.png
 external type void {}
 
 @doc "String type"
+@persistable
 external type String : Object {
   length : Num
 // functions with variable nr of arguments:
@@ -46,8 +47,10 @@ external type String : Object {
 }
 
 @doc "Numeric type, represents both integers and floating point numbers"
+@persistable
 external type Num : Object { }
 
+@persistable
 external type Bool : Object { }
 
 external type Dynamic : Object { }
@@ -64,8 +67,6 @@ external type RegExp : Object {
     sync function exec(string : String) : String
     sync function test(string : String) : Bool
 }
-
-
 
 external type Array<T> {
   length : Num
@@ -124,8 +125,10 @@ external type Function3<T1, T2, T3, RT> { }
 external type Function4<T1, T2, T3, T4, RT> { }
 external type Function5<T1, T2, T3, T4, T5, RT> { }
 
+@persistable
 external type Text : Object { }
 
+@persistable
 external type DateTime {
   static sync function parse(s : String) : DateTime
   static sync function fromTimestamp(timestamp : Num) : DateTime
@@ -170,6 +173,11 @@ external type Math {
   static sync function tan(n : Num) : Num
 }
 
+external type JSON {
+  static sync function parse(s : String) : Dynamic
+  static sync function stringify(obj : Object) : String
+}
+
 external sync function now() : DateTime
 
 external type Object {
@@ -177,6 +185,7 @@ external type Object {
 }
 
 @doc "A virtual queryable collection"
+@persistable
 external type Collection<T> {
   function list() : Array<T>
 
@@ -328,6 +337,8 @@ Date.prototype.toDateString = function() {
 };
 
 mobl.Math = Math;
+
+mobl.JSON = JSON;
 
 mobl.formatDate = function(date) {
   var diff = (((new Date()).getTime() - date.getTime()) / 1000);
