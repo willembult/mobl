@@ -207,6 +207,21 @@ div.screen div.contextMenu span.button {
   background: -moz-linear-gradient(top, #fff, #c6def2);
 }
 
+div.searchbox {
+  background-color: #FFFFFF;
+  margin: 0;
+  border: 1px solid #999999;
+  color: #222222;
+  padding: 10px 6px;
+  background-image: url('generic/search.png');
+  background-repeat: no-repeat;
+  background-position: right center;
+}
+
+div.searchbox > input[type=text] {
+  background:transparent;
+}
+
 /* TAB BAR */
 
 div.screen div.tabbar {

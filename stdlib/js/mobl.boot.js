@@ -26,3 +26,6 @@ mobl.load = function(url) {
     mobl.loadedFiles[url] = true;
 };
 
+mobl.loadingSpan = function() {
+    return $("<span>Loading... <img src=\"mobl/loading.gif\"/></span>");
+};

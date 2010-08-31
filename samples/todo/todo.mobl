@@ -4,7 +4,7 @@ title "Todo"
 database "todo"
 
 import mobl
-import mobl::ui::ios
+import mobl::ui
 
 entity Task {
   name        : String (searchable)

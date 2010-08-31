@@ -3,6 +3,7 @@ module mobl::ui::generic
 import mobl
 
 load mobl/ui/generic.css
+load mobl/ui/generic/search.png
 /*
 load mobl/ui/generic/css-beziers.js
 load mobl/ui/generic/touchscroll.js
@@ -90,6 +91,12 @@ control tabSet(tabs : [(String, String, Control)]) {
       tabControl()
     </div>
   }
+}
+
+control searchBox(s : String, placeholder : String = null, onsearch : Callback = null) {
+  <div class="searchbox">
+    <input type="text" placeholder=placeholder databind=s onchange=onsearch />
+  </div>
 }
 
 // CONTEXT MENU

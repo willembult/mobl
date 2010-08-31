@@ -630,10 +630,6 @@ mobl.stringTomobl__DateTime = function(s) {
     return new Date(s);
 };
 
-mobl.loadingSpan = function() {
-    return $("<span>Loading... <img src=\"mobl/loading.gif\"/>");
-};
-
 mobl.encodeUrlObj = function(obj) {
   var parts = [];
   for(var k in obj) {

@@ -26,6 +26,7 @@ external control itemArrow(onclick : Callback = null, onswipe : Callback = null)
 external control checkBox(b : Bool, label : String = "")
 external control textField(s : String, placeholder : String = null, onchange : Callback = null)
 external control numField(n : Num, placeholder : String = null, onchange : Callback = null)
+external control searchBox(s : String, placeholder : String = null, onsearch : Callback = null)
 
 // High-level
 @doc "A tabset, takes a list of tuples as argument, e.g. [(\"Tab 1\", \"icon url\", tab1), (\"Tab 2\", \"icon uri\", tab2)] where tab1 and tab2 are controls with no arguments"
@@ -44,10 +45,12 @@ control float(side : String = "right", distance : Num = 0) {
 <javascript>
 if(mobl.isIphone() || mobl.isIpad()) {
   mobl.load('mobl/ui/ios.js');
+  mobl.load('mobl/ui/ios.css');
   mobl.ui.impl = mobl.ui.ios;
 } else {
   mobl.load('mobl/ui/generic.js');
+  mobl.load('mobl/ui/generic.css');
   mobl.ui.impl = mobl.ui.generic;
 }
-mobl.implementInterface(mobl.ui.impl, mobl.ui, ['header', 'button', 'sideButton', 'backButton', 'group', 'item', 'itemArrow', 'checkBox', 'textField', 'numField', 'tabSet', 'contextMenu']);
+mobl.implementInterface(mobl.ui.impl, mobl.ui, ['header', 'button', 'sideButton', 'backButton', 'group', 'item', 'itemArrow', 'checkBox', 'textField', 'numField', 'searchBox', 'tabSet', 'contextMenu']);
 </javascript>
