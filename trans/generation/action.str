@@ -40,10 +40,11 @@ strategies
   import-to-js :
     qid -> <emit> $[mobl.load('[<qid-to-path> qid].js');
 ]
-	where not(ServerContext)
+  where not(ServerContext)
 
   definition-to-js :
     Load(path@Path(part*)) -> <id> //<emit> $[mobl.load('[<path-to-string> path]');]
+    where not(ServerContext)
     with path-str := <path-to-string> path
        ; <cut-off-last-element; separate-by(|"/"); <concat-strings> [<OutputPath>, "/"|<id>]; ensure-existing-dir> part*
         ; <copy-file> (<resolve-file> path-str, $[[<OutputPath>]/[path-str]])
@@ -85,7 +86,8 @@ strategies
   // TODO: This assumes that the expressions are all synchronous, needs to be checked!
 
   function-to-js :
-    fn@SyncFunction(_, qid, _, _, _) -> <concat-strings> [varname, " = ", <function-to-js-exp> fn, ";\n"]
+    fn@SyncFunction(manno*, qid, _, _, _) -> <concat-strings> [varname, " = ", <function-to-js-exp> fn, ";\n"]
+    where not(<fetch(?ServiceAnno(_, _))> manno*)
     with if <is-string> qid then
            varname := $[var [qid]]
          else
@@ -93,7 +95,8 @@ strategies
          end
 
   function-to-js :
-    fn@Function(_, qid, _, _, _) -> <concat-strings> [varname, " = ", <function-to-js-exp> fn, ";\n"]
+    fn@Function(manno*, qid, _, _, _) -> <concat-strings> [varname, " = ", <function-to-js-exp> fn, ";\n"]
+    where not(<fetch(?ServiceAnno(_, _))> manno*)
     with if <is-string> qid then
            varname := $[var [qid]]
          else

@@ -1,0 +1,527 @@
+module mobl
+
+load js/persistence.js
+
+/**
+ * Built-in types
+ */
+@doc "A value representing nothing"
+external type void {}
+
+@doc "String type"
+@persistable
+external type String : Object {
+  length : Num
+// functions with variable nr of arguments:
+// concat()    Joins two or more strings, and returns a copy of the joined strings
+// fromCharCode()  Converts Unicode values to characters
+  sync function charAt(index : Num) : String
+  sync function charCodeAt(index : Num) : Num
+  sync function indexOf(searchstring : String, start : Num = 0) : Num
+  sync function lastIndexOf(searchstring : String, start : Num = 0) : Num
+  sync function match(regexp : RegExp) : Array<String>
+  sync function replace(regexp : RegExp, newstring : String) : String
+  sync function replace(substr : String, newstring : String) : String
+  sync function search(regexp : RegExp) : Num
+  sync function slice(start : Num, end : Num) : String
+  sync function split(separator : String, limit : Num) : Array<String>
+  sync function substr(start : Num, length : Num) : String
+  sync function substring(from : Num, to : Num) : String
+  sync function toLowerCase() : String
+  sync function toUpperCase() : String
+}
+
+@doc "Numeric type, represents both integers and floating point numbers"
+@persistable
+external type Num : Object { }
+
+@persistable
+external type Bool : Object { }
+
+external type Dynamic : Object { }
+
+@doc "RegExp type"
+external type RegExp : Object {
+    global : Bool
+    ignoreCase : Bool
+    lastIndex : Num
+    multiline : Bool
+    source : String
+    sync function compile(regexp : RegExp) : void
+    sync function compile(regexp : RegExp, modifier : String) : void
+    sync function exec(string : String) : String
+    sync function test(string : String) : Bool
+}
+
+external type Array<T> {
+  length : Num
+  sync function get(n : Num) : T
+  sync function push(item : T) : void
+  sync function join(sep : String) : String
+  function one() : T
+  sync function map(fn : Function1<T, Dynamic>) : [Dynamic]
+  sync function filter(fn : Function1<T, Bool>) : [T]
+  sync function contains(el : T) : Bool
+  sync function splice(idx : Num, numToDelete : Num) : Array<T>
+  sync function insert(idx : Num, item : T) : void
+  sync function remove(item : T) : void
+}
+
+external type Map<K, V> {
+  sync function get(k : K) : V
+  sync function set(k : K, v : V) : void
+  sync function keys() : [K]
+}
+
+external type Tuple1<T1> {
+  _1 : T1
+}
+
+external type Tuple2<T1, T2> {
+  _1 : T1
+  _2 : T2
+}
+
+external type Tuple3<T1, T2, T3> {
+  _1 : T1
+  _2 : T2
+  _3 : T3
+}
+
+external type Tuple4<T1, T2, T3, T4> {
+  _1 : T1
+  _2 : T2
+  _3 : T3
+  _4 : T4
+}
+
+external type Control {}
+external type Control1<T1> { }
+external type Control2<T1, T2> { }
+external type Control3<T1, T2, T3> { }
+external type Control4<T1, T2, T3, T4> { }
+external type Control5<T1, T2, T3, T4, T5> { }
+
+external type Callback {}
+external type Function0<RT> { }
+external type Function1<T1, RT> { }
+external type Function2<T1, T2, RT> { }
+external type Function3<T1, T2, T3, RT> { }
+external type Function4<T1, T2, T3, T4, RT> { }
+external type Function5<T1, T2, T3, T4, T5, RT> { }
+
+@persistable
+external type Text : Object { }
+
+@persistable
+external type DateTime {
+  static sync function parse(s : String) : DateTime
+  static sync function fromTimestamp(timestamp : Num) : DateTime
+
+  sync function getFullYear() : Num
+  sync function getMonth() : Num
+
+  @doc "Day of the month"
+  sync function getDate() : Num
+
+  sync function setFullYear(y : Num) : Num
+  sync function setMonth(m : Num) : Num
+
+  @doc "Day of the month"
+  sync function setDate(d : Num) : Num
+
+  sync function toString() : String
+  sync function toDateString() : String
+
+  sync function getTime() : Num
+}
+
+external function sleep(ms : Num) : void
+external sync function repeat(ms : Num, fn : Callback) : void
+
+external type Math {
+  static sync function round(n : Num) : Num
+  static sync function floor(n : Num) : Num
+  static sync function ceil(n : Num) : Num
+  static sync function abs(n : Num) : Num
+  static sync function acos(n : Num) : Num
+  static sync function asin(n : Num) : Num
+  static sync function atan(n : Num) : Num
+  static sync function atan2(n : Num) : Num
+  static sync function cos(n : Num) : Num
+  static sync function exp(n : Num) : Num
+  static sync function log(n : Num) : Num
+  static sync function pow(n1 : Num, n2 : Num) : Num
+  static sync function random() : Num
+  static sync function sin(n : Num) : Num
+  static sync function sqrt(n : Num) : Num
+  static sync function tan(n : Num) : Num
+}
+
+external type JSON {
+  static sync function parse(s : String) : Dynamic
+  static sync function stringify(obj : Object) : String
+}
+
+external sync function now() : DateTime
+
+external type Object {
+  sync function toString() : String
+}
+
+@doc "A virtual queryable collection"
+@persistable
+external type Collection<T> {
+  function list() : Array<T>
+
+  @doc "Return one item in the collection, or null if the collection is empty"
+  function one() : T
+
+  @doc "Prefetch a reference property"
+  sync function prefetch(property : String) : Collection<T>
+
+  @doc "Filter the collection on a property based on an operator `op` (options: '=', '<', '>', '<=', '>=' or '!=') and a value"
+  sync function filter(property : String, op : String, value : Object) : Collection<T>
+
+  @doc "Order the collection based on a property in ascending (ascending = true) or descending (ascending = false) order"
+  sync function order(property : String, ascending : Bool) : Collection<T>
+
+  @doc "Deletes all the items in the collection"
+  function destroyAll() : void
+
+  @doc "Count the number of items in the collection"
+  function count() : Num
+
+  @doc "Calculate the collection and return it as an array"
+  function list() : Array<T>
+
+  sync function limit(n : Num) : Collection<T>
+  sync function offset(n : Num) : Collection<T>
+  sync function add(item : T) : void
+  sync function remove(item : T) : void
+  sync function updated() : void
+}
+
+external type Entity<T> {
+  @doc "A virtual collection containing all instances of this entity"
+  static sync function all() : Collection<T>
+  static sync function search(query : String) : Collection<T>
+  static sync function searchPrefix(query : String) : Collection<T>
+
+  function fetch(rel : String) : T
+}
+
+external sync function log(o : Object) : void
+external sync function alert(o : Object) : void
+
+external sync function add(e : Object) : void
+external sync function remove(e : Object) : void
+external function resetDatabase() : void
+external sync function formatDate(d : DateTime) : String
+external sync function openUrl(url : String) : void
+external sync function range(from : Num, to : Num) : Array<Num>
+external sync function random(max : Num) : Num
+
+<javascript>
+var sys = require('sys');
+
+mobl.sleep = function(time, callback) {
+  setTimeout(callback, time);
+};
+
+mobl.repeat = function(time, callback) {
+  setInterval(callback, time);
+};
+
+mobl.alert = function(s, _, callback) {
+    alert(s);
+    if(callback) callback();
+};
+
+mobl.log = function(s) {
+    sys.print(sys.inspect(s) + "\n");
+};
+
+mobl.add = function(e, _, callback) {
+    persistence.add(e);
+    var allEnt = persistence.define(e._type).all(); // NOTE: define() is a hack!
+    allEnt.triggerEvent('add', allEnt, e);
+    allEnt.triggerEvent('change', allEnt, e);
+    if(callback) callback();
+};
+
+mobl.now = function() {
+  return new Date();
+};
+
+mobl.remove = function(e, _, callback) {
+    persistence.remove(e);
+    var allEnt = persistence.define(e._type).all();
+    allEnt.triggerEvent('remove', allEnt, e);
+    allEnt.triggerEvent('change', allEnt, e);
+    if(callback) callback();
+};
+
+mobl.resetDatabase = function(_, callback) {
+    persistence.reset(null, callback);
+};
+
+mobl.openUrl = function(url) {
+  location = url;
+};
+
+mobl.random = function(max) {
+  return Math.round(Math.random()*max);
+}
+
+// Date stuff
+
+mobl.DateTime = {
+  parse: function(s) {
+    return new Date(Date.parse(s));
+  },
+  fromTimestamp: function(timestamp) {
+    return new Date(timestamp);
+  }
+};
+
+Date.prototype.toDateString = function() {
+  return "" + (this.getMonth()+1) + "/" + this.getDate() + "/" + this.getFullYear();
+};
+
+mobl.Math = Math;
+
+mobl.JSON = JSON;
+
+mobl.formatDate = function(date) {
+  var diff = (((new Date()).getTime() - date.getTime()) / 1000);
+  var day_diff = Math.floor(diff / 86400);
+  if ( isNaN(day_diff) || day_diff < 0 || day_diff >= 31 )
+    return;
+
+  return day_diff == 0 && (
+      diff < 60 && "just now" ||
+      diff < 120 && "1 minute ago" ||
+      diff < 3600 && Math.floor( diff / 60 ) + " minutes ago" ||
+      diff < 7200 && "1 hour ago" ||
+      diff < 86400 && Math.floor( diff / 3600 ) + " hours ago") ||
+      day_diff == 1 && "Yesterday" ||
+      day_diff < 7 && day_diff + " days ago" ||
+      day_diff < 31 && Math.ceil( day_diff / 7 ) + " weeks ago";
+};
+
+mobl.range = function(from, to) {
+  var ar = [];
+  for(var i = from; i < to; i++) {
+    ar.push(i);
+  }
+  return ar;
+};
+
+mobl.html = function(html, elements, callback) {
+  var root192 = $("<span>");
+  var node180 = $("<span >");
+
+  var ref108 = html;
+  node180.html(html.get().toString());
+  var ignore51 = false;
+  ref108.addEventListener('change', function(_, ref, val) {
+    if(ignore51) return;
+    if(ref === ref108) {
+      node180.html(val.toString());
+    }
+  });
+  ref108.rebind();
+  root192.append(node180);
+  callback(root192); return;
+};
+
+Array.prototype.list = function(tx, callback) {
+  var args = argspec.getArgs(arguments, [
+    {name: 'tx', optional: true, check: function(obj) { return tx.executeSql; } },
+    {name: 'callback', optional: false, check: argspec.isCallback() }
+  ]);
+  tx = args.tx;
+  callback = args.callback;
+
+  var valueCopy = [];
+  for(var i = 0; i < this.length; i++) {
+    valueCopy[i] = this[i];
+  }
+  callback(valueCopy);
+};
+
+Array.prototype.insert = function(idx, item) {
+  this.splice(idx, 0, item);
+};
+
+Array.prototype.get = function(idx) {
+  return this[idx];
+};
+
+Array.prototype.one = function(callback) {
+  if(this.length === 0) {
+    callback(null);
+  } else {
+    callback(this[0]);
+  }
+};
+
+Array.prototype.contains = function(el) {
+  for(var i = 0; i < this.length; i++) {
+    if(this[i] === el) {
+      return true;
+    }
+  }
+  return false;
+};
+
+Array.prototype.remove = function(el) {
+  for(var i = 0; i < this.length; i++) {
+    if(this[i] === el) {
+      this.splice(i, 1);
+      return;
+    }
+  }
+};
+
+Array.prototype.addEventListener = function() {}
+
+mobl.dummyMapper = function(data, callback) {
+  callback(data);
+};
+
+mobl.Map = function() {
+  this.data = {};
+};
+
+mobl.Map.prototype.set = function(k, v) {
+  this.data[k] = v;
+};
+
+mobl.Map.prototype.get = function(k) {
+  return this.data[k];
+};
+
+mobl.Map.prototype.keys = function() {
+  var keys = [];
+  for(var p in this.data) {
+    if(this.data.hasOwnProperty(p)) {
+      keys.push(p);
+    }
+  }
+  return keys;
+};
+
+mobl.encodeUrlObj = function(obj) {
+  var parts = [];
+  for(var k in obj) {
+    if(obj.hasOwnProperty(k)) {
+      parts.push(encodeURI(k)+"="+encodeURI(obj[k]));
+    }
+  }
+  return "?" + parts.join("&");
+};
+
+function op(operator, e1, e2, callback) {
+    switch(operator) {
+    case '+': callback(e1 + e2); break;
+    case '-': callback(e1 - e2); break;
+    case '*': callback(e1 * e2); break;
+    case '/': callback(e1 / e2); break;
+    case '%': callback(e1 % e2); break;
+    }
+}
+
+mobl.instantiate = function(sup, props) {
+  var obj = {};
+  for(var p in sup) {
+    if(sup.hasOwnProperty(p)) {
+      obj[p] = sup[p];
+    }
+  }
+  for(var p in props) {
+    if(props.hasOwnProperty(p)) {
+      obj[p] = props[p];
+    }
+  }
+  return new mobl.ObservableObject(obj);
+};
+
+mobl.ObservableObject = function(props) {
+  this._data = props;
+  this.subscribers = {};
+  var that = this;
+  for(var property in props) {
+    if(props.hasOwnProperty(property)) {
+      (function() {
+        var p = property;
+        that.__defineGetter__(p, function() {
+          return that._data[p];
+        });
+        that.__defineSetter__(p, function(val) {
+          that._data[p] = val;
+          that.triggerEvent('change', that, p, val);
+        });
+      }());
+    }
+  }
+};
+
+mobl.ObservableObject.prototype = new persistence.Observable();
+
+mobl.ObservableObject.prototype.toJSON = function() {
+  var obj = {};
+  for(var p in this._data) {
+    if(this._data.hasOwnProperty(p)) {
+      obj[p] = this._data[p];
+    }
+  }
+  return obj;
+};
+
+function log(s) {
+    console.log(s);
+}
+
+mobl.implementInterface = function(sourceModule, targetModule, items) {
+  for(var i = 0; i < items.length; i++) {
+    targetModule[items[i]] = sourceModule[items[i]];
+  }
+};
+
+(function () {
+    function Tuple() {
+        for(var i = 0; i < arguments.length; i++) {
+            this['_' + (i+1)] = arguments[i];
+        }
+        this.subscribers = {}; // Observable
+        this.length = arguments.length;
+    }
+
+    Tuple.prototype = new persistence.Observable();
+    Tuple.prototype.toJSON = function() {
+      var obj = {};
+      for(var i = 0; i < this.length; i++) {
+        obj['_' + (i+1)] = this['_' + (i+1)];
+      }
+      return obj;
+    };
+
+    function Template(renderFn) {
+        this.render = renderFn;
+        this.calledTemplates = [];
+        this.subscriptions = [];
+    }
+
+    Template.prototype.addSubscription = function(subId) {
+        this.subscriptions.push(subId);
+    };
+
+    Template.prototype.addCalledTemplate = function(template) {
+        this.calledTemplates.push(template);
+    };
+
+    mobl.Tuple = Tuple;
+}());
+</javascript>

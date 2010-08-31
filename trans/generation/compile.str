@@ -36,6 +36,7 @@ strategies
 
   compile =
       (?Module(qid, def*) <+ ?app@Application(qid, setting*, def*))
+      ; where(not(ServerContext))
       ; where(<debug(!"Now compiling: ")> qid
               ; rules ( Compiled : qid ))
       ; analyze

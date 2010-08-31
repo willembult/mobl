@@ -1,0 +1,11 @@
+module mobl::server
+
+external type Request {
+  query   : Dynamic
+  url     : String
+  headers : Dynamic
+}
+
+external type Response {
+  sync function send(obj : Object) : void
+}

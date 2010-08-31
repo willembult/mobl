@@ -1,8 +1,26 @@
 server server
 
-import mobl::location
+external type Request {
+  query   : Dynamic
+  url     : String
+  headers : Dynamic
+}
 
-function sayHello() : String {
-  var pos = getPosition();
-  return "Hello";
+external type Response {
+  sync function send(obj : Object) : void
+}
+
+function sayHello(to : String) : String {
+  for((x, y) in [(1, 2), (3, 4)]) {
+    log("X: " + x + " Y: " + y);
+  }
+}
+
+@service GET /
+function helloService(req : Request, res : Response) {
+  if(req.query.name) {
+    res.send("Hello " + req.query.name);
+  } else {
+    res.send("Hello!");
+  }
 }

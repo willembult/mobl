@@ -1,0 +1,22 @@
+module MoBL-Server
+
+imports
+  Common
+  MoBL
+
+exports
+
+  context-free syntax %% Main
+
+    "server" ID ServerSetting* Definition* -> Start {cons("ServerApplication")}
+
+    "something" -> ServerSetting {cons("IgnoreMe")} %% Ignore this for now
+
+    "@service" HttpMethod UriPath  -> MetaAnno {cons("ServiceAnno")}
+
+    "GET"        -> HttpMethod {cons("GetMethod")}
+    "POST"       -> HttpMethod {cons("PostMethod")}
+    "PUT"        -> HttpMethod {cons("PutMethod")}
+
+  context-free syntax %% Paths
+    "/" {FILENAME "/"}*                  -> UriPath {cons("UriPath")}

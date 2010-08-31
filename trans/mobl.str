@@ -40,7 +40,7 @@ strategies
   resolve-file :
     filename -> path
     where not(<file-exists> filename)
-        ; [path] := <filter(\ p -> <concat-strings> [p, "/", filename] \; file-exists)> <IncludePaths>
+        ; [path|_] := <filter(\ p -> <concat-strings> [p, "/", filename] \; file-exists)> <IncludePaths>
 
 rules // Main editor interface (defined by editor/MoBL-Builders and -References.esv)
 
