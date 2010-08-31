@@ -40,7 +40,7 @@ strategies
 ]
 
   definition-to-js :
-    Load(path@Path(part*)) -> <emit> $[mobl.load('[<path-to-string> path]');]
+    Load(path@Path(part*)) -> <id> //<emit> $[mobl.load('[<path-to-string> path]');]
     with path-str := <path-to-string> path
        ; <cut-off-last-element; separate-by(|"/"); <concat-strings> [<OutputPath>, "/"|<id>]; ensure-existing-dir> part*
         ; <copy-file> (<resolve-file> path-str, $[[<OutputPath>]/[path-str]])

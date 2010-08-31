@@ -35,6 +35,12 @@ strategies
   async-exp :
     MethodCall(_, _, _) -> <not(is-sync)>
 
+
+  async-exp :
+    ForInferred(_, e, _) -> <id>
+    where GenericType(QId("mobl", "Collection"), _) := <type-of> e
+
   async-exp :
     For(_, _, e, _) -> <id>
+    where debug(!"For loop: ")
     where GenericType(QId("mobl", "Collection"), _) := <type-of> e

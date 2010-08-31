@@ -137,7 +137,7 @@ strategies
             else
               rt2 := <alltd(add-namespace)> rt
               ; farg2* := <alltd(add-namespace)> farg*
-              ; !ExternalSyncMethod(manno*, x, farg2*, rt2)
+              ; !ExternalMethod(manno*, x, farg2*, rt2)
             end
           )
         ; ?extern

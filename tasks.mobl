@@ -2,6 +2,7 @@ application tasks
 
 version "0.1.1"
 icon taskicon.png
+offline true
 
 resource taskicon.png
 
