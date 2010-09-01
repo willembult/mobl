@@ -17,13 +17,10 @@ imports
 
 rules
 
-  // Analysis: does a topdown traversal of the tree,
-  // and try to apply the record-entity rule.
   analyze =
     (?Module(qid, def*) <+ ?Application(qid, _, def*) <+ ?ServerApplication(qid, _, def*))
     ; {| ModuleName, Imports
        : rules ( ModuleName := qid )
-                 //RenameScope := "action" )
        ; ensure-mobl-import
        ; import-all
        ; normalize-all

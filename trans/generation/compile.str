@@ -7,6 +7,7 @@ imports
   rename
   desugar
   mobl
+  pp
   generation/emit
   generation/ui
   generation/action
@@ -37,7 +38,7 @@ strategies
   compile =
       (?Module(qid, def*) <+ ?app@Application(qid, setting*, def*))
       ; where(not(ServerContext))
-      ; where(<debug(!"Now compiling: ")> qid
+      ; where(<pp-mobl-qid; debug(!"Now compiling: ")> qid
               ; rules ( Compiled : qid ))
       ; analyze
       ; where(alltd(compile-import-module))

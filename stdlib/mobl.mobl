@@ -607,9 +607,9 @@ mobl.call = function (screenName, args, callback) {
     }, callbackFn ]));
 }
 
-function ref(e, property) {
+mobl.ref = function(e, property) {
     return new mobl.Reference(e, property);
-}
+};
 
 function fromScope(that, prop) {
     if(prop) {

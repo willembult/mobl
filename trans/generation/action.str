@@ -159,11 +159,11 @@ rules // Statements
 
   // Globals
   stat-to-js :
-    VarDecl(qid@QId(_, _), t, e) -> $[[<qid-to-js> qid] = ref([<expression-to-js> e]);
+    VarDecl(qid@QId(_, _), t, e) -> $[[<qid-to-js> qid] = mobl.ref([<expression-to-js> e]);
 ]
 
   stat-to-js :
-    VarDeclInferred(qid@QId(_, _), e) -> $[[<qid-to-js> qid] = ref([<expression-to-js> e]);
+    VarDeclInferred(qid@QId(_, _), e) -> $[[<qid-to-js> qid] = mobl.ref([<expression-to-js> e]);
 ]
 
   stat-to-js :
@@ -215,7 +215,7 @@ rules // Expressions
     exp-to-js <+ debug(!"Could not translate: "); fail
 
   ref-expression-to-js =
-    ref-exp-to-js <+ !$[ref([<expression-to-js>])]
+    ref-exp-to-js <+ !$[mobl.ref([<expression-to-js>])]
 
   exp-to-js :
     String(s) -> s
@@ -241,10 +241,6 @@ rules // Expressions
 
   exp-to-js :
     List(e*) -> <concat-strings> ["[", <map(expression-to-js); separate-by(!", "); concat-strings> e*, "]"]
-
-  /*ref-exp-to-js :
-    Var(qid) -> $[ref(scope, '[<qid-to-js> qid]')]
-    where not(<is-ref> qid)*/
 
   exp-to-js :
     Not(e) -> $[![<expression-to-js> e]]
@@ -286,7 +282,7 @@ rules // Expressions
        ; es := <expression-to-js> e
 
   ref-exp-to-js :
-    Indexer(e, idxe) -> $[ref([es], [idxes])]
+    Indexer(e, idxe) -> $[mobl.ref([es], [idxes])]
     with es := <ref-expression-to-js> e
        ; idxes := <expression-to-js> idxe
 
@@ -311,7 +307,7 @@ rules // Expressions
     with propvals := <map(\ PropVal(x, e) -> $['[x]': [<expression-to-js> e]] \); separate-by(!", "); concat-strings> propval*
 
   ref-exp-to-js :
-    FieldAccess(e, x) -> $[ref([es], '[x]')]
+    FieldAccess(e, x) -> $[mobl.ref([es], '[x]')]
     with es := <ref-expression-to-js> e
 
   exp-to-js :

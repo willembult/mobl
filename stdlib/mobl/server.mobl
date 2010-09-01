@@ -5,6 +5,8 @@ external type Request {
   query   : Dynamic
   url     : String
   headers : Dynamic
+  rawBody : Dynamic
+  body    : Dynamic
 }
 
 external type Response {

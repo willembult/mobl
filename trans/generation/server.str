@@ -39,7 +39,7 @@ strategies
          ; desugar-all
          ; module-to-js
          |})
-      ; where(path := <debug(!"Qid: "); qid-to-dot-path> qid
+      ; where(path := <qid-to-dot-path> qid
               ; js-filename   := <concat-strings> [<ServerOutputPath>, "/", path, ".js"]
               ; <dirname; ensure-existing-dir> js-filename)
       ; fp := <fopen> (js-filename, "w")
@@ -87,7 +87,8 @@ console.log('Server running at http://127.0.0.1:8888/');
   where ServerContext
 
   definition-to-js :
-    Load(path@Path(part*)) -> <emit> $[var [ns] = require('./[<path-to-string> path]').[ns];]
+    Load(path@Path(part*)) -> <emit> $[var [ns] = require('./[<path-to-string> path]').[ns];
+]
     where ServerContext
     with path-str := <path-to-string> path
        ; <cut-off-last-element; separate-by(|"/"); <concat-strings> [<OutputPath>, "/"|<id>]; ensure-existing-dir> part*
@@ -115,13 +116,16 @@ strategies
          end
 
   expose-service :
-    (GetMethod(), UriPath(part*), varname) -> $[global.app.get('/[<map(uri-part-to-string); separate-by(|"/")> part*]', [varname]);]
+    (GetMethod(), UriPath(part*), varname) -> $[global.app.get('/[<map(uri-part-to-string); separate-by(|"/")> part*]', [varname]);
+]
 
   expose-service :
-    (PostMethod(), UriPath(part*), varname) -> $[global.app.post('/[<map(uri-part-to-string); separate-by(|"/")> part*]', [varname]);]
+    (PostMethod(), UriPath(part*), varname) -> $[global.app.post('/[<map(uri-part-to-string); separate-by(|"/")> part*]', [varname]);
+]
 
   expose-service :
-    (PutMethod(), UriPath(part*), varname) -> $[global.app.put('/[<map(uri-part-to-string); separate-by(|"/")> part*]', [varname]);]
+    (PutMethod(), UriPath(part*), varname) -> $[global.app.put('/[<map(uri-part-to-string); separate-by(|"/")> part*]', [varname]);
+]
 
   uri-part-to-string :
     UriPart(s) -> s

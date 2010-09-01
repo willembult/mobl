@@ -51,7 +51,7 @@ strategies
         ; not(<is-ref> x)
 
   cps-statements :
-    [VarDecl(x, t, e)|stat*] -> <cps-expression(|[$[var [x] = ref(result__);
+    [VarDecl(x, t, e)|stat*] -> <cps-expression(|[$[var [x] = mobl.ref(result__);
 ]|stat*])> e
     where InControl
         ; <is-ref> x
@@ -63,7 +63,7 @@ strategies
         ; not(<is-ref> x)
 
   cps-statements :
-    [VarDeclInferred(x, e)|stat*] -> <cps-expression(|[$[var [x] = ref(result__);
+    [VarDeclInferred(x, e)|stat*] -> <cps-expression(|[$[var [x] = mobl.ref(result__);
 ]|stat*])> e
     where InControl
         ; <is-ref> x

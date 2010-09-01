@@ -373,18 +373,18 @@ rules
     where not(<is-sync> e)*/
 
   elems-to-js(|root) :
-    [VarDecl(x, t, e)|rest] -> <cps-expression(|[$[var [x] = ref(result__);
+    [VarDecl(x, t, e)|rest] -> <cps-expression(|[$[var [x] = mobl.ref(result__);
                                                    [<elems-to-js(|root)> rest]]])> e
     where not(<is-sync> e)
 
   elems-to-js(|root) :
     [vd@VarDecl(x, t, e)|rest] -> $[
-      var [x] = ref([<expression-to-js> e]);
+      var [x] = mobl.ref([<expression-to-js> e]);
       [<elems-to-js(|root)> rest]]
     where <is-sync> e
 
   elems-to-js(|root) :
-    [DeriveDecl(x, t, e)|rest] -> <cps-expression(|[$[var [x] = ref(result__);
+    [DeriveDecl(x, t, e)|rest] -> <cps-expression(|[$[var [x] = mobl.ref(result__);
                                                    [subscriptions]
                                                    [<elems-to-js(|root)> rest]]])> e
     where not(<is-sync> e)
@@ -392,7 +392,7 @@ rules
 
   elems-to-js(|root) :
     [vd@DeriveDecl(x, t, e)|rest] -> $[
-      var [x] = ref([<expression-to-js> e]);
+      var [x] = mobl.ref([<expression-to-js> e]);
       [subscriptions]
       [<elems-to-js(|root)> rest]]
     where <is-sync> e
@@ -410,16 +410,15 @@ rules
     where not(<is-sync> e)*/
 
   elems-to-js(|root) :
-    [VarDeclInferred(x, e)|rest] -> <cps-expression(|[$[var [x] = ref(result__);
+    [VarDeclInferred(x, e)|rest] -> <cps-expression(|[$[var [x] = mobl.ref(result__);
                                                         [subscriptions]
                                                         [<elems-to-js(|root)> rest]]])> e
     where not(<is-sync> e)
     with subscriptions := <find-watchable-expressions; map(exp-to-update-ref-js(|x, e)); concat-strings> e
 
-
   elems-to-js(|root) :
     [vd@VarDeclInferred(x, e)|rest] -> $[
-      var [x] = ref([<expression-to-js> e]);
+      var [x] = mobl.ref([<expression-to-js> e]);
       [subscriptions]
       [<elems-to-js(|root)> rest]]
     where <is-sync> e
