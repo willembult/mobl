@@ -65,6 +65,14 @@ strategies
     Service(manno*, x, selem*) -> Service(manno*, QId(<ModuleName>, x), selem*)
     where <is-string> x
 
+  add-tl-namespace :
+    VarDecl(x, t, e) -> VarDecl(QId(<ModuleName>, x), t, e)
+    where <is-string> x
+
+  add-tl-namespace :
+    VarDeclInferred(x, e) -> VarDeclInferred(QId(<ModuleName>, x), e)
+    where <is-string> x
+
 rules
 
   add-namespace-all =
@@ -93,6 +101,18 @@ rules
     where <is-string> qid
     where not(<lookup-function-aux> qid)
         ; [qid2] := <filter({c, newid: ?c; <prefix-qid(|c)> qid; ?newid; lookup-function-aux; !newid})> [<ModuleName>|<bagof-Imports>]
+
+  add-namespace :
+    Var(qid{}) -> Var(qid2)
+    where <is-string> qid
+    where not(<lookup-global-var-aux> qid)
+        ; [qid2] := <filter({c, newid: ?c; <prefix-qid(|c)> qid; ?newid; lookup-global-var-aux; !newid})> [<ModuleName>|<bagof-Imports>]
+
+  add-namespace :
+    Assignment(qid, e) -> Assignment(qid2, <add-namespace-all> e)
+    where <is-string> qid
+    where not(<lookup-global-var-aux> qid)
+        ; [qid2] := <filter({c, newid: ?c; <prefix-qid(|c)> qid; ?newid; lookup-global-var-aux; !newid})> [<ModuleName>|<bagof-Imports>]
 
   add-namespace :
     GenericType(qid, t*) -> GenericType(qid2, t2*)

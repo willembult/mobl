@@ -60,6 +60,9 @@ strategies
   is-ref :
     Var(y) -> <IsRefVar> y
 
+  is-ref :
+    QId(_, _) -> <GetGlobalVar>
+
   rename :
     Var(x) -> Var(<RenameId> x)
 

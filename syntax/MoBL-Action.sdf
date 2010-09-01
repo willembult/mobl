@@ -16,6 +16,10 @@ exports
 
     FunctionDef -> Definition
 
+    "var" ID ":" Type "=" Exp ";"              -> Definition {cons("VarDecl")}
+    "var" ID "=" Exp ";"                       -> Definition {cons("VarDeclInferred")}
+
+
   context-free syntax %% Statements
     "var" ID ":" Type "=" Exp ";"              -> Statement {cons("VarDecl")}
     "var" ID "=" Exp ";"                       -> Statement {cons("VarDeclInferred")}

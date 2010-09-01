@@ -9,6 +9,7 @@ imports
   mobl
   pp
   generation/compile
+  generation/cps-lift
 
 rules
 
@@ -104,6 +105,13 @@ rules
     where <map(type-of)> arg*
     where not(type-of)
 
+  constraint-error :
+    VarDecl(QId(_, _), _, e) -> (e, $[Global variables may only be initialized with simple literal expression, e.g. 10, $[$$]$, Map<String, Num>() etc.])
+    where not(<is-sync> e)
+
+  constraint-error :
+    VarDeclInferred(QId(_, _), e) -> (e, $[Global variables may only be initialized with simple literal expression, e.g. 10, $[$$]$, Map<String, Num>() etc.])
+    where not(<is-sync> e)
 
   constraint-error :
     MethodCall(e, x, e*) -> (x, $[Wrong set  of arguments. Expected arguments are: [<filter(?FArg(<id>, _)); separate-by(!", "); concat-strings> farg*]])

@@ -207,3 +207,12 @@ strategies
 
   get-all-types =
     <concat> [<all-keys-GetEntity>, <all-keys-GetType>, <all-keys-GetGenericType>]
+
+  lookup-global-var =
+      lookup-global-var-aux
+   <+ import-and-retry(lookup-global-var-aux|<id>)
+
+  lookup-global-var-aux :
+    qid -> extern
+    where ExternalVarDecl(qid, t) := <GetGlobalVar> qid
+        ; extern := <origin-track-forced(\ ExternalVarDecl(qid, t) -> ExternalVarDecl(qid, <alltd(add-namespace)> t) \)>

@@ -4,6 +4,7 @@ imports
   include/MoBL
   normalize
   lib/editor-common
+  type
 
 strategies
 
@@ -111,6 +112,21 @@ strategies
           GetType : qid -> extern
         )
 
+  declare :
+    VarDecl(qid, t, e) -> <fail>
+    with
+      extern := <origin-track-forced(definition-to-external)>
+      ; rules (
+          GetGlobalVar : qid -> extern
+        )
+
+  declare :
+    VarDeclInferred(qid, e) -> <fail>
+    with
+      extern := <origin-track-forced(definition-to-external)>
+      ; rules (
+          GetGlobalVar : qid -> extern
+        )
 
 strategies // convert to externals
 
@@ -153,6 +169,12 @@ strategies // convert to externals
 
   definition-to-external :
     Resource(p) -> Resource(p)
+
+  definition-to-external :
+    VarDecl(x, t, e) -> ExternalVarDecl(x, t)
+
+  definition-to-external :
+    VarDeclInferred(x, e) -> ExternalVarDecl(x, <type-of <+ !SimpleType(QId("mobl", "Dynamic"))> e)
 
   definition-to-external =
     ?c#(_)

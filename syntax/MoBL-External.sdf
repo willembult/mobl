@@ -23,4 +23,6 @@ exports
     MetaAnno* "external" "function" QId "(" {FArg ","}* ")" ":" Type                      -> Definition {cons("ExternalFunction")}
     MetaAnno* "external" "sync" "function" QId "(" {FArg ","}* ")" ":" Type               -> Definition {cons("ExternalSyncFunction")}
 
+    "external" "var" QId ":" Type ";"                                           -> Definition {cons("ExternalVarDecl")}
+
     MetaAnno* "external" "template" QId "(" {FArg ","}* ")"                               -> Definition {deprecated("The 'template' keyword has been replaced with 'control'."),cons("ExternalControl")}
