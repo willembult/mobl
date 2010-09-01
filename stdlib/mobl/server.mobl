@@ -1,6 +1,7 @@
 module mobl::server
 
 external type Request {
+  params  : Dynamic
   query   : Dynamic
   url     : String
   headers : Dynamic
@@ -8,4 +9,5 @@ external type Request {
 
 external type Response {
   sync function send(obj : Object) : void
+  sync function redirect(url : String) : void
 }

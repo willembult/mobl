@@ -9,7 +9,6 @@ mobl.provides = function (moduleName) {
         }
         current = current[parts[i]];
     }
-    current.isLoaded = true;
 };
 
 mobl.loadedFiles = {};

@@ -19,4 +19,7 @@ exports
     "PUT"        -> HttpMethod {cons("PutMethod")}
 
   context-free syntax %% Paths
-    "/" {FILENAME "/"}*                  -> UriPath {cons("UriPath")}
+    "/" {UriPart "/"}*                  -> UriPath {cons("UriPath")}
+
+    FILENAME  -> UriPart {cons("UriPart")}
+    ":" ID    -> UriPart {cons("UriVar")}

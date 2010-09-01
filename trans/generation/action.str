@@ -29,11 +29,10 @@ strategies
     (?Module(qid, def*) <+ ?Application(qid, _, def*) <+ ?ServerApplication(qid, _, def*))
     ; entities := <filter(?Entity(_, _, _, _))> def*
     ; rest := <filter(not(?Entity(_, _, _, _) <+ ?Import(_)))> def*
-    ; to-import := <filter(not(?Import(_))); collect-om(?QId(<id>, _)); filter(not(?qid))> def*
+    ; to-import := <concat; make-set> [<filter(not(?Import(_))); collect-om(?QId(<id>, _)); filter(not(?qid))> def*, <filter(?Import(<id>))> def*]
     ; <map(import-to-js)> to-import
     ; <entities-to-js> entities
     ; <filter(definition-to-js)> rest
-    ; <emit> $[[<qid-to-js> qid].isLoaded = true;]
 
 strategies
 
