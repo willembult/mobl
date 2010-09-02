@@ -5,6 +5,7 @@ imports
   generation/cps-lift
   generation/action
   generation/ui
+  generation/server
   declare
   type
   rename
@@ -159,8 +160,10 @@ rules
         !$[var result__ = [<expression-to-js> e];
            [<cps-statements> stat*]]
       else
-        cps-exp(|stat*)
+        spec-cps-exp(|stat*) <+ cps-exp(|stat*)
       end
+
+  spec-cps-exp(|stat*) = fail
 
   cps-exp(|stat*) :
     BinMethodCall(e1, op, e2) ->
@@ -188,6 +191,7 @@ rules
 
   cps-exp(|stat*) :
     Call(qid, e*) -> <concat-strings> [<qid-to-js> qid, "(", args, ");"]
+    where not(ServerContext)
     where ExternalFunction(_, _, _, _) := <lookup-function> qid
         ; not(<GetScreen> qid)
     with args := <arguments-to-js; <concat> [<id>, [

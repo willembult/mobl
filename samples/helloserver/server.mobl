@@ -1,21 +1,34 @@
 server server
 
+database
+  host     "localhost"
+  name     "mobl"
+  username "test"
+  password "test"
+
 import mobl::server
-import hi
 
-var data = Map<String, Object>();
+entity Document {
+  name : String
+  body : String
+}
 
-@service PUT /:key
+@service PUT /:name
 function put(req : Request, res : Response) {
-  data.set(req.params.key, req.rawBody);
+  var doc = Document.findBy("name", req.params.name);
+  if(!doc) {
+    doc = Document(name=req.params.name);
+    add(doc);
+  }
+  doc.body = req.rawBody;
   res.send("OK");
 }
 
-@service GET /:key
+@service GET /:name
 function get(req : Request, res : Response) {
-  var value = data.get(req.params.key);
-  if(value) {
-    res.send(value);
+  var doc = Document.findBy("name", req.params.name);
+  if(doc) {
+    res.send(doc.body);
   } else {
     res.send("");
   }

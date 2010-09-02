@@ -91,7 +91,7 @@ strategies
   // TODO: This assumes that the expressions are all synchronous, needs to be checked!
 
   function-to-js :
-    fn@SyncFunction(manno*, qid, _, _, _) -> <concat-strings> [varname, " = ", <function-to-js-exp> fn, ";\n"]
+    fn@SyncFunction(manno*, qid, _, _, _) -> <concat-strings> [varname, " = ", <function-to-js-exp> fn, ";\n\n"]
     where not(<fetch(?ServiceAnno(_, _))> manno*)
     with if <is-string> qid then
            varname := $[var [qid]]
@@ -100,7 +100,7 @@ strategies
          end
 
   function-to-js :
-    fn@Function(manno*, qid, _, _, _) -> <concat-strings> [varname, " = ", <function-to-js-exp> fn, ";\n"]
+    fn@Function(manno*, qid, _, _, _) -> <concat-strings> [varname, " = ", <function-to-js-exp> fn, ";\n\n"]
     where not(<fetch(?ServiceAnno(_, _))> manno*)
     with if <is-string> qid then
            varname := $[var [qid]]
@@ -113,6 +113,7 @@ strategies
      $[function([args]) {
          [stats]
        }]
+    where not(ServerContext)
     with qids := <qid-to-js> qid
        ; args := <fargs-to-js> farg*
        ; stats := <statements-to-js> stat*
@@ -122,6 +123,7 @@ strategies
     $[function([args]) {
         [stats2]
       }]
+    where not(ServerContext)
     with qids := <qid-to-js> qid
        ; args := <filter(farg-to-js); <concat> [<id>, ["callback"]]; separate-by(!", "); concat-strings> farg*
        ; stats2 := <cps-lift-expressions; <concat> [<id>, [$[if(callback) callback(); return;]]]; cps-statements <+ debug(!"Could not translate to stats: "); fail> stats
@@ -211,8 +213,11 @@ rules // Statements
     Assignment(LFieldAccess(le, x), e) -> $[[<exp-to-js> le].[x] = [<expression-to-js> e];]
 
 rules // Expressions
+
   expression-to-js =
-    exp-to-js <+ debug(!"Could not translate: "); fail
+    spec-exp-to-js <+ exp-to-js <+ debug(!"Could not translate: "); fail
+
+  spec-exp-to-js = fail
 
   ref-expression-to-js =
     ref-exp-to-js <+ !$[mobl.ref([<expression-to-js>])]

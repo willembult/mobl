@@ -7,11 +7,15 @@ imports
   rename
   desugar
   mobl
+  lookup
+  type
   editor/editor
   generation/compile
   generation/emit
   generation/ui
   generation/action
+  generation/cps-action
+  generation/cps-lift
   generation/data
   generation/script
   generation/html
@@ -46,19 +50,39 @@ strategies
       ; <fputs> ($[var [<qid-to-js-server> qid] = {};
 ], fp)
       ; if !app then
-          <fputs> ($[
+          if <fetch(?DatabaseSetting(hostname, dbname, dbuser, dbpassword))> setting* then
+            db-setup := $[
+var persistence = require('./js/persistence').persistence;
+var persistenceStore = require('./js/persistence.store.mysql');
+
+persistenceStore.config(persistence, [hostname], [dbname], [dbuser], [dbpassword]);
+            ]
+          else
+            db-setup := ""
+          end
+          ; <fputs> ($[
 var connect = require('connect');
 var express = require('express');
-
+var mobl = require('./mobl').mobl;
+[db-setup]
 global.app = express.createServer(
   connect.bodyDecoder(),
-  connect.staticProvider('.')
+  connect.staticProvider('.'),
+  mobl.persistenceMiddleware(persistenceStore)
 );
 ], fp)
         end
       ; <fputs> (<get-all>, fp)
       ; if !app then
-          <fputs> ($[
+          if !hostname then
+            <fputs> ($[
+var _session = persistenceStore.getSession();
+_session.schemaSync(function() {
+  _session.close();
+});
+], fp)
+          end
+          ; <fputs> ($[
 global.app.listen(8888);
 console.log('Server running at http://127.0.0.1:8888/');
 ], fp)
@@ -98,7 +122,7 @@ console.log('Server running at http://127.0.0.1:8888/');
 strategies
 
   function-to-js :
-    fn@SyncFunction(manno*, qid, _, _, _) -> <concat-strings> [varname, " = ", <function-to-js-exp> fn, ";\n", <expose-service <+ debug(!"Could not expose: ")> (type, uri, varname)]
+    fn@SyncFunction(manno*, qid, _, _, _) -> <concat-strings> [varname, " = ", <function-to-js-exp> fn, ";\n\n", <expose-service> (type, uri, varname, True())]
     where <fetch(?ServiceAnno(type, uri))> manno*
     with if <is-string> qid then
            varname := $[var [qid]]
@@ -107,7 +131,7 @@ strategies
          end
 
   function-to-js :
-    fn@Function(manno*, qid, _, _, _) -> <concat-strings> [varname, " = ", <function-to-js-exp> fn, ";\n", <expose-service <+ debug(!"Could not expose: "); fail> (type, uri, varname)]
+    fn@Function(manno*, qid, _, _, _) -> <concat-strings> [varname, " = ", <function-to-js-exp> fn, ";\n\n", <expose-service> (type, uri, varname, False())]
     where <fetch(?ServiceAnno(type, uri))> manno*
     with if <is-string> qid then
            varname := $[var [qid]]
@@ -116,15 +140,26 @@ strategies
          end
 
   expose-service :
-    (GetMethod(), UriPath(part*), varname) -> $[global.app.get('/[<map(uri-part-to-string); separate-by(|"/")> part*]', [varname]);
-]
+    (GetMethod(), UriPath(part*), varname, is-sync) -> <expose-service-aux> ("get", part*, varname, is-sync)
 
   expose-service :
-    (PostMethod(), UriPath(part*), varname) -> $[global.app.post('/[<map(uri-part-to-string); separate-by(|"/")> part*]', [varname]);
-]
+    (PostMethod(), UriPath(part*), varname, is-sync) -> <expose-service-aux> ("post", part*, varname, is-sync)
 
   expose-service :
-    (PutMethod(), UriPath(part*), varname) -> $[global.app.put('/[<map(uri-part-to-string); separate-by(|"/")> part*]', [varname]);
+    (PutMethod(), UriPath(part*), varname, is-sync) -> <expose-service-aux> ("put", part*, varname, is-sync)
+
+  expose-service-aux :
+    (type, part*, varname, True()) -> $[global.app.[type]('/[<map(uri-part-to-string); separate-by(|"/")> part*]', function(req, resp) {
+                                  [varname](req, resp, req._ctx);
+                                });
+
+]
+
+  expose-service-aux :
+    (type, part*, varname, False()) -> $[global.app.[type]('/[<map(uri-part-to-string); separate-by(|"/")> part*]', function(req, resp) {
+                                  [varname](req, resp, null, req._ctx);
+                                });
+
 ]
 
   uri-part-to-string :
@@ -141,3 +176,65 @@ rules
 
   qid-to-dot-path :
     QId(qid, x) -> $[[<qid-to-dot-path> qid].[x]]
+
+strategies
+
+  function-to-js-exp :
+    SyncFunction(_, qid, farg*, rt, stat*) ->
+     $[function([args]) {
+         [stats]
+       }]
+    where ServerContext
+    with qids := <qid-to-js> qid
+       ; args := <map(farg-to-js); <concat> [<id>, ["_ctx"]]; separate-by(!", "); concat-strings> farg*
+       ; stats := <statements-to-js> stat*
+
+  function-to-js-exp :
+    Function(_, qid, farg*, rt, stats) ->
+    $[function([args]) {
+        [stats2]
+      }]
+    where ServerContext
+    with qids := <qid-to-js> qid
+       ; args := <filter(farg-to-js); <concat> [<id>, ["callback", "_ctx"]]; separate-by(!", "); concat-strings> farg*
+       ; stats2 := <cps-lift-expressions; <concat> [<id>, [$[if(callback) callback(); return;]]]; cps-statements <+ debug(!"Could not translate to stats: "); fail> stats
+
+  spec-exp-to-js :
+    Call(qid, e*) -> $[[<qid-to-js> qid]([args])]
+    where ServerContext
+    where not(<lookup-type> SimpleType(qid))
+    with args := <arguments-to-js; <concat> [<id>, ["_ctx"]]; separate-by(!", "); concat-strings> e*
+
+  cps-exp(|stat*) :
+    Call(qid, e*) -> <concat-strings> [<qid-to-js> qid, "(", args, ");"]
+    where ServerContext
+    where ExternalFunction(_, _, _, _) := <lookup-function> qid
+        ; not(<GetScreen> qid)
+    with args := <arguments-to-js; <concat> [<id>, [
+$[function(result__) {
+    [<cps-statements> stat*]
+  }], "_ctx"]]; separate-by(!", "); concat-strings> e*
+
+rules
+
+  spec-exp-to-js :
+    MethodCall(e, "all", []) -> $[[es].all(_ctx.session)]
+    where ServerContext
+    where GenericType("Type", _) := <type-of> e
+    with es := <expression-to-js> e
+
+  spec-cps-exp(|stat*) :
+    MethodCall(e, "findBy", e*) -> <concat-strings> [<expression-to-js> e, ".findBy(_ctx.session, ", args, ");"]
+    where ServerContext
+    where GenericType("Type", _) := <type-of> e
+    with arg-js := <map(expression-to-js)> e*
+    with args := <concat; separate-by(!", "); concat-strings> [arg-js, [
+$[function(result__) {
+    [<cps-statements> stat*]
+  }]]]
+
+  spec-exp-to-js :
+    Call(qid, named-e*) -> $[new [<qid-to-js> qid](_ctx.session, {[propvals]})]
+    where ServerContext
+    where ExternalEntity(_, _, _, _) := <lookup-type> SimpleType(qid)
+    with propvals := <map(\ NamedExp(x, e) -> $['[x]': [<expression-to-js> e]] \); separate-by(!", "); concat-strings> named-e*

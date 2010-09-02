@@ -10,7 +10,7 @@ exports
 
     "server" ID ServerSetting* Definition* -> Start {cons("ServerApplication")}
 
-    "something" -> ServerSetting {cons("IgnoreMe")} %% Ignore this for now
+    "database" "host" STRING "name" STRING "username" STRING "password" STRING -> ServerSetting {cons("DatabaseSetting")}
 
     "@service" HttpMethod UriPath  -> MetaAnno {cons("ServiceAnno")}
 

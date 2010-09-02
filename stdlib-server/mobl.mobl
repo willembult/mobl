@@ -1,6 +1,8 @@
 module mobl
 
 load js/persistence.js
+resource js/persistence.store.sql.js
+resource js/persistence.store.mysql.js
 
 /**
  * Built-in types
@@ -205,6 +207,7 @@ external type Collection<T> {
 external type Entity<T> {
   @doc "A virtual collection containing all instances of this entity"
   static sync function all() : Collection<T>
+  static function findBy(property : String, value : String) : T
   static sync function search(query : String) : Collection<T>
   static sync function searchPrefix(query : String) : Collection<T>
 
@@ -242,28 +245,21 @@ mobl.log = function(s) {
     sys.print(sys.inspect(s) + "\n");
 };
 
-mobl.add = function(e, _, callback) {
-    persistence.add(e);
-    var allEnt = persistence.define(e._type).all(); // NOTE: define() is a hack!
-    allEnt.triggerEvent('add', allEnt, e);
-    allEnt.triggerEvent('change', allEnt, e);
-    if(callback) callback();
+mobl.add = function(e, _ctx) {
+    _ctx.session.add(e);
+};
+
+mobl.remove = function(e, _ctx) {
+    _ctx.session.remove(e);
 };
 
 mobl.now = function() {
   return new Date();
 };
 
-mobl.remove = function(e, _, callback) {
-    persistence.remove(e);
-    var allEnt = persistence.define(e._type).all();
-    allEnt.triggerEvent('remove', allEnt, e);
-    allEnt.triggerEvent('change', allEnt, e);
-    if(callback) callback();
-};
 
-mobl.resetDatabase = function(_, callback) {
-    persistence.reset(null, callback);
+mobl.resetDatabase = function(callback, _ctx) {
+    _ctx.reset(null, callback);
 };
 
 mobl.openUrl = function(url) {
@@ -436,6 +432,25 @@ function op(operator, e1, e2, callback) {
     case '%': callback(e1 % e2); break;
     }
 }
+
+mobl.persistenceMiddleware = function(persistenceStore) {
+  return function(req, res, next) {
+    var end = res.end;
+
+    req._ctx = {session: persistenceStore.getSession()};
+    res.end = function() {
+      var args = arguments;
+      req._ctx.session.flush(function() {
+        req._ctx.session.close();
+        end.apply(res, args);
+      });
+    };
+    req._ctx.session.transaction(function(tx) {
+        req.tx = tx;
+        next();
+      });
+  };
+};
 
 mobl.instantiate = function(sup, props) {
   var obj = {};
