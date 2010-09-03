@@ -13,8 +13,6 @@ CALIBRE_FLAGS = --authors "Zef Hemel" \
 								--cover img/cover.png \
 								--level1-toc="//h:h1" \
 								--use-auto-toc
-								#--level1-toc="//*[name()='h1']" \
-								#--level2-toc="//*[name()='h2']" \
 
 HTML = $(MD:.md=.html)
 
@@ -25,6 +23,7 @@ MD = introduction.md \
 		 types.md \
 		 ui.md \
 		 script.md \
+		 service.md \
 		 settings.md
 
 dist: dist/moblguide.html dist/moblguide.pdf dist/moblguide.mobi dist/moblguide.epub
