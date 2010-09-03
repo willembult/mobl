@@ -1,10 +1,11 @@
 A Brief Tutorial
-----------------
+================
 
 Alright, now that we're all set up, let's get moblin'! In this chapter
 we are going to build a simple task manager.
 
-### A data model
+A Data Model
+------------
 
 To start, create a new mobl project called "tasks". In the generated
 `tasks.mobl` file, we will start with defining our _data model_. A
@@ -24,7 +25,8 @@ properties: a textual `name` property, a `done` property that
 represents a truth (a boolean value) of either `true` or `false` and
 an `created` property that contains the date and time the task was created.
 
-### A basic user interface
+A Basic User Interface
+----------------------
 
 Next up, we are going to create an initial version of our `root`
 screen, the screen that will appear when the application is launched.
@@ -54,7 +56,8 @@ you will likely see a screen with only the header and no actual
 items. The reason for this is that, initially, the database is going
 to be empty -- we need a screen to add tasks.
 
-### An `addTask` screen
+An `addTask` Screen
+-------------------
 
 The screen to add a new task looks as follows:
 
@@ -157,7 +160,8 @@ In the `onclick` event script for the "Done" button we do two things:
 2. We `screen return` back to wherever we came from (in this case the
    `root` screen), yielding no value.
 
-### Ticking Off Tasks
+Ticking Off Tasks
+-----------------
 
 So, we have now created a task list where we can add tasks. But that
 is not very useful. What we need, is a way to tick items off the list.

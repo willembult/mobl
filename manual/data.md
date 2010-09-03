@@ -1,5 +1,5 @@
 Persistent Data
----------------
+===============
 
 There is two kinds of data in mobl: _persistent_ data and _transient_
 data. Persistent data is stored in `entities`, data objects that are
@@ -15,7 +15,8 @@ queries, mobl provides its users with a more convenient, declarative
 way of defining data model entities and a nice API to query those
 entities.
 
-### Defining entities
+Defining entities
+-----------------
 
 Using mobl's data modeling language you can declaratively define your
 data model using `entity` declarations. 
@@ -48,7 +49,8 @@ properties where a change to one affects the other. For instance, if a
 `Task` object is also added to the `tasks` property of the `Tag`
 object.
 
-### Manipulating persistent data
+Manipulating persistent data
+----------------------------
 
 In application logic is possible to create and manipulate instances of
 entities. The following code creates a new `Task` object and initializes
@@ -85,7 +87,8 @@ _retrieved_ from the database are automatically marked for persistence
 and changes to them are therefore also automatically stored in the
 database.
 
-### Collections of data
+Collections of data
+-------------------
 
 Collections of data are handled in mobl using the generic `Collection`
 type. A `Collection` represents a (sometimes) virtual collection of entity
@@ -141,7 +144,8 @@ collection works as well, and has the same behavior as using the
     Task.all().add(task);    // same as add(task)
     Task.all().remove(task); // same as remove(task)
 
-### Search
+Search
+------
 
 mobl also features simple full-text search. Textual data model
 properties can be indexed by using the `(searchable)` annotation:

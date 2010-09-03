@@ -1,5 +1,5 @@
 User interface definition
--------------------------
+=========================
 
 User interfaces in mobl are built of three things:
 
@@ -16,7 +16,8 @@ control structures (such as `list` and `cond`) to build user
 interfaces.
 
 
-### Screens
+Screens
+-------
 
 Every application is required to define a `root` screen:
 
@@ -69,7 +70,8 @@ Which will look like this:
 
 <img src="img/ui-hello-3.png" width="150"/>
 
-### Controls
+Controls
+--------
 
 Let's build our own very simple control. A control that renders an
 item with the the text "Item", followed by the number that is passed
@@ -120,7 +122,8 @@ We can now use it as follows:
     }
 
 
-### Variables
+Variables
+---------
 
 Screen and controls can also define and use local variables. In the
 context of user interfaces there are two types of variables:
@@ -167,7 +170,8 @@ textbox the value of `nSquared`, which appears below it, is updated:
   
 <img src="img/ui-derived.png" width="150"/>
 
-### Lists
+Lists
+-----
 
 Sometimes you want to repeat a part of the user interface a couple of
 times, for instance for every element in a list. To realize this, mobl
@@ -188,7 +192,8 @@ Which will look as follows:
 
 <img src="img/ui-list.png" width="150"/>
 
-### Cond
+Cond
+----
 
     screen root() {
       header("Check!")

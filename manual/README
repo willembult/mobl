@@ -1,0 +1,7 @@
+To build the mobl manual you need:
+
+* Calibre: http://calibre-ebook.com/ with command-line tools enabled (Settings > Advanced > Enable command line interface)
+* HTMLDoc: http://www.htmldoc.org/ for mac: port install htmldoc
+* ronn: http://rtomayko.github.com/ronn/ or: gem install ronn
+
+Then simply type `make clean && make`

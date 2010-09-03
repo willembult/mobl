@@ -1,5 +1,5 @@
 Basic Types
------
+===========
 
 Mobl's standard library comes with a bunch of types built-in. This
 chapter will quickly go through the most important ones. All these
@@ -7,7 +7,8 @@ built-in types are defined in the `mobl` library (which resides
 in `stdlib/mobl.mobl` in the `mobl` repository that is imported
 automatically in your applications and modules).
 
-### void
+void
+----
 
     external type void {}
 
@@ -32,7 +33,8 @@ Is the same as:
 that does not start with a capital letter. Why? Because, well, that
 would just look silly.
 
-### Object
+Object
+------
 
     external type Object {
       sync function toString() : String
@@ -42,7 +44,8 @@ would just look silly.
 of `Object`. It only has a single method: `toString()` to get the string
 representation of anything (not always a very useful one though).
 
-### String
+String
+------
 
     external type String : Object {
       length : Num
@@ -73,7 +76,8 @@ change its value after it was created.
     var world = s + " world!";
     alert(world); // => Hello world!
 
-### Num
+Num
+----
 
     external type Num : Object { }
 
@@ -114,7 +118,8 @@ For instance:
     alert(Math.pow(2, 10)); // => 1024
     alert(Math.floor(2.012222)); // => 2
 
-### Bool
+Bool
+-----
 
     external type Bool : Object { }
 
@@ -125,7 +130,8 @@ For instance:
     alert(true && true); // => true
     alert(true || false); // => true
 
-### RegExp
+RegExp
+------
 
     external type RegExp : Object {
       global : Bool
@@ -152,7 +158,8 @@ you could do something like this:
       alert("Very good!");
     }
 
-### DateTime
+DateTime
+--------
 
     external type DateTime {
       static sync function parse(s : String) : DateTime
@@ -181,7 +188,8 @@ them from a string, using `DateTime.parse("some date")`, or using the
 built-in `now()` function. The `.getTime()` return the date and time
 represented as Unix timestamp in ms since 1/1/1970.
 
-### Collection
+Collection
+----------
 
     external type Collection<T> {
       function get() : Array<T>
@@ -217,7 +225,8 @@ as a fixed array.
 
     var completed = Task.all().filter("done", "=", true);
 
-### Array
+Array
+-----
 
     external type Array<T> {
       length : Num
@@ -257,7 +266,8 @@ can be written as either `Array<T>` or shorter `[T]`:
 
     alert(ages.get("Lisa")); // => 22
 
-### Tuple
+Tuple
+-----
 
     external type Tuple1<T1> {
       _1 : T1
@@ -295,7 +305,8 @@ It can also be used to quickly swap values:
 
     (x, y) = (y, x);
 
-### Control
+Control
+-------
 
     external type Control {}
     external type Control1<T1> { }
@@ -304,7 +315,8 @@ It can also be used to quickly swap values:
     external type Control4<T1, T2, T3, T4> { }
     external type Control5<T1, T2, T3, T4, T5> { }
 
-### Callback, Function
+Callback, Function
+------------------
 
     external type Callback {}
     external type Function0<RT> { }
@@ -314,6 +326,7 @@ It can also be used to quickly swap values:
     external type Function4<T1, T2, T3, T4, RT> { }
     external type Function5<T1, T2, T3, T4, T5, RT> { }
 
-### Dynamic
+Dynamic
+-------
 
     external type Dynamic : Object { }

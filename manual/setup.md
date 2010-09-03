@@ -1,5 +1,5 @@
 Setting up mobl
----------------
+===============
 
 Currently mobl is solely distributed as an
 [Eclipse](http://www.eclipse.org) plug-in. Eclipse is a very popular
@@ -40,14 +40,16 @@ For me the entire file now looks like this (on Mac OS X Snow Leopard):
     --launcher.XXMaxPermSize
     256m
     -vmargs
-    -ss512m
+    -ss16m
+    -Xss16m
     -Xms200m
     -Xmx1024m
     -Xdock:icon=../Resources/Eclipse.icns
     -XstartOnFirstThread
     -Dorg.eclipse.swt.internal.carbon.smallFonts
     
-### Installing the Plug-in
+Installing the Plug-in
+----------------------
 
 After adjusting `eclipse.ini`, launch Eclipse and choose from the "Help" menu the
 option "Install new software...". 
@@ -69,7 +71,8 @@ unsigned content.
 
 <img src="img/install4.png" width="330"/>
 
-### Creating Your First Project
+Creating Your First Project
+---------------------------
 
 To test if everything works OK, let's create our first mobl project.
 Go to File > New > Project... 
@@ -111,7 +114,8 @@ works if Google Gears is installed. In Safari 5 you can switch
 your User Agent between "Default", "iPhone" and "iPad" to switch
 between the generic and iOS-specific controlsets.
 
-### iPhone: Turning Your Web App Into a "Proper" App
+iPhone: Turning Your Web App Into a "Proper" App
+------------------------------------------------
 
 On the iPhone (or iPhone simulator) you set-up your application as a
 "proper" application by tapping the "+" icon at the bottom, then

@@ -1,5 +1,5 @@
 Introduction
-------------
+============
 
 When Google launched [Gmail](http://gmail.com) on April 1st, 2004,
 people were amazed about the user experience. It was fast-loading and
@@ -51,7 +51,8 @@ But, we're not here to talk about Gmail, or Google, or web
 applications in general -- we're here to talk about mobile
 applications. So what does that have to do with any of this?
 
-### A Little Mobile History
+A Little Mobile History
+-----------------------
 
 Before 2007, or even 2008, applications on mobile phones were not all
 that interesting. Most mobile phones couldn't run any "apps" that did
@@ -169,7 +170,8 @@ can conclude that developing mobile web applications are an
 interesting alternative to developing native applications for each
 platforms individually.
 
-### The Mobile Web App Landscape
+The Mobile Web App Landscape
+----------------------------
 
 mobl is not the first toolkit to help you develop mobile web
 applications. There are a number of other viable options including:
