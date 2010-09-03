@@ -300,11 +300,12 @@ strategies
     ?EntityCons(t, propval*)
     ; <map(?PropVal(_, <id>); is-sync)> propval*
 
+  is-sync =	?Function(_, _, _, _, _)
+  is-sync =	?SyncFunction(_, _, _, _, _)
+
   /*is-sync = ?Control(_, _, _, _)
   is-sync = ?Screen(_, _, _, _, _)
   is-sync =	?Entity(_, _, _, _)
-  is-sync =	?Function(_, _, _, _, _)
-  is-sync =	?SyncFunction(_, _, _, _, _)
   is-sync =	?Service(_, _, _)
   is-sync =	?Load(_)
   is-sync =	?Resource(_)

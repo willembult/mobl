@@ -12,7 +12,11 @@ exports
 
     "database" "host" STRING "name" STRING "username" STRING "password" STRING -> ServerSetting {cons("DatabaseSetting")}
 
+    "port" NUMBER -> ServerSetting {cons("PortSetting")}
+
     "@service" HttpMethod UriPath  -> MetaAnno {cons("ServiceAnno")}
+
+    "@socketevent" "(" STRING ")"  -> MetaAnno {cons("SocketEventAnno")}
 
     "GET"        -> HttpMethod {cons("GetMethod")}
     "POST"       -> HttpMethod {cons("PostMethod")}

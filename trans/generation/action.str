@@ -92,7 +92,7 @@ strategies
 
   function-to-js :
     fn@SyncFunction(manno*, qid, _, _, _) -> <concat-strings> [varname, " = ", <function-to-js-exp> fn, ";\n\n"]
-    where not(<fetch(?ServiceAnno(_, _))> manno*)
+    where [] := manno*
     with if <is-string> qid then
            varname := $[var [qid]]
          else
@@ -101,7 +101,7 @@ strategies
 
   function-to-js :
     fn@Function(manno*, qid, _, _, _) -> <concat-strings> [varname, " = ", <function-to-js-exp> fn, ";\n\n"]
-    where not(<fetch(?ServiceAnno(_, _))> manno*)
+    where [] := manno*
     with if <is-string> qid then
            varname := $[var [qid]]
          else
@@ -173,6 +173,12 @@ rules // Statements
     $[{
         [<statements-to-js> stat*]
       }]
+
+  stat-to-js :
+    SyncFunction(_, _, _, _, _) -> <function-to-js>
+
+  stat-to-js :
+    Function(_, _, _, _, _) -> <function-to-js>
 
   stat-to-js :
     If(e, true-stat, false-stat) -> <concat-strings> ["if(", <expression-to-js> e, ") ", <statement-to-js> true-stat, " else ", <statement-to-js> false-stat]

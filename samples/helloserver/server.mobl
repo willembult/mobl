@@ -6,7 +6,10 @@ database
   username "test"
   password "test"
 
+port 1337
+
 import mobl::server
+import mobl::server::socket
 
 entity Document {
   name : String
@@ -32,4 +35,20 @@ function get(req : Request, res : Response) {
   } else {
     res.send("");
   }
+}
+
+@socketevent("connect")
+function onConnect(client : Client) {
+  client.send("Welcome to my server!");
+}
+
+@socketevent("message")
+function onMessage(client : Client, msg : String) {
+  log(msg);
+  client.send(msg);
+}
+
+@socketevent("disconnect")
+function onDisconnect(client : Client) {
+  log(client);
 }

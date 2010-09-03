@@ -44,6 +44,8 @@ exports
     "screen" "return" ";"                       -> Statement {cons("ScreenReturn")}
     "async" "{" Statement* "}"                  -> Statement {cons("Async")}
 
+    FunctionDef                                 -> Statement
+
   context-free syntax %% Expressions
 
     STRING                        -> Exp {cons("String")}

@@ -23,7 +23,7 @@ strategies
 
   rename-local-function :
    Function(mannos, name, farg*, rt, body) -> name2
-   where "control" := <RenameScope>
+   where RenameScope
    with name2 := <rename-var> (name, SimpleType(QId("mobl", "Callback")))
       ; rules(
            RenameFunction : name -> name2
@@ -32,7 +32,7 @@ strategies
 
   rename-local-function :
     Function(mannos, name, farg*, rt, body) -> name
-    where not("control" := <RenameScope>)
+    where not(RenameScope)
 
   rename-local-function :
    SyncFunction(mannos, name, farg*, rt, body) -> name2
@@ -116,7 +116,7 @@ strategies
     with control-scope(
            farg2* := <map(rename-ref-farg)> farg*
            //; <rename-var> ("elements", SimpleType(QId("mobl", "Control")))
-           ; body2 := <rename-all> body
+           ; body2 := <prename-functions; rename-all> body
          )
 
   // Local control definitions
@@ -125,7 +125,7 @@ strategies
     where "control" := <RenameScope>
     with control-scope(
            farg2* := <map(rename-ref-farg)> farg*
-           ; body2 := <rename-all> body
+           ; body2 := <prename-functions; rename-all> body
          )
        ; name2 := <rename-var> (name, SimpleType(QId("mobl", "Control")))
 
@@ -145,26 +145,36 @@ strategies
     Screen(manno*, name, arg*, rt, body) -> Screen(manno*, name, arg2*, rt, body2)
     with control-scope(
            arg2* := <map(rename-ref-farg)> arg*
-           ; body2 := <rename-all> body
+           ; body2 := <prename-functions; rename-all> body
          )
 
 strategies
 
-  rename :
-    f@Function(manno*, qid, farg*, rt, body) -> Function(manno*, qid2, farg2*, rt, body2)
-    with action-scope(
-           farg2* := <map(rename-farg)> farg*
-           ; body2 := <rename-all> body
-         )
-         ; qid2 := <rename-local-function> f
+  prename-functions = alltd(prename-function)
+
+  prename-function :
+    f@Function(manno*, qid, farg*, rt, body) -> Function(manno*, <rename-local-function> f, farg*, rt, body)
+
+  prename-function :
+    f@SyncFunction(manno*, qid, farg*, rt, body) -> SyncFunction(manno*, <rename-local-function> f, farg*, rt, body)
+
+rules
 
   rename :
-    f@SyncFunction(manno*, qid, farg*, rt, body) -> SyncFunction(manno*, qid2, farg2*, rt, body2)
+    f@Function(manno*, qid, farg*, rt, body) -> Function(manno*, qid, farg2*, rt, body2)
     with action-scope(
            farg2* := <map(rename-farg)> farg*
-           ; body2 := <rename-all> body
+           ; body2 := <prename-functions; rename-all> body
          )
-         ; qid2 := <rename-local-function> f
+         //; qid2 := <rename-local-function> f
+
+  rename :
+    f@SyncFunction(manno*, qid, farg*, rt, body) -> SyncFunction(manno*, qid, farg2*, rt, body2)
+    with action-scope(
+           farg2* := <map(rename-farg)> farg*
+           ; body2 := <prename-functions; rename-all> body
+         )
+         //; qid2 := <rename-local-function> f
 
   rename :
     Script(body) -> Script(body2)

@@ -103,7 +103,9 @@ strategies
 strategies
 
   refresh-workspace-file :
-    f -> <prim("SSL_EXT_refreshresource", f)>
+    f -> <try(not(Standalone); prim("SSL_EXT_refreshresource", f))>
+
+  dummy-rule = rules ( Standalone := 0 )
 
   project-path = prim("SSL_EXT_projectpath")
 
