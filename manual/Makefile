@@ -45,7 +45,7 @@ dist/moblguide.pdf: dist/moblguide.html
 
 %.html: %.md
 	ronn --pipe --fragment $< \
-		| sed -E 's/<h1>([^ ]+) - /<h1>/' \
+		| perl -pe 's/<h1>([^ ]+) - /<h1>/' \
 		> $@
 
 dist/moblguide.mobi:
