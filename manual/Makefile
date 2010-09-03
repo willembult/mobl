@@ -1,4 +1,4 @@
-PDF_FLAGS = --fontsize 10.0 \
+PDF_FLAGS = --fontsize 11.0 \
 			--linkstyle plain \
 			--linkcolor blue \
 			--embedfonts \
@@ -6,7 +6,7 @@ PDF_FLAGS = --fontsize 10.0 \
 			--numbered \
 			--title \
 			--titlefile pages/cover.html \
-			--headfootsize 9.0 \
+			--headfootsize 10.0 \
 			--footer "c 1" 
 CALIBRE_FLAGS = --authors "Zef Hemel" \
 								--title "mobl: An Incomplete Guide" \
@@ -21,8 +21,10 @@ MD = introduction.md \
 		 tutorial.md \
 		 data.md \
 		 types.md \
+		 customtypes.md \
 		 ui.md \
 		 script.md \
+		 wrapping.md \
 		 service.md \
 		 settings.md
 
