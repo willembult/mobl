@@ -26,8 +26,8 @@ let
         cp -vR dist $out/
         echo "doc manual $out/dist/moblguide.html" >> $out/nix-support/hydra-build-products
         echo "doc-pdf manual $out/dist/moblguide.pdf" >> $out/nix-support/hydra-build-products
-        echo "doc manual $out/dist/moblguide.mobi" >> $out/nix-support/hydra-build-products
-        echo "doc manual $out/dist/moblguide.epub" >> $out/nix-support/hydra-build-products
+        echo "doc mobi $out/dist/moblguide.mobi" >> $out/nix-support/hydra-build-products
+        echo "doc epub $out/dist/moblguide.epub" >> $out/nix-support/hydra-build-products
       '';
       __noChroot = true;
     };
