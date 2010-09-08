@@ -19,7 +19,7 @@ let
 
         gem install ronn
 
-        cd mobl/manual
+        cd $sourceRoot/manual
         make 
 
         ensureDir $out/nix-support
