@@ -3,13 +3,14 @@ module mobl::socket
 load mobl/socketio.js
 
 external type Socket {
-  static sync function create(fn : Dynamic -> void) : Socket
+  static sync function create(onmessage : Dynamic -> void = null) : Socket
   sync function send(obj : Dynamic) : void
+  sync function onmessage(onmessage : Dynamic -> void) : void
 }
 
 <javascript>
 
-mobl.socket.Socket = function(fn) {
+mobl.socket.Socket = function(onmessage) {
   this.sock = new io.Socket(null, {transports: [
     'websocket', //breaks chrome5, should be preferred :(
     'server-events', //i assume used in Opera, never seen it used
@@ -19,13 +20,17 @@ mobl.socket.Socket = function(fn) {
     'xhr-polling' //preferred in chrome5, android 2.1, iPhone
   ]});
   this.sock.connect();
-  this.sock.on('message', function(msg) {
-    fn(JSON.parse(msg));
-  });
+  if(onmessage) {
+    this.sock.on('message', function(msg) {
+      onmessage(JSON.parse(msg));
+    });
+  }
 }
 
-mobl.socket.Socket.prototype.onMessage = function(fn) {
-  this.sock.on('message', fn);
+mobl.socket.Socket.prototype.onmessage = function(onmessage) {
+  this.sock.on('message', function(msg) {
+      onmessage(JSON.parse(msg));
+    });
 };
 
 mobl.socket.Socket.prototype.send = function(obj) {

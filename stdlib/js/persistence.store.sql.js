@@ -605,6 +605,9 @@ persistence.store.sql.config = function(persistence, dialect) {
     session.flush(tx, function () {
         tx.executeSql(sql, args, function (rows) {
             var results = [];
+            if(that._reverse) {
+              rows.reverse();
+            }
             for ( var i = 0; i < rows.length; i++) {
               var r = rows[i];
               var e = rowToEntity(session, entityName, r, mainPrefix);

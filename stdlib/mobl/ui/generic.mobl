@@ -65,8 +65,16 @@ control checkBox(b : Bool, label : String = "") {
   <span databind=label onclick={ b = b ? false : true; }/>
 }
 
-control textField(s : String, placeholder : String = null, onchange : Callback = null) {
-  <input type="text" placeholder=placeholder databind=s onchange=onchange onblur={ scrollUp(); }/>
+control textField(s : String, placeholder : String = null, label : String = null, onchange : Callback = null) {
+  cond(label) {
+    <span style="float: left; margin-top: 0.2em; width: 5em; color: #666;" databind=label/>
+    <span style="float: left">
+      <input type="text" placeholder=placeholder databind=s onchange=onchange onblur={ scrollUp(); }/>
+    </span>
+  }
+  cond(!label) {
+    <input type="text" placeholder=placeholder databind=s onchange=onchange onblur={ scrollUp(); }/>
+  }
 }
 
 control numField(n : Num, placeholder : String = null, onchange : Callback = null) {
@@ -178,21 +186,66 @@ control masterDetail(items : Collection<Dynamic>, masterItem : Control1<Dynamic>
 
 // Floating box
 
-external sync function setupFloatBox(top : Num = null, right : Num = null, bottom : Num = null, left : Num = null) : void
+external sync function setupFloatBox(id : Num, top : Num = null, right : Num = null, bottom : Num = null, left : Num = null) : void
 
-control floatBox(top : Num = null, right : Num = null, bottom : Num = null, left : Num = null) {
-  <div id="floatBox" style="position: absolute;">
+<javascript>
+mobl.ui.generic.floatBox = function(top, right, bottom, left, elements, callback) {
+  var root928 = $("<span>");
+  var node280 = $("<div style=\"position: absolute;\">");
+
+  var nodes681 = $("<span>");
+  node280.append(nodes681);
+  mobl.ref(elements).addEventListener('change', function() {
+    renderControl102();
+  });
+
+  function renderControl102() {
+    (elements)(function(elements, callback) {
+      var root929 = $("<span>");
+      callback(root929); return;
+    }, function(node) {
+      var oldNodes = nodes681;
+      nodes681 = node.contents();
+      oldNodes.replaceWith(nodes681);
+    });
+  }
+  renderControl102();
+  root928.append(node280);
+  var box = node280;
+  if(top.get() !== null) box.css("top", "" + top.get() + "px");
+  if(right.get() !== null) box.css("right", "" + right.get() + "px");
+  if(bottom.get() !== null) box.css("top", "" + (window.pageYOffset + window.innerHeight - box.outerHeight() - bottom.get()) + "px");
+  if(left.get() !== null) box.css("left", "" + left.get() + "px");
+  function updateLocation() {
+    if(top.get() !== null) {
+      box.css("top", "" + (window.pageYOffset + top.get()) + "px");
+    }
+    if(bottom.get() !== null) {
+      box.css("top", "" + (window.pageYOffset + window.innerHeight - box.outerHeight() - bottom.get()) + "px");
+    }
+  }
+  $(window).bind('scroll', updateLocation);
+  $(window).bind('resize', updateLocation);
+
+  callback(root928); return;
+};
+</javascript>
+
+
+external control floatBox(top : Num = null, right : Num = null, bottom : Num = null, left : Num = null) /*{
+  var id = random(9999)
+  <div id="floatBox"+id style="position: absolute;">
     elements()
   </div>
   script {
-    setupFloatBox(top, right, bottom, left);
+    setupFloatBox(id, top, right, bottom, left);
   }
-}
+}*/
 
 <javascript>
-mobl.ui.generic.setupFloatBox = function(top, right, bottom, left) {
+mobl.ui.generic.setupFloatBox = function(id, top, right, bottom, left) {
   setTimeout(function() {
-    var box = $("div#floatBox");
+    var box = $("div#floatBox"+id);
     if(top !== null) box.css("top", "" + top + "px");
     if(right !== null) box.css("right", "" + right + "px");
     if(bottom !== null) box.css("top", "" + (window.pageYOffset + window.innerHeight - box.outerHeight() - bottom) + "px");

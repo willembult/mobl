@@ -73,3 +73,14 @@ completions
 
     completion template : ScreenElem =
       "cond" "(" <e> ") {\n\t\n}" (blank)
+
+completions
+
+    completion template : Definition =
+      "@service GET /" "\nfunction " <myService> "() {\n\t\n}" (blank)
+
+    completion template : Definition =
+      "@service PUT /" "\nfunction " <myService> "() {\n\t\n}" (blank)
+
+    completion template : Definition =
+      "@service POST /" "\nfunction " <myService> "() {\n\t\n}" (blank)

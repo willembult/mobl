@@ -15,3 +15,6 @@ exports
     ID                              -> Anno {cons("SimpleAnno")}
     "inverse" ":" ID                -> Anno {cons("InverseAnno")}
 
+  context-free syntax
+
+    "@sync" UriPath  -> MetaAnno {cons("SyncEntityAnno")}

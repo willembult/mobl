@@ -25,6 +25,7 @@ imports
   generation/html
   generation/service
   generation/type
+  generation/util
   include/MoBL
   lib/editor-common
   sync-analysis
@@ -41,7 +42,7 @@ strategies
       ; with({| ServerContext, OutputPath, IncludePaths
          : rules ( ServerContext := True()
                    OutputPath    := <ServerOutputPath>
-                   IncludePaths := [<concat-strings> [<plugin-path>, "/stdlib-server"]|include-paths])
+                   IncludePaths := [<concat-strings> [<plugin-path>, "/stdlib-server-override"]|include-paths])
          ; analyze
          ; where(alltd(compile-import-module))
          ; desugar-all
@@ -71,8 +72,8 @@ var mobl = require('./mobl').mobl;
 [db-setup]
 global.app = express.createServer(
   connect.bodyDecoder(),
-  connect.staticProvider('../www'),
-  mobl.persistenceMiddleware(persistenceStore)
+  connect.staticProvider('../www')
+  [<try(!hostname; !$[, mobl.persistenceMiddleware(persistenceStore)]) <+ !"">]
 );
 ], fp)
         end
@@ -166,12 +167,6 @@ strategies
                                 });
 
 ]
-
-  uri-part-to-string :
-    UriPart(s) -> s
-
-  uri-part-to-string :
-    UriVar(s) -> $[:[s]]
 
 rules
 

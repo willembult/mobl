@@ -113,6 +113,12 @@ strategies
         )
 
   declare :
+    extern@ExternalVarDecl(qid, t) -> <fail>
+    with rules (
+           GetGlobalVar : qid -> extern
+         )
+
+  declare :
     VarDecl(qid, t, e) -> <fail>
     with
       extern := <origin-track-forced(definition-to-external)>

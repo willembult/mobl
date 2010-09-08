@@ -25,7 +25,6 @@ strategies
               persistence.store.memory.config(persistence);
             }
             mobl.icon = "[<<path-to-string> icon <+ !"img/default-icon.png">]";
-            mobl.load('[<qid-to-path> qid].js');
             $(function(){
                 persistence.schemaSync(function(tx) {
                     mobl.call("[<qid-to-js> qid].root", $[$$]$, function() {});

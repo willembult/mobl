@@ -68,6 +68,12 @@ exports
     JSString -/- [\ \t\n\r]
     JSString -/- ~[\<]
 
+  context-free syntax %% Paths
+    "/" {UriPart "/"}*                  -> UriPath {cons("UriPath")}
+
+    FILENAME  -> UriPart {cons("UriPart")}
+    ":" ID    -> UriPart {cons("UriVar")}
+
   lexical syntax
     "control" -> ID {reject}
     "var" -> ID {reject}

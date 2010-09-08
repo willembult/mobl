@@ -16,6 +16,8 @@ colorer
   STRING : blue
 
   _.UriVar : darkgreen
+  UriPath  : blue
+  UriPart  : blue
 
 
   action = _ 224 224 224
