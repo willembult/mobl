@@ -24,7 +24,8 @@ let
 
         ensureDir $out/nix-support
         cp -vR dist $out/
-        echo "doc manual $out/dist/moblguide.html" >> $out/nix-support/hydra-build-products
+        ln -sv $out/dist/moblguide.html $out/dist/index.html
+        echo "doc manual $out/dist" >> $out/nix-support/hydra-build-products
         echo "doc-pdf manual $out/dist/moblguide.pdf" >> $out/nix-support/hydra-build-products
         echo "doc mobi $out/dist/moblguide.mobi" >> $out/nix-support/hydra-build-products
         echo "doc epub $out/dist/moblguide.epub" >> $out/nix-support/hydra-build-products
