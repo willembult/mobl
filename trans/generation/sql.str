@@ -6,7 +6,7 @@ imports
 strategies
 
   sql-type :
-    SimpleType(QId("mobl", "String")) -> "TEXT"
+    SimpleType(QId("mobl", "String")) -> "VARCHAR(255)"
 
   sql-type :
     SimpleType(QId("mobl", "Text")) -> "TEXT"

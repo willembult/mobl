@@ -134,7 +134,9 @@ rules // Statements
     map(statement-to-js); separate-by(!"\n"); concat-strings
 
   statement-to-js =
-    stat-to-js <+ debug(!"Could not translate statement: "); fail
+    spec-stat-to-js <+ stat-to-js <+ debug(!"Could not translate statement: "); fail
+
+  spec-stat-to-js = fail
 
   stat-to-js :
     ExpStat(e) -> $[[es];]

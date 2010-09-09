@@ -50,9 +50,7 @@ exports.config = function(persistence, hostname, db, username, password) {
       }
       function cb(err, result) {
         if(err) {
-          log(err);
           log(err.message);
-          sys.print(err.stack);
           errorFn(null, err);
           return;
         }

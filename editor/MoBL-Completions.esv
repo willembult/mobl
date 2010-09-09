@@ -77,10 +77,13 @@ completions
 completions
 
     completion template : Definition =
-      "@service GET /" "\nfunction " <myService> "() {\n\t\n}" (blank)
+      "@service GET /" "\nfunction " <myService> "(req : Request, res : Response) {\n\t\n}" (blank)
 
     completion template : Definition =
-      "@service PUT /" "\nfunction " <myService> "() {\n\t\n}" (blank)
+      "@service PUT /" "\nfunction " <myService> "(req : Request, res : Response) {\n\t\n}" (blank)
 
     completion template : Definition =
-      "@service POST /" "\nfunction " <myService> "() {\n\t\n}" (blank)
+      "@service POST /" "\nfunction " <myService> "(req : Request, res : Response) {\n\t\n}" (blank)
+
+    completion template : Definition =
+      "@service DELETE /" "\nfunction " <myService> "(req : Request, res : Response) {\n\t\n}" (blank)

@@ -13,3 +13,10 @@ external type Response {
   sync function send(obj : Object) : void
   sync function redirect(url : String) : void
 }
+
+external sync function enterContext() : void
+external sync function leaveContext() : void
+
+external type Buffer {
+
+}

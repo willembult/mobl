@@ -21,3 +21,4 @@ exports
     "GET"        -> HttpMethod {cons("GetMethod")}
     "POST"       -> HttpMethod {cons("PostMethod")}
     "PUT"        -> HttpMethod {cons("PutMethod")}
+    "DELETE"     -> HttpMethod {cons("DeleteMethod")}

@@ -44,7 +44,7 @@
 
   <!-- Main target -->
   <!--<target name="all" depends="sdf2table,ppgen,pppack,stratego.aster,stratego.jar,sdf2imp,refresh" /> -->
-  <target name="all" depends="sdf2table,ppgen,pppack,stratego.aster,java.jar,stratego.jar,sdf2imp,refresh" />
+  <target name="all" depends="sdf2table,ppgen,pppack,stratego.aster,stratego.jar,sdf2imp,refresh" />
 
 
   <!-- Stratego to Java compiler -->
