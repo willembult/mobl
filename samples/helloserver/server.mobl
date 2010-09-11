@@ -6,8 +6,6 @@ database
   username "test"
   password "test"
 
-port 1337
-
 import mobl::server
 import mobl::server::socket
 
@@ -15,6 +13,9 @@ entity Document {
   name : String
   body : String
 }
+
+var a = 8;
+a = 7;
 
 @service PUT /:name
 function put(req : Request, res : Response) {

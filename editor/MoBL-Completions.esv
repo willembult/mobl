@@ -87,3 +87,6 @@ completions
 
     completion template : Definition =
       "@service DELETE /" "\nfunction " <myService> "(req : Request, res : Response) {\n\t\n}" (blank)
+
+    completion template : Definition =
+      "database host " <"localhost"> " name \"dbname\" username \"user\" password \"pass\"" (blank)

@@ -16,7 +16,7 @@ imports
 strategies
 
   cps-statements :
-    [Return(e)|stat*] -> <cps-expression(|[$[if(callback) callback(result__);
+    [Return(e)|stat*] -> <cps-expression(|[$[if(callback && callback.apply) callback(result__);
                                              return;
 ]|stat*])> e
 
@@ -26,7 +26,7 @@ strategies
 ]|stat*])> e
 
   cps-statements :
-    [Return()|stat*] -> <cps-statements> [$[if(callback) callback();
+    [Return()|stat*] -> <cps-statements> [$[if(callback && callback.apply) callback();
                                             return;
 ]|stat*]
 
@@ -151,6 +151,12 @@ strategies
 
   cps-statements :
     [] -> ""
+
+  cps-statements :
+    [fn@Function(_, _, _, _, _)|stat*] -> <concat-strings> [<function-to-js> fn, <cps-statements> stat*]
+
+  cps-statements :
+    [fn@SyncFunction(_, _, _, _, _)|stat*] -> <concat-strings> [<function-to-js> fn, <cps-statements> stat*]
 
 rules
 

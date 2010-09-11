@@ -208,6 +208,8 @@ external type Collection<T> {
 }
 
 external type Entity<T> {
+  id : String
+
   @doc "A virtual collection containing all instances of this entity"
   static sync function all() : Collection<T>
   static function findBy(property : String, value : String) : T

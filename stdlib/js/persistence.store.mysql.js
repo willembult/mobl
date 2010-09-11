@@ -38,6 +38,7 @@ exports.config = function(persistence, hostname, db, username, password) {
 
     session.close = function() {
       conn.end();
+      conn._connection.destroy();
     };
     return session;
   };

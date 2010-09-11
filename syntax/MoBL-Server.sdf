@@ -12,7 +12,7 @@ exports
 
     "database" "host" STRING "name" STRING "username" STRING "password" STRING -> ServerSetting {cons("DatabaseSetting")}
 
-    "port" NUMBER -> ServerSetting {cons("PortSetting")}
+    "debug" -> ServerSetting {cons("DebugSetting")}
 
     "@service" HttpMethod UriPath  -> MetaAnno {cons("ServiceAnno")}
 

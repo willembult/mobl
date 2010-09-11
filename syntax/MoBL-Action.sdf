@@ -14,10 +14,11 @@ exports
     MetaAnno* "sync" "function" QId "(" {FArg ","}* ")" ":" Type "{" Statement* "}" -> FunctionDef {cons("SyncFunction")}
     MetaAnno* "sync" "function" QId "(" {FArg ","}* ")" "{" Statement* "}" -> FunctionDef {cons("SyncFunctionNoReturnType")}
 
-    FunctionDef -> Definition
+    %%FunctionDef -> Definition
 
-    "var" ID ":" Type "=" Exp ";"              -> Definition {cons("VarDecl")}
-    "var" ID "=" Exp ";"                       -> Definition {cons("VarDeclInferred")}
+    %%"var" ID ":" Type "=" Exp ";"              -> Definition {cons("VarDecl")}
+    %%"var" ID "=" Exp ";"                       -> Definition {cons("VarDeclInferred")}
+    Statement                                  -> Definition
 
 
   context-free syntax %% Statements

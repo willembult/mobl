@@ -54,6 +54,7 @@ strategies
       ; fp := <fopen> (js-filename, "w")
       ; <fputs> ($[var [<qid-to-js-server> qid] = {};
 var persistence = require('./js/persistence').persistence;
+[<<not(fetch(?DebugSetting())); !"persistence.debug = false;"> setting* <+ !"">]
 ], fp)
       ; if !app then
           if <fetch(?DatabaseSetting(hostname, dbname, dbuser, dbpassword))> setting* then
@@ -220,11 +221,13 @@ strategies
     where ServerContext
     with qids := <qid-to-js> qid
        ; args := <filter(farg-to-js); <concat> [<id>, ["callback", "_ctx"]]; separate-by(!", "); concat-strings> farg*
-       ; stats2 := <cps-lift-expressions; <concat> [<id>, [$[if(callback) callback(); return;]]]; cps-statements <+ debug(!"Could not translate to stats: "); fail> stats
+       ; stats2 := <cps-lift-expressions; <concat> [<id>, [$[if(callback && callback.apply) callback(); return;]]]; cps-statements <+ debug(!"Could not translate to stats: "); fail> stats
 
   spec-exp-to-js :
     Call(qid, e*) -> $[[<qid-to-js> qid]([args])]
     where ServerContext
+    where not(QId(QId("mobl", "server"), "enterContext") := qid)
+    where not(QId(QId("mobl", "server"), "leaveContext") := qid)
     where not(<lookup-type> SimpleType(qid))
     with args := <arguments-to-js; <concat> [<id>, ["_ctx"]]; separate-by(!", "); concat-strings> e*
 
@@ -262,10 +265,8 @@ $[function(result__) {
     where ExternalEntity(_, _, _, _) := <lookup-type> SimpleType(qid)
     with propvals := <map(\ NamedExp(x, e) -> $['[x]': [<expression-to-js> e]] \); separate-by(!", "); concat-strings> named-e*
 
-  spec-stat-to-js :
-    ExpStat(Call(QId(QId("mobl", "server"), "enterContext"), [])) -> $[_ctx = {session: persistenceStore.getSession() };
-]
+  spec-exp-to-js :
+    Call(QId(QId("mobl", "server"), "enterContext"), []) -> $[(function() { _ctx = {session: persistenceStore.getSession() } }())]
 
-  spec-stat-to-js :
-    ExpStat(Call(QId(QId("mobl", "server"), "leaveContext"), [])) -> $[_ctx.session.flush(function() { _ctx.session.close(); });
-]
+  spec-exp-to-js :
+    Call(QId(QId("mobl", "server"), "leaveContext"), []) -> $[(function() { _ctx.session.flush(function() { _ctx.session.close(); }) }())]

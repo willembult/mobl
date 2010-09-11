@@ -8,6 +8,7 @@ external type ChildProcess {
   stdout : WriteableStream
   stderr : WriteableStream
   sync function kill(signal : String = "SIGTERM") : void
+  sync function on(evt : String, handler : Dynamic -> void) : void
 }
 
 type SpawnOptions {

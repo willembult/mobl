@@ -16,7 +16,15 @@ external type Response {
 
 external sync function enterContext() : void
 external sync function leaveContext() : void
+external sync function print(s : String) : void
 
 external type Buffer {
 
 }
+
+<javascript>
+var sys = require('sys');
+mobl__server.print = function(s) {
+  sys.print(s);
+};
+</javascript>

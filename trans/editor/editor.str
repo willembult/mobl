@@ -50,9 +50,15 @@ rules
 rules
 
   editor-desugar :
-    (selected, position, ast, path, project-path) -> (filename, <desugar-all> <ResultingAST>)
+    (selected, position, ast, path, project-path) -> (filename, <desugar-all> ast2)
     with
-      filename := <guarantee-extension(|"aterm")> "desugared"
+            rules ( ProjectPath := project-path
+              IsImported  : path
+              OutputPath  := <concat-strings> [project-path, "/www"]
+              ServerOutputPath  := <concat-strings> [project-path, "/server"]
+              IncludePaths := [project-path, <concat-strings> [<plugin-path>, "/stdlib"]])
+      ; ast2 := <analyze; store-result> ast
+      ; filename := <guarantee-extension(|"aterm")> "desugared"
 
   format-code :
     (selected, position, ast, path, project-path) -> (filename, <pp-mobl> selected)

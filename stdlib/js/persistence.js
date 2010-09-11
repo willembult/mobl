@@ -404,6 +404,16 @@ persistence.get = function(arg1, arg2) {
         return this.id == other.id;
       };
 
+      Entity.prototype.toJSON = function() {
+        var json = {id: this.id};
+        for(var p in this._data) {
+          if(this._data.hasOwnProperty(p)) {
+            json[p] = this._data[p];
+          }
+        }
+        return json;
+      };
+
       Entity.prototype.fetch = function(tx, rel, callback) {
         var args = argspec.getArgs(arguments, [
             { name: 'tx', optional: true, check: persistence.isTransaction, defaultValue: null },
@@ -489,7 +499,7 @@ persistence.get = function(arg1, arg2) {
             });
           return;
         }
-        Entity.all().filter(property, "=", value).one(tx, function(obj) {
+        Entity.all(session).filter(property, "=", value).one(tx, function(obj) {
             callback(obj);
           });
       }
