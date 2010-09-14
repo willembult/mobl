@@ -32,7 +32,7 @@ strategies
     ; to-import := <concat; make-set> [<filter(not(?Import(_))); collect-om(?QId(<id>, _)); filter(not(?qid))> def*, <filter(?Import(<id>))> def*]
     ; <map(import-to-js)> to-import
     ; <entities-to-js> entities
-    ; <filter(definition-to-js <+ where(?<id>#(_); not(string-starts-with(|"External"))); not(?MiddlewareUse(_)); emit-tl-statement)> rest
+    ; <filter(definition-to-js <+ where(?<id>#(_); not(string-starts-with(|"External"))); not(?MiddlewareUse(_) <+ ?DynamicImport(_)); emit-tl-statement)> rest
 
 strategies
 

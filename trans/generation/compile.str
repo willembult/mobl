@@ -26,13 +26,13 @@ imports
 strategies
 
   ensure-existing-dir =
-    string-replace(|$[[<ProjectPath>]/], "")
+    where(project-path := <ProjectPath; string-replace(|"\\", "/")>)
+    ; string-replace(|$[[project-path]/], "")
     ; string-tokenize(|<explode-string> "/")
-    ; where(old := <getcwd>; <chdir> <ProjectPath>)
+    ; where(old := <getcwd>; <chdir> project-path)
     ; where(map((?"" <+ file-exists <+ mkdir(|"w") <+ debug(!"Failed to created: ")); chdir)
             ; <chdir> old)
     ; separate-by(|"/"); concat-strings
-
 
   compile =
       (?Module(qid, def*) <+ ?app@Application(qid, setting*, def*))
@@ -53,7 +53,7 @@ strategies
       ; <fputs> ($[mobl.provides('[<qid-to-js> qid]');
 ], fp)
       ; <fputs> (<get-all>, fp)
-      ; <fputs> (<get-all-tl-statements; cps-lift-expressions; cps-statements <+ debug(!"Could not cps tl statements: "); fail>, fp)
+      ; <fputs> (<get-all-tl-statements; (cps-lift-expressions; cps-statements <+ debug(!"Could not cps tl statements: "); fail)>, fp)
       ; <fclose> fp
       ; if !app then
         with(
