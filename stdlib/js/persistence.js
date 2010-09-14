@@ -414,19 +414,21 @@ persistence.get = function(arg1, arg2) {
         return json;
       };
 
-      Entity.prototype.fetch = function(tx, rel, callback) {
+      Entity.prototype.fetch = function(session, tx, rel, callback) {
         var args = argspec.getArgs(arguments, [
+            { name: 'session', optional: true, check: persistence.isSession, defaultValue: persistence },
             { name: 'tx', optional: true, check: persistence.isTransaction, defaultValue: null },
             { name: 'rel', optional: false, check: argspec.hasType('string') },
             { name: 'callback', optional: false, check: argspec.isCallback() }
           ]);
+        session = args.session;
         tx = args.tx;
         rel = args.rel;
         callback = args.callback;
 
         var that = this;
         if(!tx) {
-          this._session.transaction(function(tx) {
+          session.transaction(function(tx) {
               that.fetch(tx, rel, callback);
             });
           return;

@@ -39,7 +39,8 @@ strategies
       ; where(<debug(!"Now compiling: ")> <pp-mobl-qid> qid
               ; rules ( Compiled : qid )
               ; include-paths := <IncludePaths>)
-      ; with({| ServerContext, OutputPath, IncludePaths
+      ; with(
+        {| ServerContext, OutputPath, IncludePaths
          : rules ( ServerContext := True()
                    OutputPath    := <ServerOutputPath>
                    IncludePaths := [<concat-strings> [<plugin-path>, "/stdlib-server-override"]|include-paths])
@@ -47,53 +48,45 @@ strategies
          ; where(alltd(compile-import-module))
          ; desugar-all
          ; module-to-js
-         |})
-      ; where(path := <qid-to-dot-path> qid
-              ; js-filename   := <concat-strings> [<ServerOutputPath>, "/", path, ".js"]
-              ; <dirname; ensure-existing-dir> js-filename)
-      ; fp := <fopen> (js-filename, "w")
-      ; <fputs> ($[var [<qid-to-js-server> qid] = {};
+         ; where(path := <qid-to-dot-path> qid
+                 ; js-filename   := <concat-strings> [<ServerOutputPath>, "/", path, ".js"]
+                 ; <dirname; ensure-existing-dir> js-filename)
+         ; fp := <fopen> (js-filename, "w")
+         ; if !app; <fetch(?DatabaseSetting(hostname, dbname, dbuser, dbpassword))> setting* then
+             db-setup := $[
+var persistenceStore = require('./js/persistence.store.mysql');
+persistenceStore.config(persistence, [hostname], [dbname], [dbuser], [dbpassword]);
+_ctx.session = persistenceStore.getSession();
+]
+           else
+             db-setup := ""
+           end
+         ; <fputs> ($[var [<qid-to-js-server> qid] = {}, _ctx = {};
 var persistence = require('./js/persistence').persistence;
 [<<not(fetch(?DebugSetting())); !"persistence.debug = false;"> setting* <+ !"">]
-], fp)
-      ; if !app then
-          if <fetch(?DatabaseSetting(hostname, dbname, dbuser, dbpassword))> setting* then
-            db-setup := $[
-var persistenceStore = require('./js/persistence.store.mysql');
-
-persistenceStore.config(persistence, [hostname], [dbname], [dbuser], [dbpassword]);
-            ]
-          else
-            db-setup := ""
-          end
-          ; <fputs> ($[
-var connect = require('connect');
-var express = require('express');
-var mobl = require('./mobl').mobl;
 [db-setup]
-global.app = express.createServer(
-  connect.bodyDecoder(),
-  connect.staticProvider('www')
-  [<try(!hostname; !$[, mobl.persistenceMiddleware(persistenceStore)]) <+ !"">]
-);
-module.exports = global.app;
 ], fp)
-        end
-      ; <fputs> (<get-all>, fp)
-      ; if !app then
-          if !hostname then
-            <fputs> ($[
+         ; <fputs> (<get-all>, fp)
+         ; if !app then
+             if !hostname then
+               <fputs> ($[
 var _session = persistenceStore.getSession();
 _session.schemaSync(function() {
   _session.close();
 });
 ], fp)
-          end
-        else
-          <fputs> ($[exports.[<qid-to-js-server> qid] = [<qid-to-js-server> qid];
+             end
+           else
+             <fputs> ($[exports.[<qid-to-js-server> qid] = [<qid-to-js-server> qid];
 ], fp)
-        end
-      ; <fclose> fp
+           end
+         ; <fputs> (<get-all-tl-statements; (cps-lift-expressions; cps-statements <+ debug(!"Could not cps tl statements: "); fail)>, fp)
+         ; if !app then
+             <fputs> ($[module.exports = global.app;
+], fp)
+           end
+        ; <fclose> fp
+        |})
 
   qid-to-js :
     QId(qid, x) -> $[[qids].[x]]
@@ -121,6 +114,10 @@ _session.schemaSync(function() {
        ; <cut-off-last-element; separate-by(|"/"); <concat-strings> [<OutputPath>, "/"|<id>]; ensure-existing-dir> part*
        ; <copy-file> (<resolve-file> path-str, $[[<OutputPath>]/[path-str]])
        ; ns := <at-last(?last); !last; ?[<id>]; string-tokenize(|<explode-string> "."); cut-off-last-element; separate-by(|"."); concat-strings> part*
+
+  definition-to-js :
+    MiddlewareUse(e) -> <emit> $[mobl__server__httpserver.addMiddleware([<expression-to-js> e]);
+]
 
 strategies
 
@@ -253,6 +250,16 @@ rules
     MethodCall(e, "findBy", e*) -> <concat-strings> [<expression-to-js> e, ".findBy(_ctx.session, ", args, ");"]
     where ServerContext
     where GenericType("Type", _) := <type-of> e
+    with arg-js := <map(expression-to-js)> e*
+    with args := <concat; separate-by(!", "); concat-strings> [arg-js, [
+$[function(result__) {
+    [<cps-statements> stat*]
+  }]]]
+
+  spec-cps-exp(|stat*) :
+    MethodCall(e, "fetch", e*) -> <concat-strings> [<expression-to-js> e, ".fetch(_ctx.session, ", args, ");"]
+    where ServerContext
+    where ExternalEntity(_, _, _, _) := <type-of; lookup-type> e
     with arg-js := <map(expression-to-js)> e*
     with args := <concat; separate-by(!", "); concat-strings> [arg-js, [
 $[function(result__) {

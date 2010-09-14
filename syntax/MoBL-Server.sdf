@@ -22,3 +22,7 @@ exports
     "POST"       -> HttpMethod {cons("PostMethod")}
     "PUT"        -> HttpMethod {cons("PutMethod")}
     "DELETE"     -> HttpMethod {cons("DeleteMethod")}
+
+  context-free syntax
+
+    "middleware" Exp      -> Definition {cons("MiddlewareUse")}

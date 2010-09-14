@@ -48,6 +48,8 @@ exports
     "@cond" Exp                    -> MetaAnno {cons("ConditionalAnno")}
     "@persistable"                 -> MetaAnno {cons("PersistableAnno")}
 
+    "@" Exp                        -> MetaAnno {cons("DecoratorAnno"), avoid}
+
   context-free syntax %% Paths
     {FILENAME "/"}+                  -> Path {cons("Path")}
     STRING                           -> Path {cons("QuotedPath")}

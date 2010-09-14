@@ -111,7 +111,9 @@ strategies
   lookup-method :
     (t, x) -> extern
     where not(GenericType("Type", _) := t)
-    where ExternalType(_, _, super, method*) := <lookup-type> t
+    where (ExternalType(_, _, super, method*) := <lookup-type> t
+        <+ ExternalEntity(_, _, _, _) := <lookup-type> t
+           ; ExternalType(_, _, super, method*) := <lookup-type> GenericType(QId("mobl", "Entity"), [t]))
         ; <filter(?ExternalSyncMethod(_, x, farg*, rt))> method*
         ; try(?[esm@ExternalSyncMethod(manno*, _, _, _)]; ?[<id>])
         ; origin-track-forced(
@@ -128,7 +130,9 @@ strategies
   lookup-method :
     (t, x) -> extern
     where not(GenericType("Type", _) := t)
-    where ExternalType(_, _, super, method*) := <lookup-type> t
+    where (ExternalType(_, _, super, method*) := <lookup-type> t
+        <+ ExternalEntity(_, _, _, _) := <lookup-type> t
+           ; ExternalType(_, _, super, method*) := <lookup-type> GenericType(QId("mobl", "Entity"), [t]))
         ; <filter(?ExternalMethod(_, x, farg*, rt))> method*
         ; try(?[esm@ExternalMethod(manno*, _, _, _)]; ?[<id>])
         ; origin-track-forced(
