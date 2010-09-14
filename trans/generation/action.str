@@ -46,7 +46,7 @@ strategies
     where not(ServerContext)
     with path-str := <path-to-string> path
        ; <cut-off-last-element; separate-by(|"/"); <concat-strings> [<OutputPath>, "/"|<id>]; ensure-existing-dir> part*
-        ; <copy-file> (<resolve-file> path-str, $[[<OutputPath>]/[path-str]])
+       ; <copy-file> (<resolve-file> path-str, $[[<OutputPath>]/[path-str]])
 
   definition-to-js :
     Resource(path@Path(part*)) -> <id>
