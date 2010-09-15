@@ -253,8 +253,8 @@ external sync function isLandscape() : Bool
 external sync function isPortrait() : Bool
 
 <javascript>
-mobl.isIphone = function() { return !!navigator.userAgent.match(/iPhone/i) || !!navigator.userAgent.match(/iPod/i); };
-mobl.isIpad = function() { return !!navigator.userAgent.match(/iPad/i); };
+mobl.isIphone = function() { return !!navigator.userAgent.match(/iPhone/i)) || !!navigator.userAgent.match(/iPod/i)); };
+mobl.isIpad = function() { return !!navigator.userAgent.match(/iPad/i)); };
 mobl.isAndroid = function() { return !!navigator.userAgent.match(/Android/i); };
 mobl.isLandscape = function() { return window.innerHeight < window.innerWidth; };
 mobl.isPortrait = function() { return window.innerHeight >= window.innerWidth; };
@@ -292,6 +292,7 @@ mobl.log = function(s, _, callback) {
     console.log(s);
     if(callback) callback();
 };
+
 mobl.add = function(e, _, callback) {
     persistence.add(e);
     var allEnt = persistence.define(e._type).all(); // NOTE: define() is a hack!
@@ -312,6 +313,7 @@ mobl.remove = function(e, _, callback) {
     if(callback) callback();
 };
 
+
 mobl.resetDatabase = function(_, callback) {
     persistence.reset(null, callback);
 };
@@ -322,7 +324,7 @@ mobl.openUrl = function(url) {
 
 mobl.random = function(max) {
   return Math.round(Math.random()*max);
-}
+};
 
 persistence.QueryCollection.prototype.updates = function() {
   this.triggerEvent('change', this);
@@ -353,13 +355,13 @@ mobl.formatDate = function(date) {
   if ( isNaN(day_diff) || day_diff < 0 || day_diff >= 31 )
     return;
 
-  return day_diff == 0 && (
+  return day_diff === 0 && (
       diff < 60 && "just now" ||
       diff < 120 && "1 minute ago" ||
       diff < 3600 && Math.floor( diff / 60 ) + " minutes ago" ||
       diff < 7200 && "1 hour ago" ||
       diff < 86400 && Math.floor( diff / 3600 ) + " hours ago") ||
-      day_diff == 1 && "Yesterday" ||
+      day_diff === 1 && "Yesterday" ||
       day_diff < 7 && day_diff + " days ago" ||
       day_diff < 31 && Math.ceil( day_diff / 7 ) + " weeks ago";
 };
@@ -445,7 +447,7 @@ Array.prototype.remove = function(el) {
   }
 };
 
-Array.prototype.addEventListener = function() {}
+Array.prototype.addEventListener = function() {};
 
 mobl.dummyMapper = function(data, callback) {
   callback(data);
@@ -482,32 +484,28 @@ setTimeout(function() {
     }
 }, 200);
 
+
 function updateScrollers () {
-    //console.log("Updating scrollers");
     var scrollwrappers = $("div#scrollwrapper");
-    //scrollTo(0, 0);
     if (scrollwrappers.length > 0) {
         var height = mobl.innerHeight ? mobl.innerHeight : window.innerHeight;
-        //height -= $("div.header:visible").height();
         height -= $("#footer:visible").height();
         height -= $("#tabbar:visible").height();
         scrollwrappers.height(height);
     }
     var scrollers = $("div#scrollwrapper div#content");
-    //console.log(scrollers.length);
     for ( var i = 0; i < scrollers.length; i++) {
         var scroller = scrollers.eq(i).data("scroller");
         if(scroller) {
             scroller.refresh();
         } else {
-            //console.log("what's up here?");
         }
     }
 }
 
 mobl.delayedUpdateScrollers = function() {
     setTimeout(updateScrollers, 200);
-}
+};
 
 if(!mobl.isAndroid) {
     $(window).resize(updateScrollers);
@@ -523,7 +521,7 @@ mobl.call = function (screenName, args, callback) {
         "name": screenName,
         "args": args,
         "callback": callback,
-        "div": screenName.replace(/\./g, '__') + mobl.screenStack.length
+        "div": screenName.replace(new Regex("\\.", "g"), '__') + mobl.screenStack.length
     };
     mobl.screenStack.push(screenFrame);
     var callbackFn = function () {
@@ -600,7 +598,8 @@ mobl.call = function (screenName, args, callback) {
 
         $(function () {
         //setTimeout(function() {
-            var scrollers = $("div#scrollwrapper div#content"), i = 0;
+            var scrollers = $("div#scrollwrapper div#content");
+            var i = 0;
             if (scrollers.length > 0) {
                 for (i = 0; i < scrollers.length; i++) {
                     if(!scrollers.eq(i).data("scroller")) {
@@ -612,7 +611,7 @@ mobl.call = function (screenName, args, callback) {
         });
         //}, 200);
     }, callbackFn ]));
-}
+};
 
 mobl.ref = function(e, property) {
     return new mobl.Reference(e, property);
@@ -642,7 +641,7 @@ mobl.conditionalDef = function(oldDef, condFn, newDef) {
       return oldDef.apply(null, arguments);
     }
   };
-}
+};
 
 mobl.stringTomobl__DateTime = function(s) {
     return new Date(s);
@@ -674,7 +673,7 @@ mobl.proxyUrl = function(url, user, password) {
     } else {
         return '/proxy.php?proxy_url=' + encodeURIComponent(url);
     }
-}
+};
 
 mobl.remoteCollection = function(uri, datatype, processor) {
   return {
@@ -906,5 +905,4 @@ mobl.implementInterface = function(sourceModule, targetModule, items) {
     mobl.LinkedMap = LinkedMap;
     mobl.Reference = Reference;
 }());
-
 </javascript>

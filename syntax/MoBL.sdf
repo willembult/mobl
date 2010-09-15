@@ -10,6 +10,7 @@ imports
   MoBL-Regex
   MoBL-External
   MoBL-Server
+  %%js/Javascript
 
 exports
 
@@ -57,6 +58,7 @@ exports
   context-free syntax %% native javascript
 
     "<javascript>" JSString "</javascript>"  -> Definition {cons("Javascript"), prefer}
+    %%"<javascript>" JSStat* "</javascript>"     -> Definition {cons("Javascript")}
 
   lexical syntax
     JSChar*       -> JSString
@@ -92,4 +94,5 @@ exports
     "if" -> ID {reject}
     "databind" -> ID {reject}
     "cond" -> ID {reject}
+    "javascript" -> ID {reject}
 

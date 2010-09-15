@@ -73,13 +73,8 @@ control textField(s : String, placeholder : String = null, onchange : Callback =
 }
 
 control numField(n : Num, placeholder : String = null, onchange : Callback = null) {
-  /*cond(label != null) {
-    <span databind=label class="inputLabel" />
-  }*/
-  //<input type="text" placeholder=placeholder databind=n onchange=onchange class=label != null ? "labelled" : ""/>
   <input type="text" placeholder=placeholder databind=n onchange=onchange/>
 }
-// end
 
 @doc "Internal use only"
 external sync function updateScrollers() : void
@@ -203,9 +198,7 @@ mobl.ui.ios.contextMenu = function(elements, callback) {
 
   callback(root);
 };
-</javascript>
 
-<javascript>
 mobl.scrollTop = function() {
   var scrollers = $("div#scrollwrapper div#content");
   for (var i = 0; i < scrollers.length; i++) {
