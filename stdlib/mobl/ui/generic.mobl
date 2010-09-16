@@ -307,7 +307,7 @@ jQuery.fn.tap = function (callback) {
 
 mobl.ui.generic.scrollUp = function() {
   scrollTo(0, 0);
-}
+};
 
 mobl.ui.generic.setupScrollers = function() {
   setTimeout(function() {

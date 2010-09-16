@@ -26,5 +26,5 @@ mobl.maps.initializeMap = function(divId, coords, zoom) {
       };
       var map = new google.maps.Map(document.getElementById(divId), myOptions);
   }, 100);
-}
+};
 </javascript>

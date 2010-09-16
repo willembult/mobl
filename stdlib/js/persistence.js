@@ -707,9 +707,15 @@ persistence.get = function(arg1, arg2) {
     function defaultValue(type) {
       switch(type) {
       case "TEXT": return "";
-      case "INT": return 0;
       case "BOOL": return false;
-      default: return null;
+      default: 
+        if(type.indexOf("INT") !== -1) {
+          return 0;
+        } else if(type.indexOf("CHAR") !== -1) {
+          return "";
+        } else {
+          return null;
+        }
       }
     }
 

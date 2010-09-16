@@ -205,7 +205,7 @@ mobl.scrollTop = function() {
     var scroller = scrollers.eq(i).data("scroller");
     scroller.scrollTo(0, 0);
   }
-}
+};
 
 mobl.ui.ios.updateScrollers = function() {
     mobl.delayedUpdateScrollers();

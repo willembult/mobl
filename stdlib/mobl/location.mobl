@@ -14,7 +14,7 @@ external sync function isSupported() : Bool
 <javascript>
 mobl.location.isSupported = function() {
   return !!navigator.geolocation;
-}
+};
 
 mobl.location.getPosition = function(callback) {
   if(navigator.geolocation) {

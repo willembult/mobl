@@ -99,7 +99,7 @@ mobl.peersocket.ServerSocket = function(name, onmessage, onquery, onconnect, ond
 mobl.peersocket.ServerSocket.create = function(name, onmessage, onquery, onconnect, ondisconnect, callback) {
   mobl.peersocket.socket.send(JSON.stringify({type: 'create', name: name}));
   mobl.peersocket.serverCreateCallback = function(msg) {
-    if(msg == 'ok') {
+    if(msg === 'ok') {
       var sock = new mobl.peersocket.ServerSocket(name, onmessage, onquery, onconnect, ondisconnect);
       mobl.peersocket.serverConnections[name] = sock;
       callback(sock);
@@ -124,21 +124,21 @@ mobl.peersocket.Socket = function(name, onmessage, ondisconnect) {
 mobl.peersocket.Socket.join = function(name, onmessage, ondisconnect, callback) {
   mobl.peersocket.socket.send(JSON.stringify({type: 'join', name: name}));
   mobl.peersocket.clientJoinCallback = function(msg) {
-    if(msg == 'ok') {
+    if(msg === 'ok') {
       var sock = new mobl.peersocket.Socket(name, onmessage, ondisconnect);
       mobl.peersocket.clientConnections[name] = sock;
       callback(sock);
     } else {
       callback(null);
     }
-  }
+  };
 };
 
 mobl.peersocket.Socket.listServers = function(callback) {
   mobl.peersocket.socket.send(JSON.stringify({type: 'list'}));
   mobl.peersocket.clientListCallback = function(servers) {
     callback(servers);
-  }
+  };
 };
 
 mobl.peersocket.Socket.prototype.send = function(message) {

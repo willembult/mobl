@@ -253,8 +253,8 @@ external sync function isLandscape() : Bool
 external sync function isPortrait() : Bool
 
 <javascript>
-mobl.isIphone = function() { return !!navigator.userAgent.match(/iPhone/i)) || !!navigator.userAgent.match(/iPod/i)); };
-mobl.isIpad = function() { return !!navigator.userAgent.match(/iPad/i)); };
+mobl.isIphone = function() { return !!navigator.userAgent.match(/iPhone/i) || !!navigator.userAgent.match(/iPod/i); };
+mobl.isIpad = function() { return !!navigator.userAgent.match(/iPad/i); };
 mobl.isAndroid = function() { return !!navigator.userAgent.match(/Android/i); };
 mobl.isLandscape = function() { return window.innerHeight < window.innerWidth; };
 mobl.isPortrait = function() { return window.innerHeight >= window.innerWidth; };
@@ -521,7 +521,7 @@ mobl.call = function (screenName, args, callback) {
         "name": screenName,
         "args": args,
         "callback": callback,
-        "div": screenName.replace(new Regex("\\.", "g"), '__') + mobl.screenStack.length
+        "div": screenName.replace(/\./g, '__') + mobl.screenStack.length
     };
     mobl.screenStack.push(screenFrame);
     var callbackFn = function () {
@@ -827,7 +827,6 @@ mobl.implementInterface = function(sourceModule, targetModule, items) {
             ref.childRefs.push(this);
         }
         this.subscribers = {}; // Observable
-        var that = this;
     }
 
     Reference.prototype = new persistence.Observable();

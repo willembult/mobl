@@ -19,5 +19,7 @@ colorer
   UriPath  : blue
   UriPart  : blue
 
+  environment _.Javascript : darkgreen
+
 
   action = _ 224 224 224

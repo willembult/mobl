@@ -25,7 +25,7 @@ mobl.socket.Socket = function(onmessage) {
       onmessage(JSON.parse(msg));
     });
   }
-}
+};
 
 mobl.socket.Socket.prototype.onmessage = function(onmessage) {
   this.sock.on('message', function(msg) {

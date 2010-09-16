@@ -3,9 +3,10 @@ module generation/script
 imports
   include/MoBL
   generation/emit
+  lib/editor-common
 
 strategies
 
   definition-to-js :
     //Javascript(part*) -> <emit> <map(?JSString(<id>)); concat-strings> part*
-    Javascript(s) -> <emit> s
+    Javascript(mod) -> <debug; pp-mobl-string; emit <+ debug(!"Could not pp: "); fail> mod

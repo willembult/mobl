@@ -1,6 +1,6 @@
 application shopping
 
-import mobl::ui
+import mobl::ui::generic
 
 entity Item {
   name     : String
