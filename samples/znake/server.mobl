@@ -107,16 +107,16 @@ function onDisconnect(client : Num) {
 }
 
 function collides(player : LocalPlayer) : Bool {
-  for(p in players) {
+  foreach(p in players) {
     if(p != player) {
-      for((x, y) in p.tail) {
+      foreach((x, y) in p.tail) {
         if(player.x == x && player.y == y) {
           return true;
         }
       }
     }
   }
-  for(d in droppings) {
+  foreach(d in droppings) {
     if(player.x == d.x && player.y == d.y) {
       droppings.remove(d);
       return true;
@@ -133,18 +133,18 @@ function placeApple() {
     x = Math.floor(Math.random() * FIELD_WIDTH);
     y = Math.floor(Math.random() * FIELD_HEIGHT);
     goodSpot = true;
-    for(a in apples) {
+    foreach(a in apples) {
       if(x == a.x && y == a.y) {
         goodSpot = false;
       }
     }
-    for(d in droppings) {
+    foreach(d in droppings) {
       if(x == d.x && y == d.y) {
         goodSpot = false;
       }
     }
-    for(p in players) {
-       for((tx, ty) in p.tail) {
+    foreach(p in players) {
+       foreach((tx, ty) in p.tail) {
          if(x == tx && y == ty) {
            goodSpot = false;
          }
@@ -155,7 +155,7 @@ function placeApple() {
 }
 
 function handleAteApple(player : LocalPlayer) {
-  for(a in apples) {
+  foreach(a in apples) {
     if(player.x == a.x && player.y == a.y) {
       apples.remove(a);
       placeApple();
@@ -167,7 +167,7 @@ function handleAteApple(player : LocalPlayer) {
 
 function turn() {
   var update = Update(apples=apples, droppings=droppings, players=[]);
-  for(player in players) {
+  foreach(player in players) {
     if(player.deadFor == 0) {
       var maxTailLength = Math.floor(player.turns / 10) + 5;
       if(player.tail.length >= maxTailLength) {

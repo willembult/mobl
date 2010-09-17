@@ -52,3 +52,8 @@ rules
   normalize :
     FunctionType(t*, rt) -> GenericType(QId("mobl", $[Function[n]]), [t*, rt])
     where n := <length> t*
+
+rules
+
+  normalize :
+    OrderNonSpecific(e) -> OrderAscending(e)

@@ -154,6 +154,65 @@ rules
     Import(qid) -> (qid, $[Module not found.])
     where not(<qid-to-path; <concat-strings> [<id>, ".mobl"]; resolve-file> qid)
 
+  constraint-error :
+    t@SetComp(e, fltr) -> (t, $[Comprehensions can only be used with expressions of type Collection<T>.])
+    where not(GenericType(QId("mobl", "Collection"), _) := <type-of> e)
+
+rules
+
+  constraint-error :
+    SetComp(e, fltr*) -> <oncetd(set-comp-error(|<type-of; ?GenericType(QId("mobl", "Collection"), [<id>])> e); ?err); !err> fltr*
+
+  set-comp-error(|t) :
+    LimitFilter(e1) -> (e1, $[Expression should be of type Num])
+    where not(SimpleType(QId("mobl", "Num")) := <type-of> e1)
+
+  set-comp-error(|t) :
+    OffsetFilter(e1) -> (e1, $[Expression should be of type Num])
+    where not(SimpleType(QId("mobl", "Num")) := <type-of> e1)
+
+  set-comp-error(|t) :
+    PrefetchFilter(x*) -> (x, $[Not a prefetchable property])
+    where ExternalEntity(_, _, _, prop*) := <lookup-type> t
+    where [x|_] := <filter({x, pt: \
+                    x -> x
+                    where <filter(?Property(_, x, pt, _))> prop*
+                        ; not(ExternalEntity(_, _, _, _) := <lookup-type> pt) \})> x*
+
+  set-comp-error(|t) :
+    OrderAscending(prop) -> (prop, $[[<pp-mobl-type> t] has no property '[prop]'])
+    where ExternalEntity(_, _, _, prop*) := <lookup-type> t
+    where [] := <filter(?Property(_, prop, _, _))> prop*
+
+  set-comp-error(|t) :
+    OrderDescending(prop) -> (prop, $[[<pp-mobl-type> t] has no property '[prop]'])
+    where ExternalEntity(_, _, _, prop*) := <lookup-type> t
+    where [] := <filter(?Property(_, prop, _, _))> prop*
+
+  set-comp-error(|t) :
+    OrderAscending(prop) -> (prop, $[Collection cannot be ordered on property '[prop]'])
+    where ExternalEntity(_, _, _, prop*) := <lookup-type> t
+    where [] := <filter(?Property(_, prop, SimpleType(_), _))> prop*
+
+  set-comp-error(|t) :
+    OrderDescending(prop) -> (prop, $[Collection cannot be ordered on property '[prop]'])
+    where ExternalEntity(_, _, _, prop*) := <lookup-type> t
+    where [] := <filter(?Property(_, prop, SimpleType(_), _))> prop*
+
+  set-comp-error(|t) :
+    term@c#([prop, _]) -> (term, $[[<pp-mobl-type> t] has no property '[prop]'])
+    where <string-starts-with(|"Set")> c
+    where <is-string> prop
+    where ExternalEntity(_, _, _, prop*) := <lookup-type> t
+    where [] := <filter(?Property(_, prop, _, _))> prop*
+
+  set-comp-error(|t) :
+    term@c#([prop, e]) -> (e, $[Value should be of type [<pp-mobl-type> pt].])
+    where <fetch-elem(?c)> ["SetEq", "SetNotEq", "SetLt", "SetLeq", "SetGt", "SetGeq"]
+    where ExternalEntity(_, _, _, prop*) := <lookup-type> t
+    where <filter(?Property(_, prop, pt, _))> prop*
+    where not(<type-compatible> (pt, <type-of> e))
+
   constraint-warning:
     Entity(_, qid, _, _) -> (x, $[Entity names must start with a capital])
     where

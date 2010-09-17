@@ -132,6 +132,9 @@ strategies
   eq-type-of :
     BinMethodCall(e1, op, e2) -> <type-of> e1 // @TODO: Fix this
 
+  eq-type-of :
+    SetComp(e, _) -> <type-of> e
+
 strategies
 
   type-compatible =

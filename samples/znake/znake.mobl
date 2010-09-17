@@ -55,7 +55,7 @@ screen play(serverName : String, playerName : String) {
       g.fillText(p.name + " is dead", 0, 10);
     } else {
       g.fillStyle = p.color;
-      for((x, y) in p.tail) {
+      foreach((x, y) in p.tail) {
         g.fillRect(x * 10, y * 10, 10, 10);
       }
       g.fillStyle = "black";
@@ -80,13 +80,13 @@ screen play(serverName : String, playerName : String) {
   function receiveUpdate(update : Update) {
     clear();
     playerInfo = "";
-    for(a in update.apples) {
+    foreach(a in update.apples) {
       drawApple(a);
     }
-    for(d in update.droppings) {
+    foreach(d in update.droppings) {
       drawDropping(d);
     }
-    for(p in update.players) {
+    foreach(p in update.players) {
       drawPlayer(p);
     }
   }

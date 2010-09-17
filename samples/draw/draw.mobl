@@ -30,7 +30,7 @@ screen root() {
   }
 
   function receivePath(update : Update) {
-    for((x, y) in update.path) {
+    foreach((x, y) in update.path) {
       drawPoint(update.color, update.penSize, x, y);
     }
   }

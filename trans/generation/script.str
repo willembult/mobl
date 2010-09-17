@@ -9,4 +9,4 @@ strategies
 
   definition-to-js :
     //Javascript(part*) -> <emit> <map(?JSString(<id>)); concat-strings> part*
-    Javascript(mod) -> <debug; pp-mobl-string; emit <+ debug(!"Could not pp: "); fail> mod
+    Javascript(mod) -> <pp-mobl-string; emit <+ debug(!"Could not pp: "); fail> mod

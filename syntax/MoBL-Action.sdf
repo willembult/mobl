@@ -34,10 +34,13 @@ exports
 
     "if" "(" Exp ")" Statement "else" Statement -> Statement {cons("If")}
     "if" "(" Exp ")" Statement                            -> Statement {cons("IfNoElse")}
-    "for" "(" LValue ":" Type "in" Exp ")" "{" Statement* "}"         -> Statement {cons("For")}
-    "for" "(" LValue "in" Exp ")" "{" Statement* "}"                  -> Statement {cons("ForInferred")}
+    "foreach" "(" LValue ":" Type "in" Exp ")" "{" Statement* "}"         -> Statement {cons("For")}
+    "foreach" "(" LValue "in" Exp ")" "{" Statement* "}"                  -> Statement {cons("ForInferred")}
     "while" "(" Exp ")" "{" Statement* "}"                           -> Statement {cons("While")}
     "{" Statement* "}"                          -> Statement {cons("Block")}
+
+    "for" "(" LValue ":" Type "in" Exp ")" "{" Statement* "}"         -> Statement {cons("For"), deprecated("To avoid confusing Javascript programmers, for(... in ...) is now foreach(... in ...)")}
+    "for" "(" LValue "in" Exp ")" "{" Statement* "}"                  -> Statement {cons("ForInferred"), deprecated("To avoid confusing Javascript programmers, for(... in ...) is now foreach(... in ...)")}
 
     "return" Exp ";"                            -> Statement {cons("Return")}
     "screen" "return" Exp ";"                   -> Statement {cons("ScreenReturn")}
@@ -88,29 +91,47 @@ exports
     ID "=" Exp                  -> PropVal {cons("PropVal")}
 
   context-free syntax %% Filters
-    "[" Exp Filter "]"                       -> Exp {cons("SetComp")}
-    "where" SetExp                           -> Filter {cons("FilterNoOrderByNoLimit")}
-    "order" "by" OrderExp                    -> Filter {cons("FilterNoWhereNoLimit")}
-    "where" SetExp "order" "by" OrderExp     -> Filter {cons("FilterNoLimit")}
-    "where" SetExp Limit                     -> Filter {cons("FilterNoOrderBy")}
-    "order" "by" OrderExp Limit              -> Filter {cons("FilterNoWhere")}
-    Limit                                    -> Filter {cons("FilterNoWhereNoOrderBy")}
-    "where" Exp "order" "by" OrderExp Limit  -> Filter {cons("Filter")}
-    Exp                                      -> OrderExp {cons("OrderNonSpecific")}
-    Exp "asc"                                -> OrderExp {cons("OrderAscending")}
-    Exp "desc"                               -> OrderExp {cons("OrderDescending")}
-    "limit" Exp "offset" Exp                 -> Limit {cons("Limit")}
-    "limit" Exp                              -> Limit {cons("LimitNoOffset")}
-    "offset" Exp                             -> Limit {cons("LimitNoLimit")}
+    %%Exp                                      -> NonSetExp
+    %%SetCompExp                               -> NonSetExp {reject}
 
-    ID "==" Exp                              -> SetExp {cons("SetEq")}
-    ID "!=" Exp                              -> SetExp {cons("SetNotEq")}
-    ID "<" Exp                               -> SetExp {cons("SetLt")}
-    ID "<=" Exp                              -> SetExp {cons("SetLeq")}
-    ID ">" Exp                               -> SetExp {cons("SetGt")}
-    ID ">=" Exp                              -> SetExp {cons("SetGeq")}
+    %%NonSetExp Filter                         -> SetCompExp {cons("SetComp")}
+    %%SetCompExp                               -> Exp
+    LimitedExp Filter+                        -> Exp {cons("SetComp")}
 
-    SetExp "&&" SetExp                       -> SetExp {left, cons("SetAnd")}
+    "where" SetExp                           -> Filter {cons("WhereFilter")}
+    "order" "by" OrderExp                    -> Filter {cons("OrderByFilter")}
+    "prefetch" {ID ","}+                     -> Filter {cons("PrefetchFilter")}
+    "limit" Exp                              -> Filter {cons("LimitFilter")}
+    "offset" Exp                             -> Filter {cons("OffsetFilter")}
+
+    ID                                       -> OrderExp {cons("OrderNonSpecific")}
+    ID "asc"                                 -> OrderExp {cons("OrderAscending")}
+    ID "desc"                                -> OrderExp {cons("OrderDescending")}
+
+    %%"where" SetExp                           -> Filter {cons("FilterNoOrderByNoLimit")}
+    %%"order" "by" OrderExp                    -> Filter {cons("FilterNoWhereNoLimit")}
+    %%"where" SetExp "order" "by" OrderExp     -> Filter {cons("FilterNoLimit")}
+    %%"where" SetExp Limit                     -> Filter {cons("FilterNoOrderBy")}
+    %%"order" "by" OrderExp Limit              -> Filter {cons("FilterNoWhere")}
+    %%Limit                                    -> Filter {cons("FilterNoWhereNoOrderBy")}
+    %%"where" Exp "order" "by" OrderExp Limit  -> Filter {cons("Filter")}
+    %%ID                                       -> OrderExp {cons("OrderNonSpecific")}
+    %%ID "asc"                                 -> OrderExp {cons("OrderAscending")}
+    %%ID "desc"                                -> OrderExp {cons("OrderDescending")}
+    %%"limit" Exp "offset" Exp     -> Limit {cons("Limit")}
+    %%"limit" Exp                        -> Limit {cons("LimitNoOffset")}
+    %%"offset" Exp                       -> Limit {cons("LimitNoLimit")}
+
+    ID "==" Exp                        -> SetExp {cons("SetEq")}
+    ID "!=" Exp                        -> SetExp {cons("SetNotEq")}
+    ID "<" Exp                         -> SetExp {cons("SetLt")}
+    ID "<=" Exp                        -> SetExp {cons("SetLeq")}
+    ID ">" Exp                         -> SetExp {cons("SetGt")}
+    ID ">=" Exp                        -> SetExp {cons("SetGeq")}
+    ID "in" Exp                        -> SetExp {cons("SetIn")}
+    ID "not" "in" Exp                  -> SetExp {cons("SetNotIn")}
+
+    SetExp "&&" SetExp                       -> SetExp {left, cons("SetAnd"), prefer}
 
 
   context-free priorities
@@ -126,14 +147,14 @@ exports
 
   context-free priorities
   {
-    ID "==" Exp                              -> SetExp
-    ID "!=" Exp                              -> SetExp
-    ID "<" Exp                               -> SetExp
-    ID "<=" Exp                              -> SetExp
-    ID ">" Exp                               -> SetExp
-    ID ">=" Exp                              -> SetExp
+    ID "==" Exp                        -> SetExp
+    ID "!=" Exp                        -> SetExp
+    ID "<" Exp                         -> SetExp
+    ID "<=" Exp                        -> SetExp
+    ID ">" Exp                         -> SetExp
+    ID ">=" Exp                        -> SetExp
   }
-  > SetExp "&&" SetExp                       -> SetExp
+  > SetExp "&&" SetExp                 -> SetExp
 
 
   lexical syntax

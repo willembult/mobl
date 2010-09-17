@@ -55,9 +55,11 @@ exports
     {FILENAME "/"}+                  -> Path {cons("Path")}
     STRING                           -> Path {cons("QuotedPath")}
 
+  %%syntax
+        %%"<javascript>" <JSString-LEX> "</javascript>"  -> <Definition-CF> {cons("Javascript")}
+
   context-free syntax %% native javascript
 
-    %%"<javascript>" JSString "</javascript>"  -> Definition {cons("Javascript")}
     "<javascript>" JSModule "</javascript>"     -> Definition {cons("Javascript")}
 
   %%lexical syntax
