@@ -187,8 +187,6 @@ external type Object {
 @doc "A virtual queryable collection"
 @persistable
 external type Collection<T> {
-  function list() : Array<T>
-
   @doc "Return one item in the collection, or null if the collection is empty"
   function one() : T
 
@@ -212,7 +210,6 @@ external type Collection<T> {
 
   @doc "Calculate the collection and return it as an array"
   function list() : Array<T>
-
 
   sync function limit(n : Num) : Collection<T>
   sync function skip(n : Num) : Collection<T>

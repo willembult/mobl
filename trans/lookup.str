@@ -134,7 +134,7 @@ strategies
         <+ ExternalEntity(_, _, _, _) := <lookup-type> t
            ; ExternalType(_, _, super, method*) := <lookup-type> GenericType(QId("mobl", "Entity"), [t]))
         ; <filter(?ExternalMethod(_, x, farg*, rt))> method*
-        ; try(?[esm@ExternalMethod(manno*, _, _, _)]; ?[<id>])
+        ; try(?[ExternalMethod(manno*, _, _, _)]; ?[<id>])
         ; origin-track-forced(
             if not(!farg*); not(super := t) then // could not find a method
               <lookup-method> (super, x)

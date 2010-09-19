@@ -45,6 +45,23 @@ completions
 
 completions
 
+  completion template : LimitedExp =
+    "where " <prop> " = " <value>
+
+  completion template : LimitedExp =
+    "order by " <prop> " asc"
+
+  completion template : LimitedExp =
+    "limit " <n>
+
+  completion template : LimitedExp =
+    "offset " <n>
+
+  completion template : LimitedExp =
+    "prefetch " <prop>
+
+completions
+
     completion template : Statement =
       "if" "(" <e> ") {\n\t\n}" (blank)
 

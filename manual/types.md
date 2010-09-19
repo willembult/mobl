@@ -297,7 +297,7 @@ of tuple types, each with a different number of items. However, typically
 you would use the nicer syntax for tuple types `(T1, T2)`:
 
     var coords : [(Num, Num)] = [(20, 31), (10, 21)];
-    for((x, y) in coords) {
+    foreach((x, y) in coords) {
       alert("X: " + x + " Y: " + y);
     }
 

@@ -17,8 +17,16 @@ rules
   editor-complete :
     (t, position, ast, path, project-path) -> proposals
     where ast' := <analyze> ast
-    where {| Proposals, CompletionVars
-           : <alltd({props: editor-complete-proposal; ?props; rules ( Proposals := props )})> ast'
+    where {| Proposals, CompletionVars, Parents
+           : rules ( Parents := [] )
+           ; <alltd({props, stack:
+                 editor-complete-proposal
+                 ; ?props
+                 ; rules ( Proposals := props )
+              <+ stack := [<id>|<Parents>]
+                 ; rules ( Parents := stack )
+                 ; fail
+             })> ast'
            ; proposals := <Proposals>
            |}
 
@@ -66,6 +74,36 @@ rules
   function-to-proposal-qid :
     f@ExternalSyncFunction(manno*, qid, args, rt) -> <function-to-proposal-qid> ExternalFunction(manno*, qid, args, rt)
 
+
+rules
+
+  editor-complete-proposal :
+    c#([COMPLETION(prefix), _]) -> <filter(\ prop@Property(_, x, _, _) -> ([x], <get-doc> prop) \)> prop*
+    where <string-starts-with(|"Set")> c
+    where SetComp(e, _) := <fetch-elem(?SetComp(_, _))> <Parents>
+        ; ExternalEntity(_, _, _, prop*) := <type-of; ?GenericType(QId("mobl", "Collection"), [<id>]); lookup-type> e
+
+  editor-complete-proposal :
+    OrderAscending(COMPLETION(_)) -> <filter(\ prop@Property(_, x, _, _) -> ([x], <get-doc> prop) \)> prop*
+    where SetComp(e, _) := <fetch-elem(?SetComp(_, _))> <Parents>
+        ; ExternalEntity(_, _, _, prop*) := <type-of; ?GenericType(QId("mobl", "Collection"), [<id>]); lookup-type> e
+
+  editor-complete-proposal :
+    OrderDescending(COMPLETION(_)) -> <filter(\ prop@Property(_, x, _, _) -> ([x], <get-doc> prop) \)> prop*
+    where SetComp(e, _) := <fetch-elem(?SetComp(_, _))> <Parents>
+        ; ExternalEntity(_, _, _, prop*) := <type-of; ?GenericType(QId("mobl", "Collection"), [<id>]); lookup-type> e
+
+  editor-complete-proposal :
+    OrderNonSpecific(COMPLETION(_)) -> <filter(\ prop@Property(_, x, _, _) -> ([x], <get-doc> prop) \)> prop*
+    where SetComp(e, _) := <fetch-elem(?SetComp(_, _))> <Parents>
+        ; ExternalEntity(_, _, _, prop*) := <type-of; ?GenericType(QId("mobl", "Collection"), [<id>]); lookup-type> e
+
+  editor-complete-proposal :
+    PrefetchFilter(COMPLETION(_)) -> <filter(\ prop@Property(_, x, _, _) -> ([x], <get-doc> prop) \)> prop*
+    where SetComp(e, _) := <fetch-elem(?SetComp(_, _))> <Parents>
+        ; ExternalEntity(_, _, _, prop*) := <type-of; ?GenericType(QId("mobl", "Collection"), [<id>]); lookup-type> e
+
+rules
 
   editor-complete-proposal :
     MethodCall(e, COMPLETION(prefix), _) -> method*
