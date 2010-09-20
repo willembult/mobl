@@ -13,6 +13,7 @@ imports
   mobl
   resolve
   generation/compile
+  generation/server
   sync-analysis
 
 rules
@@ -80,14 +81,14 @@ rules
     DynamicImport(qid) -> Import(qid)
     where <compile-import-module> QId(qid, "whatever")
 
-  compile-import-module =
-    ?QId(qid, _)
-    ; where(path := <resolve-file> <concat-strings> [<qid-to-path> qid, ".mobl"]
+  compile-import-module :
+    QId(qid, _) -> <id>
+    where not(ServerContext)
+    where path := <resolve-file> <concat-strings> [<qid-to-path> qid, ".mobl"]
         ; if not(<Compiled> qid <+ <is-newer> (<concat-strings; guarantee-extension(|"js")> [<OutputPath>, "/", <qid-to-path> qid], path)) then
             <parse-file> path
             ; compile
           end
-      )
 
   lookup-import-module =
     ?Import(qid)

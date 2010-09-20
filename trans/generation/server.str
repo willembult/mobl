@@ -88,6 +88,15 @@ _session.schemaSync(function() {
         ; <fclose> fp
         |})
 
+  compile-import-module :
+    QId(qid, _) -> <id>
+    where ServerContext
+    where path := <resolve-file> <concat-strings> [<qid-to-path> qid, ".mobl"]
+        ; if not(<Compiled> qid <+ <is-newer> (<concat-strings> [<OutputPath>, "/", <qid-to-dot-path> qid, ".js"], path)) then
+            <parse-file> path
+            ; compile
+          end
+
   qid-to-js :
     QId(qid, x) -> $[[qids].[x]]
     where ServerContext
