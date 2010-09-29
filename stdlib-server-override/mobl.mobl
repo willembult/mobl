@@ -232,6 +232,7 @@ external sync function random(max : Num) : Num
 
 <javascript>
 var sys = require('sys');
+var argspec = persistence.argspec;
 
 mobl.sleep = function(time, callback) {
   setTimeout(callback, time);

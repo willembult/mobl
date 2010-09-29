@@ -24,7 +24,7 @@ external control itemArrow(onclick : Callback = null, onswipe : Callback = null)
 
 // Forms
 external control checkBox(b : Bool, label : String = "")
-external control textField(s : String, placeholder : String = null, onchange : Callback = null)
+external control textField(s : String, placeholder : String = null, label : String = null, onchange : Callback = null)
 external control numField(n : Num, placeholder : String = null, onchange : Callback = null)
 external control searchBox(s : String, placeholder : String = null, onsearch : Callback = null)
 

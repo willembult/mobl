@@ -143,6 +143,7 @@ exports
   > Exp BoolMethodId Exp -> Exp
   > "!" Exp -> Exp
   > Exp "?" Exp ":" Exp -> Exp
+  > LimitedExp Filter+ -> Exp
 
 
   context-free priorities

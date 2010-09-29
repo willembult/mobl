@@ -68,7 +68,7 @@ control checkBox(b : Bool, label : String = "") {
   </span>
 }
 
-control textField(s : String, placeholder : String = null, onchange : Callback = null) {
+control textField(s : String, placeholder : String = null, label : String = null, onchange : Callback = null) {
   <input type="text" placeholder=placeholder databind=s onchange=onchange />
 }
 

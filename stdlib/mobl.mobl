@@ -5,13 +5,15 @@ load js/gears_init.js
 load js/jquery-1.4.min.js
 load js/jquery-ui-1.7.2.custom.min.js
 load js/mobl.boot.js
-load js/persistence.js
-load js/persistence.store.sql.js
-load js/persistence.store.websql.js
-load js/persistence.store.memory.js
-load js/persistence.search.js
 load js/gestures.js
 load js/iscroll.js
+
+// These will automatically be loaded
+resource js/persistence.js
+resource js/persistence.store.sql.js
+resource js/persistence.store.websql.js
+resource js/persistence.store.memory.js
+resource js/persistence.search.js
 
 // Images
 resource mobl/loading.gif
@@ -273,6 +275,8 @@ control link(url : String, target : String = null) {
 }
 
 <javascript>
+var argspec = persistence.argspec;
+
 mobl.sleep = function(time, callback) {
   setTimeout(callback, time);
 };
