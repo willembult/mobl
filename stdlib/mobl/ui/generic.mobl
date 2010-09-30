@@ -165,14 +165,14 @@ screen detailScreen(it : Dynamic, detail : Control1<Dynamic>) {
   detail(it)
 }
 
-@cond isIpad() && isLandscape()
+@cond isIpad()
 control masterDetail(items : Collection<Dynamic>, masterItem : Control1<Dynamic>, detail : Control1<Dynamic>) {
   var current : Dynamic = items.one()
   <div width="100%">
     <div style="float:left; width:33%; position:relative; border-right: solid 1px #cccccc;">
       group {
         list(it in items) {
-          (it == current ? itemArrow : item)({ current = it; }) {
+          (it == current ? itemArrow : item)({ current = it; }, null) {
             masterItem(it)
           }
         }
@@ -264,6 +264,24 @@ mobl.ui.generic.setupFloatBox = function(id, top, right, bottom, left) {
 };
 </javascript>
 
+resource mobl/ui/generic/accordion-down.png
+resource mobl/ui/generic/accordion-right.png
+
+control accordion(sections : [(String, Control)]) {
+  var activeSection : String = sections.get(0)._1
+
+  <div class="accordion">
+    list((sectionName, sectionControl) in sections) {
+      <span onclick={ activeSection = sectionName; } class=activeSection == sectionName ? "section activeSection" : "section inActiveSection">
+        label(sectionName)
+      </span>
+      <div class=activeSection == sectionName ? "activeSection" : "inActiveSection">
+        sectionControl()
+      </div>
+    }
+  </div>
+}
+
 @doc "Renders a table, use row { } rows and cell { } for cells"
 control table() {
   <table>elements()</table>
@@ -277,7 +295,15 @@ control cell(width : String = null) {
   <td width=width>elements()</td>
 }
 
-// SCROLLERS
+control col(width : String = null) {
+  <td width=width>elements()</td>
+}
+
+control headerCol(width : String = null) {
+  <td width=width><strong>elements()</strong></td>
+}
+
+// SCROLLERS, disabled ATM
 
 external sync function setupScrollers() : void
 external sync function scrollUp() : void

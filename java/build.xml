@@ -1,0 +1,18 @@
+<project name="fileserver" default="jar">
+    <target name="clean">
+        <delete dir="build"/>
+    </target>
+
+    <target name="compile">
+        <mkdir dir="build"/>
+        <javac srcdir="." destdir="build"/>
+    </target>
+
+    <target name="jar" depends="compile">
+        <jar destfile="fileserver.jar" basedir="build">
+            <manifest>
+                <attribute name="Main-Class" value="FileServer"/>
+            </manifest>
+        </jar>
+    </target>
+</project>
