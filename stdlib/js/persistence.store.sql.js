@@ -179,21 +179,6 @@ persistence.store.sql.config = function(persistence, dialect) {
       }
     }
   };
-
-  /**
-   * Commits all changes to the database, use instead of flush if you
-   * use transactions
-   * 
-   * @param tx
-   *            transaction to use
-   * @param callback
-   *            function to be called when done
-   */
-  persistence.commit = function(tx, callback){
-  	this.flush(tx, function() {
-        tx.executeSql("COMMIT", null, callback);
-      });
-  };
   
   /**
    * Remove all tables in the database (as defined by the model)
@@ -235,11 +220,11 @@ persistence.store.sql.config = function(persistence, dialect) {
           cb();
         }
 		
-		function cb() {
+        function cb() {
           session.clean();
           persistence.generatedTables = {};
-		  if (callback) callback();
-		}
+          if (callback) callback();
+        }
       }, true);
   };
 

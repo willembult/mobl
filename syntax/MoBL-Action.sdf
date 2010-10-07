@@ -52,13 +52,15 @@ exports
 
   context-free syntax %% Expressions
 
-    STRING                        -> Exp {cons("String")}
-    NUMBER                        -> Exp {cons("Num")}
-    "true"                        -> Exp {cons("True")}
-    "false"                       -> Exp {cons("False")}
-    "null"                        -> Exp {cons("Null")}
-    QId "(" {NamedExp ","}* ")"   -> Exp {cons("Call")}
+    STRING                        -> LimitedSetExp {cons("String")}
+    NUMBER                        -> LimitedSetExp {cons("Num")}
+    "true"                        -> LimitedSetExp {cons("True")}
+    "false"                       -> LimitedSetExp {cons("False")}
+    "null"                        -> LimitedSetExp {cons("Null")}
+    QId "(" {NamedExp ","}* ")"   -> LimitedSetExp {cons("Call")}
     "!" Exp                       -> Exp {cons("Not")}
+
+    LimitedSetExp                 -> Exp
 
     QId                           -> LimitedExp {cons("Var")}
     "(" Exp ")"                   -> LimitedExp {cons("Brackets")}
@@ -67,7 +69,8 @@ exports
     Exp "." ID                    -> LimitedExp {cons("FieldAccess")}
     Exp "[" Exp "]"               -> LimitedExp {left, cons("Indexer")}
 
-    LimitedExp                    -> Exp
+    %%LimitedExp                    -> Exp
+    LimitedExp                    -> LimitedSetExp
 
     Exp                           -> NamedExp
     ID "=" Exp                    -> NamedExp {cons("NamedExp")}
@@ -122,14 +125,14 @@ exports
     %%"limit" Exp                        -> Limit {cons("LimitNoOffset")}
     %%"offset" Exp                       -> Limit {cons("LimitNoLimit")}
 
-    ID "==" Exp                        -> SetExp {cons("SetEq")}
-    ID "!=" Exp                        -> SetExp {cons("SetNotEq")}
-    ID "<" Exp                         -> SetExp {cons("SetLt")}
-    ID "<=" Exp                        -> SetExp {cons("SetLeq")}
-    ID ">" Exp                         -> SetExp {cons("SetGt")}
-    ID ">=" Exp                        -> SetExp {cons("SetGeq")}
-    ID "in" Exp                        -> SetExp {cons("SetIn")}
-    ID "not" "in" Exp                  -> SetExp {cons("SetNotIn")}
+    ID "==" LimitedSetExp                        -> SetExp {cons("SetEq")}
+    ID "!=" LimitedSetExp                        -> SetExp {cons("SetNotEq")}
+    ID "<" LimitedSetExp                         -> SetExp {cons("SetLt")}
+    ID "<=" LimitedSetExp                        -> SetExp {cons("SetLeq")}
+    ID ">" LimitedSetExp                         -> SetExp {cons("SetGt")}
+    ID ">=" LimitedSetExp                        -> SetExp {cons("SetGeq")}
+    ID "in" LimitedSetExp                        -> SetExp {cons("SetIn")}
+    ID "not" "in" LimitedSetExp                  -> SetExp {cons("SetNotIn")}
 
     SetExp "&&" SetExp                       -> SetExp {left, cons("SetAnd"), prefer}
 
@@ -148,12 +151,12 @@ exports
 
   context-free priorities
   {
-    ID "==" Exp                        -> SetExp
-    ID "!=" Exp                        -> SetExp
-    ID "<" Exp                         -> SetExp
-    ID "<=" Exp                        -> SetExp
-    ID ">" Exp                         -> SetExp
-    ID ">=" Exp                        -> SetExp
+    ID "==" LimitedSetExp                        -> SetExp
+    ID "!=" LimitedSetExp                        -> SetExp
+    ID "<" LimitedSetExp                         -> SetExp
+    ID "<=" LimitedSetExp                        -> SetExp
+    ID ">" LimitedSetExp                         -> SetExp
+    ID ">=" LimitedSetExp                        -> SetExp
   }
   > SetExp "&&" SetExp                 -> SetExp
 

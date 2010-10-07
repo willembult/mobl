@@ -134,11 +134,20 @@ external type Text : Object { }
 external type DateTime {
   static sync function parse(s : String) : DateTime
   static sync function fromTimestamp(timestamp : Num) : DateTime
+  static sync function create(year : Num, month : Num, day : Num, hour : Num = 0, minute : Num = 0, second : Num = 0, ms : Num = 0) : DateTime
 
   sync function getFullYear() : Num
   sync function getMonth() : Num
 
-  @doc "Day of the month"
+  sync function getHours() : Num
+  sync function getMinutes() : Num
+  sync function getSeconds() : Num
+  sync function getMilliseconds() : Num
+
+  @doc "Day of the week, starting at 0 (= Sunday)"
+  sync function getDay() : Num
+
+  @doc "Day of the month, starting at 0"
   sync function getDate() : Num
 
   sync function setFullYear(y : Num) : Num
@@ -238,6 +247,8 @@ external sync function alert(o : Object) : void
 external sync function add(e : Object) : void
 external sync function remove(e : Object) : void
 external function resetDatabase() : void
+external function flushDatabase() : void
+external sync function reload() : void
 external sync function formatDate(d : DateTime) : String
 external sync function openUrl(url : String) : void
 external sync function range(from : Num, to : Num) : Array<Num>
@@ -314,9 +325,20 @@ mobl.remove = function(e, _, callback) {
     if(callback) callback();
 };
 
+mobl.flushDatabase = function(callback) {
+  persistence.flush(callback);
+}
 
-mobl.resetDatabase = function(_, callback) {
-    persistence.reset(null, callback);
+mobl.resetDatabase = function(callback) {
+    persistence.reset(function() {
+      persistence.schemaSync(callback);
+    });
+};
+
+mobl.reload = function() {
+  persistence.flush(function() {
+    window.location.reload();
+  });
 };
 
 mobl.openUrl = function(url) {
@@ -339,6 +361,9 @@ mobl.DateTime = {
   },
   fromTimestamp: function(timestamp) {
     return new Date(timestamp);
+  },
+  create: function(year, month, day, hour, minute, second, ms) {
+    return new Date(year, month, day, hour, minute, second, ms);
   }
 };
 

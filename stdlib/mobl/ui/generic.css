@@ -213,13 +213,12 @@ div.searchbox {
   border: 1px solid #999999;
   color: #222222;
   padding: 10px 6px;
-  background-image: url('generic/search.png');
-  background-repeat: no-repeat;
-  background-position: right center;
 }
 
 div.searchbox > input[type=text] {
-  background:transparent;
+  background-image: url('generic/search.png');
+  background-repeat: no-repeat;
+  background-position: right center;
 }
 
 /* TAB BAR */

@@ -29,6 +29,7 @@ exports
     "offline"  Exp                   -> Setting {cons("OfflineSetting")}
     "icon" Path                      -> Setting {cons("IconSetting")}
     "version" STRING                 -> Setting {cons("VersionSetting")}
+    "debug"                          -> Setting {cons("DebugSetting")}
 
     "dynamic" "import" QId         -> Definition {cons("DynamicImport")}
     "import" QId                   -> Definition {cons("Import")}

@@ -103,7 +103,7 @@ control tabSet(tabs : [(String, String, Control)]) {
 
 control searchBox(s : String, placeholder : String = null, onsearch : Callback = null) {
   <div class="searchbox">
-    <input type="text" placeholder=placeholder databind=s onchange=onsearch />
+    <input type="text" placeholder=placeholder databind=s onchange=onsearch autocorrect="off" autocapitalize="off" autocomplete="off"/>
   </div>
 }
 
@@ -323,11 +323,11 @@ setTimeout(function() {
 }, 250);
 
 jQuery.fn.tap = function (callback) {
-  //if(mobl.isIphone() || mobl.isAndroid() || mobl.isIpad()) {
-    //new NoClickDelay(this[0], callback);
-  //} else {
-  this.click(callback);
-  //}
+  if(mobl.isIphone() || mobl.isAndroid() || mobl.isIpad()) {
+    new NoClickDelay(this[0], callback);
+  } else {
+    this.click(callback);
+  }
 };
 
 

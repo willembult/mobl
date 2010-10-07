@@ -91,9 +91,9 @@ NoClickDelay.prototype = {
     },
 
     onTouchStart: function (e) {
-        e.preventDefault();
+        //e.preventDefault();
         this.moved = false;
-        console.log("Starting...");
+        //console.log("Starting...");
         this.element.addEventListener('touchmove', this, false);
         this.element.addEventListener('touchend', this, false);
         this.touchStartY = e.touches[0].pageY;
@@ -101,7 +101,7 @@ NoClickDelay.prototype = {
     },
 
     onTouchMove: function (e) {
-        console.log("Moving");
+        //console.log("Moving");
         var topDelta = e.touches[0].pageY - this.touchStartY;
         var leftDelta = e.touches[0].pageX - this.touchStartX;
         if(Math.abs(topDelta) > 5 || Math.abs(leftDelta) > 5) {
@@ -113,7 +113,7 @@ NoClickDelay.prototype = {
         this.element.removeEventListener('touchmove', this, false);
         this.element.removeEventListener('touchend', this, false);
 
-        console.log("The end");
+        //console.log("The end");
         if (!this.moved) {
             this.callback(e);
         }

@@ -13,6 +13,9 @@ completions
 
 completions
 
+    completion template : Start =
+      "application tasks" "\n\nimport mobl::ui::generic\n\nentity Task {\n\tname : String\n\tdone : Bool\n}\n\nscreen root() {\n\theader(\"Tasks\")\n\tgroup {\n\t\tlist(t in Task.all()) {\n\n\t\t}\n\t}\n}"
+
     completion template : Definition =
       "control " <name> "() {\n\t\n}" (blank)
 

@@ -52,6 +52,9 @@ strategies
       ; fp := <fopen> (js-filename, "w")
       ; <fputs> ($[mobl.provides('[<qid-to-js> qid]');
 ], fp)
+      ; if !app then
+          <fputs> (<<not(fetch(?DebugSetting())); !"persistence.debug = false;"> setting* <+ !"">, fp)
+        end
       ; <fputs> (<get-all>, fp)
       ; <fputs> (<get-all-tl-statements; (cps-lift-expressions; cps-statements <+ debug(!"Could not cps tl statements: "); fail)>, fp)
       ; <fclose> fp
