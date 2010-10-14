@@ -10,7 +10,7 @@ strategies
 
   generate-index-html(|res*) :
     Application(qid, setting*, _) -> $[
-<!DOCTYPE HTML>
+<!DOCTYPE html>
 <html [html-manifest]>
     <head>
         <title>[<!<un-double-quote> title <+ <qid-to-js> qid>]</title>

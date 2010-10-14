@@ -165,14 +165,20 @@ screen detailScreen(it : Dynamic, detail : Control1<Dynamic>) {
   detail(it)
 }
 
-@cond isIpad()
+@cond getScreenWidth() > 500
 control masterDetail(items : Collection<Dynamic>, masterItem : Control1<Dynamic>, detail : Control1<Dynamic>) {
+  control itemSelected(onclick : Callback = null, onswipe : Callback = null) {
+    <li class="item" onclick=onclick style="background: #cccccc;">
+      elements()
+    </li>
+  }
+
   var current : Dynamic = items.one()
   <div width="100%">
     <div style="float:left; width:33%; position:relative; border-right: solid 1px #cccccc;">
       group {
         list(it in items) {
-          (it == current ? itemArrow : item)({ current = it; }, null) {
+          (it == current ? itemSelected : item)({ current = it; }, null) {
             masterItem(it)
           }
         }

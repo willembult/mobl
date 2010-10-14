@@ -182,6 +182,7 @@ external type Math {
   static sync function sin(n : Num) : Num
   static sync function sqrt(n : Num) : Num
   static sync function tan(n : Num) : Num
+  static sync function max(n1: Num, n2 : Num) : Num
 }
 
 external type JSON {
@@ -261,6 +262,8 @@ external sync function isIpad() : Bool
 external sync function isAndroid() : Bool
 external sync function isLandscape() : Bool
 external sync function isPortrait() : Bool
+external sync function getScreenWidth() : Num
+external sync function getScreenHeight() : Num
 
 <javascript>
 mobl.isIphone = function() { return !!navigator.userAgent.match(/iPhone/i) || !!navigator.userAgent.match(/iPod/i); };
@@ -268,6 +271,8 @@ mobl.isIpad = function() { return !!navigator.userAgent.match(/iPad/i); };
 mobl.isAndroid = function() { return !!navigator.userAgent.match(/Android/i); };
 mobl.isLandscape = function() { return window.innerHeight < window.innerWidth; };
 mobl.isPortrait = function() { return window.innerHeight >= window.innerWidth; };
+mobl.getScreenWidth = function() { return window.innerWidth; };
+mobl.getScreenHeight = function() { return window.innerHeighth; };
 </javascript>
 
 
@@ -279,7 +284,7 @@ control label(s : Object, onclick : Callback = null) {
   <span databind=s onclick=onclick></span>
 }
 
-control link(url : String, target : String = null) {
+control link(url : String, target : String = "_blank") {
   <a href=url target=target>
   elements()
   </a>

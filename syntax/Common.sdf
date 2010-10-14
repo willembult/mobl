@@ -9,7 +9,7 @@ exports
 
     [a-zA-Z\_\$][a-zA-Z0-9\_]* -> ID
     %% "-"? [0-9]+            -> INT
-    [a-zA-Z\_\$\*][a-zA-Z0-9\_\-\.\*]* -> FILENAME
+    [a-zA-Z\_\$\*\.][a-zA-Z0-9\_\-\.\*]* -> FILENAME
 
   lexical syntax
     "-"? FloatDigits

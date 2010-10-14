@@ -69,7 +69,7 @@ strategies
           ; if <fetch(?OfflineSetting(True()))> setting* then
               fp3 := <fopen <+ debug(!"Could not open file: "); fail> (manifest-filename, "w")
               ; {| ResourceProcessed
-                 : <fputs> (<generate-manifest <+ debug(!"Could not generate index.html")> <get-all-resources> qid, fp3)
+                 : <fputs> (<generate-manifest <+ debug(!"Could not generate index.html")> [<get-all-resources> qid], fp3)
                  |}
               ; <fclose> fp3
               ; <refresh-workspace-file> manifest-filename
