@@ -26,6 +26,11 @@ let
         url = http://zef.me/mobl/strategoxt.jar;
         sha256 = "1xh2k0cds8m1hns90l99rxhb2imgc16mfdlkhlfsan0ygcidjgdf";
       } ;
+    strategomix = 
+      pkgs.fetchurl {
+        url = http://zef.me/mobl/StrategoMix.def;
+        sha256 = "1dcki0sip6a9ng220px1n4dwfx6b7kdslkix1ld1r2apjnx6xz4n";
+      } ;
   }; 
 
   moblc = app :
@@ -74,10 +79,16 @@ let
       name = "moblc-r${mobl.rev}";
       src = mobl;
       buildfile = "build.main.xml";      
+
       antTargets = ["moblc"];
+      antProperties = [ { name = "eclipse.spoofaximp.jars"; value = "utils/"; }];
+
       buildInputs = [pkgs.strategoPackages.sdf];
+
       jarWrappers = [ { name = "moblc"; jar = "moblc.jar"; classPath = "$out/lib/java/strategoxt.jar"; mainClass = "trans.Main"; } ];
+
       LOCALCLASSPATH = "utils/aster.jar:utils/make_permissive.jar:utils/sdf2imp.jar:utils/strategoxt.jar";
+
       preConfigure = ''
         ulimit -s unlimited
         mkdir -p utils
@@ -85,6 +96,7 @@ let
         cp -v ${make_permissive} utils/make_permissive.jar
         cp -v ${strategoxt} utils/strategoxt.jar
         cp -v ${sdf2imp} utils/sdf2imp.jar
+        cp -v ${strategomix} utils/StrategoMix.def
         ensureDir $out/bin
       '';
     };
@@ -102,8 +114,6 @@ let
       todo               = moblc { name = "todo"; app = "todo.mobl"; } ;
       znake_client       = moblc { name = "znake"; app = "znake.mobl"; } ;
       znake_server       = moblc { name = "znake"; app = "server.mobl"; } ;
-
-      
     };      
   };
 
