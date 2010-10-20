@@ -4,6 +4,43 @@
 
 let
   pkgs = import nixpkgs { system = "x86_64-linux" ; };
+
+  jars = {
+    aster = 
+      pkgs.fetchurl {
+        url = http://zef.me/mobl/aster.jar;
+        sha256 = "1jsk6vidmvlnw2hjqs6syvv8fniapn6qxlx2va8hwpf3px49i103";
+      } ;
+    make_permissive = 
+      pkgs.fetchurl {
+        url = http://zef.me/mobl/make_permissive.jar;
+        sha256 = "1m7sny5dxg2ga0ac4irqmbw6jqqg9bxf8qbrj3a317dinllfsvhg";
+      } ;
+    sdf2imp = 
+      pkgs.fetchurl {
+        url = http://zef.me/mobl/sdf2imp.jar;
+        sha256 = "128j8waw3mp6iwjd7akd1fy8i7hd4bppvjlnvwpmf6x0mhc11v3a";
+      } ;
+    strategoxt = 
+      pkgs.fetchurl {
+        url = http://zef.me/mobl/strategoxt.jar;
+        sha256 = "1xh2k0cds8m1hns90l99rxhb2imgc16mfdlkhlfsan0ygcidjgdf";
+      } ;
+  }; 
+
+  moblc = app :
+    pkgs.stdenv.mkDerivation {
+      name = "mobl-${app.name}-${mobl.rev}";
+      src = mobl;
+      buildInputs = [jobs.moblc];
+      buildPhase = ''
+        cd samples/${app.name}
+        ensureDir $out/html
+        moblc -i ${app.app} -d $out/html
+      '';
+    };
+
+
   jobs = {
     manual = pkgs.stdenv.mkDerivation {
       name = "mobl-manual-${mobl.rev}";
@@ -32,6 +69,42 @@ let
       '';
       __noChroot = true;
     };
+
+    moblc = with jars; pkgs.releaseTools.antBuild {
+      name = "moblc-r${mobl.rev}";
+      src = mobl;
+      buildfile = "build.main.xml";      
+      antTargets = ["moblc"];
+      buildInputs = [pkgs.strategoPackages.sdf];
+      jarWrappers = [ { name = "moblc"; jar = "moblc.jar"; classPath = "$out/lib/java/strategoxt.jar"; mainClass = "trans.Main"; } ];
+      LOCALCLASSPATH = "utils/aster.jar:utils/make_permissive.jar:utils/sdf2imp.jar:utils/strategoxt.jar";
+      preConfigure = ''
+        ulimit -s unlimited
+        mkdir -p utils
+        cp -v ${aster} utils/aster.jar
+        cp -v ${make_permissive} utils/make_permissive.jar
+        cp -v ${strategoxt} utils/strategoxt.jar
+        cp -v ${sdf2imp} utils/sdf2imp.jar
+        ensureDir $out/bin
+      '';
+    };
+
+    samples = {
+      controldemo        = moblc { name = "control-demo"; app = "demo.mobl"; } ;
+      draw               = moblc { name = "draw"; app = "draw.mobl"; } ;
+      geo                = moblc { name = "geo"; app = "maptest.mobl"; } ;
+      helloserver_client = moblc { name = "helloserver"; app = "client.mobl"; } ;
+      helloserver_server = moblc { name = "helloserver"; app = "server.mobl"; } ;
+      irc_client         = moblc { name = "irc"; app = "irc.mobl"; } ;
+      irc_server         = moblc { name = "irc"; app = "server.mobl"; } ;
+      shopping           = moblc { name = "shopping"; app = "shopping.mobl"; } ;
+      tipcalculator      = moblc { name = "tipcalculator"; app = "tipcalculator.mobl"; } ;
+      todo               = moblc { name = "todo"; app = "todo.mobl"; } ;
+      znake_client       = moblc { name = "znake"; app = "znake.mobl"; } ;
+      znake_server       = moblc { name = "znake"; app = "server.mobl"; } ;
+
+      
+    };      
   };
 
 in jobs
