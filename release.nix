@@ -39,6 +39,7 @@ let
       src = mobl;
       buildInputs = [jobs.moblc];
       buildPhase = ''
+        ulimit -s unlimited
         cd samples/${app.name}
         ensureDir $out/html
         moblc -i ${app.app} -d $out/html --stdlib ${mobl}/stdlib
