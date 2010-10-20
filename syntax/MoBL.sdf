@@ -95,7 +95,7 @@ exports
     "true" -> ID {reject}
     "false" -> ID {reject}
     "if" -> ID {reject}
-    "databind" -> ID {reject}
+    "databind" -> HTMLID {reject}
     "cond" -> ID {reject}
     "javascript" -> ID {reject}
 

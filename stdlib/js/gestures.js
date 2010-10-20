@@ -146,6 +146,8 @@ $.event.special.touchdown = {
           var touch = event.touches[0];
           event.x = touch.pageX - that.offset().left;
           event.y = touch.pageY - that.offset().top;
+          event.clientX = touch.pageX;
+          event.clientY = touch.pageY;
           callback(event);
         }
       });
@@ -170,6 +172,8 @@ $.event.special.touchdrag = {
           var touch = event.touches[0];
           event.x = touch.pageX - that.offset().left;
           event.y = touch.pageY - that.offset().top;
+          event.clientX = touch.pageX;
+          event.clientY = touch.pageY;
           callback(event);
         }
       });

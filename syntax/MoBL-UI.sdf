@@ -20,9 +20,9 @@ exports
 
     ControlDefinition      -> Definition
 
-    "<" ID HtmlArg* ">" ScreenElem* "</" ID ">"   -> ScreenElem {cons("Html")}
-    "<" ID HtmlArg* "/"">" -> ScreenElem {cons("HtmlShort")}
-    ID "=" Exp                     -> HtmlArg    {cons("HtmlArg")}
+    "<" HTMLID HtmlArg* ">" ScreenElem* "</" HTMLID ">"   -> ScreenElem {cons("Html")}
+    "<" HTMLID HtmlArg* "/"">" -> ScreenElem {cons("HtmlShort")}
+    HTMLID "=" Exp                     -> HtmlArg    {cons("HtmlArg")}
     "databind" "=" Exp             -> HtmlArg    {cons("HtmlDatabindArg")}
 
     ControlDefinition                                                -> ScreenElem

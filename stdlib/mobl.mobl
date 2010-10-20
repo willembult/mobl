@@ -275,7 +275,6 @@ mobl.getScreenWidth = function() { return window.innerWidth; };
 mobl.getScreenHeight = function() { return window.innerHeighth; };
 </javascript>
 
-
 // Controls
 @doc "Injects given HTML directly into the screen"
 external control html(html : String)
@@ -291,6 +290,7 @@ control link(url : String, target : String = "_blank") {
 }
 
 <javascript>
+
 var argspec = persistence.argspec;
 
 mobl.sleep = function(time, callback) {
@@ -332,7 +332,7 @@ mobl.remove = function(e, _, callback) {
 
 mobl.flushDatabase = function(callback) {
   persistence.flush(callback);
-}
+};
 
 mobl.resetDatabase = function(callback) {
     persistence.reset(function() {
@@ -547,6 +547,8 @@ $(function() {
     setInterval(function() { persistence.flush(); }, 2500);
 });
 
+mobl.postCallHooks = [];
+
 mobl.call = function (screenName, args, callback) {
     var screenFrame = {
         "name": screenName,
@@ -626,6 +628,9 @@ mobl.call = function (screenName, args, callback) {
         } else {
             node.prependTo(body);
         }
+        mobl.postCallHooks.forEach(function(fn) {
+          fn(node);
+        });
 
         $(function () {
         //setTimeout(function() {
@@ -935,4 +940,15 @@ mobl.implementInterface = function(sourceModule, targetModule, items) {
     mobl.LinkedMap = LinkedMap;
     mobl.Reference = Reference;
 }());
+</javascript>
+
+var window : Window = null;
+
+external type Window {
+  innerWidth : Num
+  innerHeight : Num
+}
+
+<javascript>
+mobl.window = mobl.ref(window);
 </javascript>
