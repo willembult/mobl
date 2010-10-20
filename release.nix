@@ -41,7 +41,7 @@ let
       buildPhase = ''
         cd samples/${app.name}
         ensureDir $out/html
-        moblc -i ${app.app} -d $out/html
+        moblc -i ${app.app} -d $out/html --stdlib ${mobl}/stdlib
       '';
     };
 
