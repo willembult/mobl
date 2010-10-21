@@ -46,7 +46,7 @@ let
         cp -Rv ${mobl}/samples/${app.name}/* .
         moblc -i ${app.app} -d www --stdlib ${if app ? stdlib then app.stdlib else "${mobl}/stdlib"}
         ln -s $out/www/`basename ${app.app} .mobl`.html $out/www/index.html
-        echo "doc manual $out/www" >> $out/nix-support/hydra-build-products
+        echo "doc www $out/www" >> $out/nix-support/hydra-build-products
       '';
     };
 
