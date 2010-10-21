@@ -45,8 +45,8 @@ let
         cd $out/
         cp -Rv ${mobl}/samples/${app.name}/* .
         moblc -i ${app.app} -d www --stdlib ${mobl}/stdlib
-        ln -s `basename ${app.app} .mobl`.html index.html
-        echo "doc html $out/www" >> $out/nix-support/hydra-build-products
+        ln -s $out/www/`basename ${app.app} .mobl`.html $out/www/index.html
+        echo "doc manual $out/www" >> $out/nix-support/hydra-build-products
       '';
     };
 
