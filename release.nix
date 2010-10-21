@@ -38,11 +38,15 @@ let
       name = "mobl-${app.name}-${mobl.rev}";
       src = mobl;
       buildInputs = [jobs.moblc];
-      buildPhase = ''
+      buildCommand = ''
+        ensureDir $out/www
+        ensureDir $out/nix-support
         ulimit -s unlimited
-        cd samples/${app.name}
-        ensureDir $out/html
-        moblc -i ${app.app} -d $out/html --stdlib ${mobl}/stdlib
+        cd $out/
+        cp -Rv ${mobl}/samples/${app.name}/* .
+        moblc -i ${app.app} -d www --stdlib ${mobl}/stdlib
+        ln -s `basename ${app.app} .mobl`.html index.html
+        echo "doc html $out/www" >> $out/nix-support/hydra-build-products
       '';
     };
 
