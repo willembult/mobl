@@ -10,14 +10,14 @@ import mobl::maps
 screen root() {
   header("A header")
   group {
-    item(onclick={ buttons(); }) { "Buttons" }
-    item(onclick={ lists(); }) { "Lists/tables" }
-    item(onclick={ forms(); }) { "Forms" }
-    item(onclick={ tabs(); }) { "Tabs" }
-    item(onclick={ accordion(); }) { "Accordion" }
-    item(onclick={ master(); }) { "Master detail" }
-    item(onclick={ charts(); }) { "Charts" }
-    item(onclick={ maps(); }) { "Maps" }
+    itemArrow(onclick={ buttons(); }) { "Buttons" }
+    itemArrow(onclick={ lists(); }) { "Lists/tables" }
+    itemArrow(onclick={ forms(); }) { "Forms" }
+    itemArrow(onclick={ tabs(); }) { "Tabs" }
+    itemArrow(onclick={ accordion(); }) { "Accordion" }
+    itemArrow(onclick={ master(); }) { "Master detail" }
+    itemArrow(onclick={ charts(); }) { "Charts" }
+    itemArrow(onclick={ maps(); }) { "Maps" }
   }
 }
 
