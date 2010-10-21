@@ -29,7 +29,8 @@ strategies
     ; ast := <parse-file> filename
     ; output-path := $[[<getcwd>]/[<OutputPath <+ !"www">]]
     ; stdlib-path := <StdLibPath <+ !$[[<getcwd>]/stdlib"]>
-    ;  rules ( ProjectPath     := "."
+    ; cwd := <getcwd> 
+    ; rules ( ProjectPath     := cwd
               CachedParseAst  : filename -> ast
               OutputPath      := output-path
               IncludePaths    := [".", stdlib-path])
@@ -41,7 +42,7 @@ strategies
     ; notes    := <collect-all(constraint-note, conc); map(?(_, <id>); <concat-strings> ["Note: ", <id>])> ast2
     ; <concat; map(debug)> [errors, warnings, notes]
     ; if [] := errors then
-        <compile> ast2
+        <compile> ast
         ; <exit> 0
       else
         <exit> 1
