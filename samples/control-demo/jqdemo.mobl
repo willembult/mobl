@@ -1,84 +1,56 @@
-application demo
+application jqdemo
 
-import mobl::ui::generic
-import mobl::ui::generic::datepicker
-import mobl::ui::googlechart
-import mobl::location
-import mobl::maps
-
+import mobl::ui::jq
 
 screen root() {
-  header("A header")
-  group {
-    itemArrow(onclick={ buttons(); }) { "Buttons" }
-    itemArrow(onclick={ lists(); }) { "Lists/tables" }
-    itemArrow(onclick={ forms(); }) { "Forms" }
-    itemArrow(onclick={ tabs(); }) { "Tabs" }
-    itemArrow(onclick={ accordion(); }) { "Accordion" }
-    itemArrow(onclick={ master(); }) { "Master detail" }
-    itemArrow(onclick={ charts(); }) { "Charts" }
-    itemArrow(onclick={ maps(); }) { "Maps" }
+  header("Hello")
+  content {
+    group {
+      itemArrow(onclick={ buttons(); }) { "Buttons" }
+      itemArrow(onclick={ lists(); }) { "Lists" }
+      itemArrow(onclick={ forms(); }) { "Forms" }
+    }
   }
-  link("jqdemo.html", target="_top") { "Demo of jQuery Mobile controls" }
 }
 
 screen buttons() {
   header("Buttons") {
     backButton()
-    button("Button", onclick={ alert("Click!"); })
+    //button("Button", onclick={ alert("Click!"); })
   }
-  group {
-    item {
-      "Some item"
-      sideButton("Side button")
-    }
-    item {
-      "Context menu"
-      contextMenu {
-        button("Option 1")
-        button("Option 2")
+  content {
+    group {
+      item {
+        "Some item"
       }
     }
+    button("Usual button")
   }
-  button("Usual button")
 }
 
 screen lists() {
   header("Lists") {
     backButton()
   }
-  group {
-    item { "Group item" }
-    itemArrow(onclick={ clickedArrow(); }) { "Arrowed group item" }
-    item {
-      "Group item with context"
-      contextMenu {
-        button("Option")
+  content {
+    group {
+      item { "Group item" }
+      itemArrow(onclick={ clickedArrow(); }) { "Arrowed group item" }
+      itemGroup { "New item group" }
+      item {
+        "Another item"
+        itemAside {
+          "2:20"
+        }
       }
-    }
-    item {
-      floatBox(right=10) {
-        "Float to right"
-      }
-      "Content"
-    }
-  }
-  table {
-    row {
-      headerCol { "Header" }
-      headerCol { "Header 2" }
-    }
-    row {
-      col { "Data" }
-      col { "Data" }
-    }
-    row {
-      col { "Data" }
-      col { "Data" }
-    }
-    row {
-      col { "Data" }
-      col { "Data" }
+      item {
+          itemHead("Item head")
+          itemDescription {
+            "Description"
+          }
+          itemNumber(3.1415)
+        }
+
     }
   }
 }
@@ -93,16 +65,21 @@ screen forms() {
   header("Forms") {
     backButton()
   }
-  group {
-    item { textField("", placeholder="Textfield placeholder") }
-    item { textField("", label="with label") }
-    item { numField(7) }
-    item { datePicker(now()) }
-    item { checkBox(true, label="A label")}
+  content {
+    textField("", label="Full name:")
+    textArea("", label="Bio:")
+    controlGroup {
+        checkBoxItem(true, "Check box item 1")
+        checkBoxItem(false, "Check box item 2")
+    }
+    controlGroup(horizontal=true) {
+      checkItem(true, "Item 1")
+      checkItem(false, "Item 2")
+    }
   }
 }
 
-screen tabs() {
+/*screen tabs() {
   control tab1() {
     header("Tab 1") { backButton() }
     "This is the first tab"
@@ -177,4 +154,4 @@ screen maps() {
   cond(position == null) {
     "Determining current location... (requires recent webkit or Firefox)"
   }
-}
+}*/

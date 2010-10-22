@@ -108,6 +108,7 @@ let
 
     samples = {
       controldemo        = moblc { name = "control-demo"; app = "demo.mobl"; } ;
+      controldemo_jquery = moblc { name = "control-demo"; app = "jqdemo.mobl"; } ;
       draw               = moblc { name = "draw"; app = "draw.mobl"; } ;
       geo                = moblc { name = "geo"; app = "maptest.mobl"; } ;
       helloserver_client = moblc { name = "helloserver"; app = "client.mobl"; } ;
