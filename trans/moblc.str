@@ -15,7 +15,8 @@ imports
 strategies
 
   main =
-    xtc-io-wrap(
+    init-moblc-options 
+  ; xtc-io-wrap(
         moblc-options
       , moblc-usage
       , moblc-about
@@ -28,12 +29,17 @@ strategies
     ; rules ( Standalone := 1 )
     ; ast := <parse-file> filename
     ; output-path := $[[<getcwd>]/[<OutputPath <+ !"www">]]
-    ; stdlib-path := <StdLibPath <+ !$[[<getcwd>]/stdlib"]>
+    ; include-params := <get-config>"-I"
+    ; if [] then 
+        include-path := [$[[<getcwd>]/stdlib] ]
+      else
+        include-path := include-params
+      end 
     ; cwd := <getcwd> 
     ; rules ( ProjectPath     := cwd
               CachedParseAst  : filename -> ast
               OutputPath      := output-path
-              IncludePaths    := [".", stdlib-path])
+              IncludePaths    := ["."| include-path])
     ; (Module(mod-name, _)  := ast <+ Application(mod-name, _, _) := ast <+ ServerApplication(mod-name, _, _) := ast)
     ; rules ( CompilingModule := mod-name )
     ; ast2 := <analyze> ast
@@ -48,6 +54,9 @@ strategies
         <exit> 1
       end
 
+  init-moblc-options = 
+    where(<set-config>("-I",[]))
+
   moblc-options =
     ArgOption("-d"
     , ?path; rules( OutputPath := path )
@@ -55,14 +64,14 @@ strategies
     )
 
   moblc-options =
-    ArgOption("--stdlib"
-    , ?path; rules( StdLibPath := path )
-    , !HelpString("--stdlib path", "Absolute path to mobl standard library")
+    ArgOption("-I" + "--Include"
+    , where(<post-extend-config>("-I", [<id>])); !()
+    , !HelpString("-I d | --Include d", "Include modules from directory d")
     )
 
   moblc-usage =
     <tool-doc>
-      [ Usage("moblc -i foo.pil [OPTIONS]")
+      [ Usage("moblc -i foo.mobl [OPTIONS]")
       , Summary("Generates an application from a mobl definition")
       , OptionUsage()
       , AutoReportBugs()

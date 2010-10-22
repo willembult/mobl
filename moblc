@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 MOBL_PATH=`dirname $0`
 java -ss8m -cp $MOBL_PATH/moblc.jar:$MOBL_PATH/utils/strategoxt.jar trans.Main $*
