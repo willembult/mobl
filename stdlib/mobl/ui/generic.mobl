@@ -31,8 +31,8 @@ control backButton(text : String = "Back", onclick : Callback = { screen return;
   <span class="backButton" onclick=onclick databind=text/>
 }
 
-control block() {
-  <div>
+control block(cssClass : String = null, id : String = null, onclick : Callback = null) {
+  <div id=id class=cssClass onclick=onclick>
   elements()
   </div>
 }

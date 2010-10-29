@@ -22,3 +22,9 @@ strategies
 
   sql-type :
     SimpleType(QId("mobl", "DateTime")) -> "DATE"
+
+  sql-type :
+    SimpleType(QId("mobl", "JSON")) -> "JSON"
+
+  sql-type :
+    SimpleType(QId("mobl", "Dynamic")) -> "JSON"
