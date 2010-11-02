@@ -111,6 +111,7 @@ strategies
   function-to-js-exp :
     SyncFunction(_, qid, farg*, rt, stat*) ->
      $[function([args]) {
+          var __this = this;
          [stats]
        }]
     where not(ServerContext)
@@ -121,6 +122,7 @@ strategies
   function-to-js-exp :
     Function(_, qid, farg*, rt, stats) ->
     $[function([args]) {
+        var __this = this;
         [stats2]
       }]
     where not(ServerContext)
@@ -241,6 +243,9 @@ rules // Expressions
 
   exp-to-js :
     False() -> $[false]
+
+  exp-to-js :
+    This() -> $[__this]
 
   exp-to-js :
     Null() -> $[null]

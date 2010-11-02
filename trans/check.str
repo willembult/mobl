@@ -124,7 +124,6 @@ rules
     t@MethodCall(e, x, arg*) -> (t, $[No such method '[x]' defined])
     where <type-of> e
     where not(type-of)
-        ; <type-of> e
 
   constraint-error :
     t@MethodCall(e, x, e*) -> <fargs-type-not-compatible> (farg*, e*)

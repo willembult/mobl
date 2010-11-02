@@ -137,7 +137,14 @@ strategies
 strategies // convert to externals
 
   definition-to-external :
-    Entity(manno*, qid, super, prop*) -> ExternalEntity(manno*, qid, super, prop*)
+    Entity(manno*, qid, super, decl*) -> ExternalEntity(manno*, qid, super, decl2*)
+    where decl2* := <map(try(function-to-external-method))> decl*
+
+  function-to-external-method :
+    Function(manno*, qid, farg*, rt, stat*) -> ExternalMethod(manno*, qid, farg*, rt)
+
+  function-to-external-method :
+    SyncFunction(manno*, qid, farg*, rt, stat*) -> ExternalSyncMethod(manno*, qid, farg*, rt)
 
   definition-to-external :
     Function(manno*, qid, farg*, rt, stat*) -> ExternalFunction(manno*, qid, farg*, rt)

@@ -238,6 +238,7 @@ strategies
   is-sync = ?Var(_)
   is-sync = ?Callback(_)
   is-sync = ?AnonymousControl(_)
+  is-sync = ?This()
 
   is-sync =
     ?BinMethodCall(e1, _, e2)

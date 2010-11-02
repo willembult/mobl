@@ -24,6 +24,7 @@ strategies
       [props]
     });
     [sync-code]
+    [methods]
     ]
     with props := <filter(property-to-js(|qid)); separate-by(!",\n"); concat-strings> prop*
        ; if <is-string> qid then
@@ -36,6 +37,7 @@ strategies
          else
            sync-code := ""
          end
+       ; methods := <filter(method-to-js(|qid)); separate-by(|"\n")> prop*
 
   property-to-js(|ent) :
     Property(_, x, t@SimpleType(_), anno*) -> $['[x]': '[sqlType]']
@@ -55,6 +57,12 @@ strategies
     where <is-entity-type> t
     where [] := <filter(?InverseAnno(_))> anno*
         ; rules ( OneToOne :+= (SimpleType(ent), x, t) )
+
+  method-to-js(|ent) :
+    fn@SyncFunction(_, x, _, _, _) -> $[[<qid-to-js> ent].prototype.[x] = [<function-to-js-exp> fn];]
+
+  method-to-js(|ent) :
+    fn@Function(_, x, _, _, _) -> $[[<qid-to-js> ent].prototype.[x] = [<function-to-js-exp> fn];]
 
   one-to-many-to-js :
     (SimpleType(from), field, SimpleType(to), invField) -> <emit> $[[<qid-to-js> from].hasMany('[field]', [<qid-to-js> to], '[invField]');
