@@ -15,11 +15,11 @@ exports
     MetaAnno* "function" ID "(" {FArg ","}* ")" ":" Type                   -> ExternalMemberDecl {cons("ExternalMethod")}
     MetaAnno* "static" "sync" "function" ID "(" {FArg ","}* ")" ":" Type   -> ExternalMemberDecl {cons("ExternalStaticSyncMethod")}
     MetaAnno* "sync" "function" ID "(" {FArg ","}* ")" ":" Type            -> ExternalMemberDecl {cons("ExternalSyncMethod")}
-    Property                                                     -> ExternalMemberDecl
+    EntityBodyDecl                                                     -> ExternalMemberDecl
 
     MetaAnno* "external" "control" QId "(" {FArg ","}* ")"                                -> Definition {cons("ExternalControl")}
     MetaAnno* "external" "screen" QId ":" Type "(" {FArg ","}* ")"                        -> Definition {cons("ExternalScreen")}
-    MetaAnno* "external" "entity" QId ":" Type "{" Property* "}"                          -> Definition {cons("ExternalEntity")}
+    MetaAnno* "external" "entity" QId ":" Type "{" EntityBodyDecl* "}"                    -> Definition {cons("ExternalEntity")}
     MetaAnno* "external" "function" QId "(" {FArg ","}* ")" ":" Type                      -> Definition {cons("ExternalFunction")}
     MetaAnno* "external" "sync" "function" QId "(" {FArg ","}* ")" ":" Type               -> Definition {cons("ExternalSyncFunction")}
 

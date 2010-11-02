@@ -48,6 +48,9 @@ strategies
     Not(e) -> SimpleType(QId("mobl", "Bool"))
 
   eq-type-of :
+    This(){t} -> t
+
+  eq-type-of :
     Brackets(e) -> <type-of> e
 
   eq-type-of :

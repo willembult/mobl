@@ -15,7 +15,7 @@ dynamic import mobl::ui::generic
 external control header(text : String, onclick : Callback = null)
 external control button(text : String, onclick : Callback = null)
 external control sideButton(text : String, onclick : Callback = null)
-external control backButton(text : String, onclick : Callback = null)
+external control backButton(text : String = "Back", onclick : Callback = { screen return; })
 
 // Grouping
 external control group()

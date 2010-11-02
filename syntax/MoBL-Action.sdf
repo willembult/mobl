@@ -57,6 +57,7 @@ exports
     "true"                        -> LimitedSetExp {cons("True")}
     "false"                       -> LimitedSetExp {cons("False")}
     "null"                        -> LimitedSetExp {cons("Null")}
+    "this"                        -> LimitedSetExp {cons("This")}
     QId "(" {NamedExp ","}* ")"   -> LimitedSetExp {cons("Call")}
     "!" Exp                       -> Exp {cons("Not")}
 

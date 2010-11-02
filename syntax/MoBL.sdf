@@ -97,5 +97,6 @@ exports
     "if" -> ID {reject}
     "databind" -> HTMLID {reject}
     "cond" -> ID {reject}
+    "this" -> ID {reject}
     "javascript" -> ID {reject}
 

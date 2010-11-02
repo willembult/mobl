@@ -80,7 +80,7 @@ strategies
     where <string-starts-with(|"ControlCall")> c*/
 
   rename-scope(s) =
-    {| RenameId, RenameFunction//, RenameControl
+    {| RenameId, RenameFunction, RenameThis
      : s
      |}
 
@@ -159,6 +159,20 @@ strategies
     f@SyncFunction(manno*, qid, farg*, rt, body) -> SyncFunction(manno*, <rename-local-function> f, farg*, rt, body)
 
 rules
+
+  rename :
+    Entity(manno*, qid, st, decl*) -> Entity(manno*, qid, st, decl2*)
+    with rename-scope(
+            rules ( RenameThis : This() -> This(){SimpleType(qid)} )
+            ; decl2* := <rename-all> decl*
+         )
+
+  rename :
+    Type(manno*, qid, st, decl*) -> Type(manno*, qid, st, decl2*)
+    with rename-scope(
+            rules ( RenameThis : This() -> This(){SimpleType(qid)} )
+            ; decl2* := <rename-all> decl*
+         )
 
   rename :
     f@Function(manno*, qid, farg*, rt, body) -> Function(manno*, qid, farg2*, rt, body2)
