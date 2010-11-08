@@ -86,6 +86,12 @@ rules
         ; arg := <fetch-elem(\ a -> a where [] := <filter(?Property(_, a, _, _))> prop* \)> args
 
   constraint-error :
+    Call(qid, _) -> (qid, $[No such function or entity defined.])
+    where not(<lookup-type> SimpleType(qid)
+           <+ <lookup-function> qid
+           <+ <lookup-screen> qid)
+
+  constraint-error :
     t@Choice(_, _, _) -> (t, $[Could not determine type of: [<write-to-string> t]])
     where not(type-of)
 
