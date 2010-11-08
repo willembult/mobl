@@ -17,6 +17,26 @@ rules
     Application(qid, _, def*) -> (qid, $[No 'root' screen defined with no arguments. The root screen functions as the application's entry point and is required.])
     where [] := <filter(?Screen(_, QId(qid, "root"), [], _, _))> def*
 
+  constraint-error :
+    Application(_, _, def*) -> (qid, $[Multiple definitions of '[<pp-mobl-qid> qid]'])
+    where all-names := <filter(?_#([_, <id>, _|_]))> def*
+        ; qid := <find-duplicate> all-names
+
+  find-duplicate :
+    [el|k] -> <find-duplicate(|el)> k
+
+  find-duplicate :
+    [el|k] -> <find-duplicate> k
+    where not(<find-duplicate(|el)> k)
+
+  find-duplicate(|el) :
+   [el2|k] -> el2
+   where <eq> (el, el2)
+
+  find-duplicate(|el) :
+   [el2|k] -> <find-duplicate(|el)> k
+   where not(<eq> (el, el2))
+
 rules
 
   constraint-error :

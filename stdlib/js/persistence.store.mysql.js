@@ -15,54 +15,47 @@ function log(o) {
 }
 
 
-exports.config = function(persistence, hostname, db, username, password) {
+exports.config = function(persistence, hostname, port, db, username, password) {
   exports.getSession = function() {
     var that = {};
     var conn = new mysql.Client();
-    conn.host = hostname
+    conn.host = hostname;
+	conn.port = port;
     conn.user = username;
     conn.password = password;
     conn.database = db;
     conn.connect();
 
     var session = new persistence.Session(that);
-    session.transaction = function (fn) {
-      return fn(transaction(conn));
+    session.transaction = function (explicitCommit, fn) {
+      if (typeof arguments[0] === "function") {
+        fn = arguments[0];
+        explicitCommit = false;
+      }
+      var tx = transaction(conn);
+      if (explicitCommit) {
+        tx.executeSql("START TRANSACTION", null, function(){
+          fn(tx)
+        });
+      }
+      else 
+        fn(tx);
     };
 
     session.close = function() {
       conn.end();
-      conn._connection.destroy();
+      //conn._connection.destroy();
     };
     return session;
   };
 
-  function transaction(conn) {
+  function transaction(conn){
     var that = {};
-	var started;
-    that.executeSql = function (query, args, successFn, errorFn) {
-	  
-	  function doIt(query, args, cb) {
-	  	if (persistence.debug)
-		  sys.print(query + "\n");
-        if(!args) {
-          conn.query(query, cb);
-        } else {
-          conn.query(query, args, cb);
-        }
-	  }
-
-      function cb(err, result) {
-        if(err) {
-		  if (that.explicitCommit && started) {
-      		doIt("ROLLBACK", null, function() {
-				started = false;
-				cb(err);
-			});
-			return;
-		  }
+    that.executeSql = function(query, args, successFn, errorFn){
+      function cb(err, result){
+        if (err) {
           log(err.message);
-		  that.errorHandler && that.errorHandler(err);
+          that.errorHandler && that.errorHandler(err);
           errorFn && errorFn(null, err);
           return;
         }
@@ -70,42 +63,43 @@ exports.config = function(persistence, hostname, db, username, password) {
           successFn(result);
         }
       }
-	  if (that.explicitCommit && !started) {
-		doIt("START TRANSACTION", null, function(err) {
-			if (err)
-				cb(err);
-			else {
-				started = true;
-				that.executeSql(query, args, successFn, errorFn);
-			}
-		});
-		return;
-	  }
-	  if (query == "COMMIT")
-	  	started = false;
-		
-	  doIt(query, args, cb);
-    };
+      if (persistence.debug) {
+        sys.print(query + "\n");
+        args && args.length > 0 && sys.print(args.join(",") + "\n")
+      }
+      if (!args) {
+        conn.query(query, cb);
+      }
+      else {
+        conn.query(query, args, cb);
+      }
+    }
+    
+    that.commit = function(session, callback){
+      session.flush(that, function(){
+        that.executeSql("COMMIT", null, callback);
+      })
+    }
+    
+    that.rollback = function(session, callback){
+      that.executeSql("ROLLBACK", null, function() {
+        session.clean();
+        callback();
+      });
+    }
     return that;
   }
+  
   exports.mysqlDialect = {
-    columnTypeToSql: function(type) {
-      switch(type) {
-      case 'JSON': return 'TEXT';
-      case 'BOOL': return 'INT';
-      case 'DATE': return 'INT';
-      default: return type;
-      }
-    },
-
     // columns is an array of arrays, e.g.
     // [["id", "VARCHAR(32)", "PRIMARY KEY"], ["name", "TEXT"]]
     createTable: function(tableName, columns) {
+      var tm = persistence.typeMapper;
       var sql = "CREATE TABLE IF NOT EXISTS `" + tableName + "` (";
       var defs = [];
       for(var i = 0; i < columns.length; i++) {
         var column = columns[i];
-        defs.push("`" + column[0] + "` " + this.columnTypeToSql(column[1]) + (column[2] ? " " + column[2] : ""));
+        defs.push("`" + column[0] + "` " + tm.columnType(column[1]) + (column[2] ? " " + column[2] : ""));
       }
       sql += defs.join(", ");
       sql += ') ENGINE=InnoDB DEFAULT CHARSET=utf8';

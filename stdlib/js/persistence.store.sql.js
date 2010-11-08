@@ -18,29 +18,120 @@ persistence.store.sql = {};
 
 persistence.store.sql.config = function(persistence, dialect) {
   var argspec = persistence.argspec;
-
+  
+  /**
+   * Default type mapper. Override to support more types or type options.
+   */
   persistence.typeMapper = {
+    /**
+     * SQL type for ids
+     */
     idType: "VARCHAR(32)",
+    
+    /**
+     * SQL type for class names (used by mixins)
+     */
+    classNameType: "TEXT",
+    
+    /**
+     * Returns SQL type for column definition
+     */
     columnType: function(type){
-      return type;
+      switch(type) {
+      case 'JSON': return 'TEXT';
+      case 'BOOL': return 'INT';
+      case 'DATE': return 'INT';
+      default: return type;
+      }
     },
+    
     inVar: function(str, type){
       return str;
     },
-    inId: function(str){
-      return str;
-    },
-    outVar: function(str, type) {
-      return str;
-    },
-    outIdVar: function(str) {
+    outVar: function(str, type){
       return str;
     },
     outId: function(str){
       return "'" + str + "'";
     },
+    /**
+     * Converts a value from the database to a value suitable for the entity
+     * (also does type conversions, if necessary)
+     */
+    dbValToEntityVal: function(val, type){
+      if (val === null || val === undefined) {
+        return val;
+      }
+      switch (type) {
+        case 'DATE':
+          // SQL is in seconds and JS in miliseconds
+          return new Date(parseInt(val, 10) * 1000);
+        case 'BOOL':
+          return val === 1 || val === '1';
+          break;
+        case 'INT':
+          return +val;
+          break;
+        case 'BIGINT':
+          return +val;
+          break;
+        case 'JSON':
+          if (val) {
+            return JSON.parse(val);
+          }
+          else {
+            return val;
+          }
+          break;
+        default:
+          return val;
+      }
+    },
+    
+    /**
+     * Converts an entity value to a database value, inverse of
+     *   dbValToEntityVal
+     */
+    entityValToDbVal: function(val, type){
+      if (val === undefined || val === null) {
+        return null;
+      }
+      else if (type === 'JSON' && val) {
+        return JSON.stringify(val);
+      }
+      else if (val.id) {
+        return val.id;
+      }
+      else if (type === 'BOOL') {
+        return (val === 'false') ? 0 : (val ? 1 : 0);
+      }
+      else if (type === 'DATE' || val.getTime) {
+        // In order to make SQLite Date/Time functions work we should store
+        // values in seconds and not as miliseconds as JS Date.getTime()
+        val = new Date(val);
+        return Math.round(val.getTime() / 1000);
+      }
+      else {
+        return val;
+      }
+    },
+    /**
+     * Shortcut for inVar when type is id -- no need to override
+     */
+    inIdVar: function(str){
+      return this.inVar(str, this.idType);
+    },
+    /**
+     * Shortcut for outVar when type is id -- no need to override
+     */
+    outIdVar: function(str){
+      return this.outVar(str, this.idType);
+    },
+    /**
+     * Shortcut for entityValToDbVal when type is id -- no need to override
+     */
     entityIdToDbId: function(id){
-      return id;
+      return this.entityValToDbVal(id, this.idType);
     }
   }
 
@@ -78,17 +169,19 @@ persistence.store.sql.config = function(persistence, dialect) {
     for (var entityName in entityMeta) {
       if (entityMeta.hasOwnProperty(entityName)) {
         meta = entityMeta[entityName];
-        colDefs = [];
-        for (var prop in meta.fields) {
-          if (meta.fields.hasOwnProperty(prop)) {
-            colDefs.push([prop, meta.fields[prop]]);
+        if (!meta.isMixin) {
+          colDefs = [];
+          for (var prop in meta.fields) {
+            if (meta.fields.hasOwnProperty(prop)) {
+              colDefs.push([prop, meta.fields[prop]]);
+            }
           }
-        }
-        for (var rel in meta.hasOne) {
-          if (meta.hasOne.hasOwnProperty(rel)) {
-            otherMeta = meta.hasOne[rel].type.meta;
-            colDefs.push([rel, tm.idType]);
-            queries.push([dialect.createIndex(meta.name, [rel]), null]);
+          for (var rel in meta.hasOne) {
+            if (meta.hasOne.hasOwnProperty(rel)) {
+              otherMeta = meta.hasOne[rel].type.meta;
+              colDefs.push([rel, tm.idType]);
+              queries.push([dialect.createIndex(meta.name, [rel]), null]);
+            }
           }
         }
         for (var rel in meta.hasMany) {
@@ -96,16 +189,31 @@ persistence.store.sql.config = function(persistence, dialect) {
             tableName = meta.hasMany[rel].tableName;
             if (!persistence.generatedTables[tableName]) {
               var otherMeta = meta.hasMany[rel].type.meta;
-              queries.push([dialect.createIndex(tableName, [meta.name + "_" + rel]), null]);
-              queries.push([dialect.createIndex(tableName, [otherMeta.name + "_" + meta.hasMany[rel].inverseProperty]), null]);
-              queries.push([dialect.createTable(tableName, [[meta.name + "_" + rel, tm.idType], [otherMeta.name + "_" + meta.hasMany[rel].inverseProperty, tm.idType]]), null]);
+              var inv = meta.hasMany[rel].inverseProperty;
+              // following test ensures that mixin mtm tables get created with the mixin itself
+              // it seems superfluous because mixin will be processed before entitites that use it 
+              // but better be safe than sorry.
+              if (otherMeta.hasMany[inv].type.meta != meta)
+                continue; 
+              var p1 = meta.name + "_" + rel;
+              var p2 = otherMeta.name + "_" + inv;
+              queries.push([dialect.createIndex(tableName, [p1]), null]);
+              queries.push([dialect.createIndex(tableName, [p2]), null]);
+              var columns = [[p1, tm.idType], [p2, tm.idType]];
+              if (meta.isMixin)
+                columns.push([p1 + "_class", tm.classNameType])
+              if (otherMeta.isMixin)
+                columns.push([p2 + "_class", tm.classNameType])
+              queries.push([dialect.createTable(tableName, columns), null]);
               persistence.generatedTables[tableName] = true;
             }
           }
         }
-        colDefs.push(["id", tm.idType, "PRIMARY KEY"]);
-        persistence.generatedTables[meta.name] = true;
-        queries.push([dialect.createTable(meta.name, colDefs), null]);
+        if (!meta.isMixin) {
+          colDefs.push(["id", tm.idType, "PRIMARY KEY"]);
+          persistence.generatedTables[meta.name] = true;
+          queries.push([dialect.createTable(meta.name, colDefs), null]);
+        }
       }
     }
     var fns = persistence.schemaSyncHooks;
@@ -236,7 +344,7 @@ persistence.store.sql.config = function(persistence, dialect) {
     if (session.trackedObjects[row[prefix + "id"]]) { // Cached version
       return session.trackedObjects[row[prefix + "id"]];
     }
-	var tm = persistence.typeMapper;
+    var tm = persistence.typeMapper;
     var rowMeta = persistence.getMeta(entityName);
     var ent = persistence.define(entityName); // Get entity
     if(!row[prefix+'id']) { // null value, no entity found
@@ -259,68 +367,12 @@ persistence.store.sql.config = function(persistence, dialect) {
   }
 
   /**
-   * Converts a value from the database to a value suitable for the entity
-   * (also does type conversions, if necessary)
-   */
-  persistence.typeMapper.dbValToEntityVal = function(val, type) {
-    if(val === null || val === undefined) {
-      return val;
-    }
-    switch (type) {
-    case 'DATE':
-      // SQL is in seconds and JS in miliseconds
-      return new Date(parseInt(val, 10) * 1000);
-    case 'BOOL':
-      return val === 1 || val === '1';
-      break;
-    case 'INT':
-      return +val;
-      break;
-    case 'BIGINT':
-      return +val;
-      break;
-    case 'JSON':
-      if(val) {
-        return JSON.parse(val);
-      } else {
-        return val;
-      }
-      break;
-    default:
-      return val;
-    }
-  }
-
-  /**
-   * Converts an entity value to a database value, inverse of
-   *   dbValToEntityVal
-   */
-  persistence.typeMapper.entityValToDbVal = function(val, type) {
-    if (val === undefined || val === null) {
-      return null;
-    } else if (type === 'JSON' && val) {
-      return JSON.stringify(val);
-    } else if (val.id) {
-      return val.id;
-    } else if (type === 'BOOL') {
-      return val ? 1 : 0;
-    } else if (type === 'DATE' || val.getTime) {
-      // In order to make SQLite Date/Time functions work we should store
-      // values in seconds and not as miliseconds as JS Date.getTime()
-      val = new Date(val);
-      return Math.round(val.getTime() / 1000);
-    } else {
-      return val;
-    }
-  }
-
-  /**
    * Internal function to persist an object to the database
    * this function is invoked by persistence.flush()
    */
   function save(obj, tx, callback) {
     var meta = persistence.getMeta(obj._type);
-	var tm = persistence.typeMapper;
+    var tm = persistence.typeMapper;
     var properties = [];
     var values = [];
     var qs = [];
@@ -335,7 +387,7 @@ persistence.store.sql.config = function(persistence, dialect) {
     for ( var p in obj._dirtyProperties) {
       if (obj._dirtyProperties.hasOwnProperty(p)) {
         properties.push("`" + p + "`");
-		var type = meta.fields[p] || tm.idType;
+        var type = meta.fields[p] || tm.idType;
         values.push(tm.entityValToDbVal(obj._data[p], type));
         qs.push(tm.outVar("?", type));
         propertyPairs.push("`" + p + "` = " + tm.outVar("?", type));
@@ -466,6 +518,11 @@ persistence.store.sql.config = function(persistence, dialect) {
     + this.right.sql(meta, alias, values) + ")";
   };
 
+  persistence.OrFilter.prototype.sql = function (meta, alias, values) {
+    return "(" + this.left.sql(meta, alias, values) + " OR "
+    + this.right.sql(meta, alias, values) + ")";
+  };
+
   persistence.PropertyFilter.prototype.sql = function (meta, alias, values) {
 	var tm = persistence.typeMapper;
   	var sqlType = meta.fields[this.property] || tm.idType;
@@ -536,10 +593,30 @@ persistence.store.sql.config = function(persistence, dialect) {
     }
     var entityName = this._entityName;
     var meta = persistence.getMeta(entityName);
-	var tm = persistence.typeMapper;
+    var tm = persistence.typeMapper;
+    
+    // handles mixin case -- this logic is generic and could be in persistence.
+    if (meta.isMixin) {
+      var result = [];
+      persistence.asyncForEach(meta.mixedIns, function(realMeta, next) {
+        var query = that.clone();
+        query._entityName = realMeta.name;
+        query.list(tx, function(array) {
+          result = result.concat(array);
+          next();
+        });
+      }, function() {
+        var query = new persistence.LocalQueryCollection(result);
+        query._orderColumns = that._orderColumns;
+        query._reverse = that._reverse;
+        // TODO: handle skip and limit -- do we really want to do it?
+        query.list(null, callback);
+      });
+      return;
+    }    
 
     function selectAll (meta, tableAlias, prefix) {
-      var selectFields = [ tm.inId("`" + tableAlias + "`.id") + " AS " + prefix + "id" ];
+      var selectFields = [ tm.inIdVar("`" + tableAlias + "`.id") + " AS " + prefix + "id" ];
       for ( var p in meta.fields) {
         if (meta.fields.hasOwnProperty(p)) {
           selectFields.push(tm.inVar("`" + tableAlias + "`.`" + p + "`", meta.fields[p]) + " AS `"
@@ -548,7 +625,7 @@ persistence.store.sql.config = function(persistence, dialect) {
       }
       for ( var p in meta.hasOne) {
         if (meta.hasOne.hasOwnProperty(p)) {
-          selectFields.push(tm.inId("`" + tableAlias + "`.`" + p + "`") + " AS `"
+          selectFields.push(tm.inIdVar("`" + tableAlias + "`.`" + p + "`") + " AS `"
             + prefix + p + "`");
         }
       }
@@ -573,6 +650,8 @@ persistence.store.sql.config = function(persistence, dialect) {
     for ( var i = 0; i < this._prefetchFields.length; i++) {
       var prefetchField = this._prefetchFields[i];
       var thisMeta = meta.hasOne[prefetchField].type.meta;
+      if (thisMeta.isMixin)
+        throw new Error("cannot prefetch a mixin");
       var tableAlias = thisMeta.name + '_' + prefetchField + "_tbl";
       selectFields = selectFields.concat(selectAll(thisMeta, tableAlias,
           prefetchField + "_"));
@@ -618,6 +697,7 @@ persistence.store.sql.config = function(persistence, dialect) {
                 var prefetchField = that._prefetchFields[j];
                 var thisMeta = meta.hasOne[prefetchField].type.meta;
                 e._data_obj[prefetchField] = rowToEntity(session, thisMeta.name, r, prefetchField + '_');
+                session.add(e._data_obj[prefetchField]);
               }
               results.push(e);
               session.add(e);
@@ -653,7 +733,17 @@ persistence.store.sql.config = function(persistence, dialect) {
     } 
     var entityName = this._entityName;
     var meta = persistence.getMeta(entityName);
-	var tm = persistence.typeMapper;
+    var tm = persistence.typeMapper;
+
+    // handles mixin case -- this logic is generic and could be in persistence.
+    if (meta.isMixin) {
+      persistence.asyncForEach(meta.mixedIns, function(realMeta, next) {
+        var query = that.clone();
+        query._entityName = realMeta.name;
+        query.destroyAll(tx, callback);
+      }, callback);
+      return;
+    }    
 
     var joinSql = '';
     var additionalWhereSqls = this._additionalWhereSqls.slice(0);
@@ -709,7 +799,23 @@ persistence.store.sql.config = function(persistence, dialect) {
     } 
     var entityName = this._entityName;
     var meta = persistence.getMeta(entityName);
-	var tm = persistence.typeMapper;
+    var tm = persistence.typeMapper;
+
+    // handles mixin case -- this logic is generic and could be in persistence.
+    if (meta.isMixin) {
+      var result = 0;
+      persistence.asyncForEach(meta.mixedIns, function(realMeta, next) {
+        var query = that.clone();
+        query._entityName = realMeta.name;
+        query.count(tx, function(count) {
+          result += count;
+          next();
+        });
+      }, function() {
+        callback(result);
+      });
+      return;
+    }    
 
     var joinSql = '';
     var additionalWhereSqls = this._additionalWhereSqls.slice(0);
@@ -736,21 +842,36 @@ persistence.store.sql.config = function(persistence, dialect) {
     var queries = [];
     var meta = persistence.getMeta(this._obj._type);
     var inverseMeta = meta.hasMany[this._coll].type.meta;
-	var tm = persistence.typeMapper;
+    var tm = persistence.typeMapper;
+    var rel = meta.hasMany[this._coll];
+    var inv = inverseMeta.hasMany[rel.inverseProperty];
+    var direct = rel.mixin ? rel.mixin.meta.name : meta.name;
+    var inverse = inv.mixin ? inv.mixin.meta.name : inverseMeta.name;
 
     // Added
     for(var i = 0; i < this._localAdded.length; i++) {
-      queries.push(["INSERT INTO " + meta.hasMany[this._coll].tableName + 
-            " (`" + meta.name + "_" + this._coll + "`, `" + 
-            inverseMeta.name + '_' + meta.hasMany[this._coll].inverseProperty +
-            "`) VALUES (" + tm.outIdVar("?") + "," + tm.outIdVar("?") + ")", [tm.entityIdToDbId(this._obj.id), tm.entityIdToDbId(this._localAdded[i].id)]]);
+      var columns = [direct + "_" + this._coll, inverse + '_' + rel.inverseProperty];
+      var vars = [tm.outIdVar("?"), tm.outIdVar("?")];
+      var args = [tm.entityIdToDbId(this._obj.id), tm.entityIdToDbId(this._localAdded[i].id)];
+      if (rel.mixin) {
+        columns.push(direct + "_" + this._coll + "_class");
+        vars.push("?");
+        args.push(meta.name);
+      }
+      if (inv.mixin) {
+        columns.push(inverse + "_" + rel.inverseProperty + "_class");
+        vars.push("?");
+        args.push(inverseMeta.name);
+      }
+      queries.push(["INSERT INTO " + rel.tableName + 
+            " (`" + columns.join("`, `") + "`) VALUES (" + vars.join(",") + ")", args]);
     }
     this._localAdded = [];
     // Removed
     for(var i = 0; i < this._localRemoved.length; i++) {
-    queries.push(["DELETE FROM  " + meta.hasMany[this._coll].tableName + 
-          " WHERE `" + meta.name + "_" + this._coll + "` = " + tm.outIdVar("?") + " AND `" + 
-          inverseMeta.name + '_' + meta.hasMany[this._coll].inverseProperty +
+    queries.push(["DELETE FROM  " + rel.tableName + 
+          " WHERE `" + direct + "_" + this._coll + "` = " + tm.outIdVar("?") + " AND `" + 
+          inverse + '_' + rel.inverseProperty +
           "` = " + tm.outIdVar("?"), [tm.entityIdToDbId(this._obj.id), tm.entityIdToDbId(this._localRemoved[i].id)]]);
     }
     this._localRemoved = [];

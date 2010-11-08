@@ -24,22 +24,19 @@
  */
 
 // Some set-up code for non-browser environments
-try {
-  if(!window) {
-    window = {};
-    //exports.console = console;
-  }
-} catch(e) {
+if(typeof window === 'undefined') {
   window = {};
+}
+if(typeof exports !== 'undefined') {
   exports.console = console;
 }
 
 var persistence = (window && window.persistence) ? window.persistence : createPersistence(); 
 
-try {
+if(typeof exports !== 'undefined') {
   exports.createPersistence = createPersistence;
   exports.persistence = persistence;
-} catch(e) {}
+}
 
 function createPersistence() {
 	var persistence = {};
@@ -191,11 +188,28 @@ persistence.get = function(arg1, arg2) {
       var meta = {
         name: entityName,
         fields: fields,
-        hasMany: {},
+        isMixin: false,
+        hasMany: {},		
         hasOne: {}
       };
       entityMeta[entityName] = meta;
       return getEntity(entityName);
+    };
+
+    /**
+     * Define a mixin
+     * 
+     * @param mixinName
+     *            the name of the mixin
+     * @param fields
+     *            an object with property names as keys and SQLite types as
+     *            values, e.g. {name: "TEXT", age: "INT"}
+     * @return the entity's constructor
+     */
+    persistence.defineMixin = function (mixinName, fields) {
+      var Entity = this.define(mixinName, fields);
+      Entity.meta.isMixin = true;
+      return Entity;
     };
 
     persistence.isTransaction = function(obj) {
@@ -311,6 +325,8 @@ persistence.get = function(arg1, arg2) {
             { name: "session", optional: true, check: persistence.isSession, defaultValue: persistence },
             { name: "obj", optional: true, check: function(obj) { return obj; }, defaultValue: {} }
           ]);
+        if (meta.isMixin)
+          throw new Error("Cannot instantiate mixin");
         session = args.session;
         obj = args.obj;
 
@@ -323,7 +339,7 @@ persistence.get = function(arg1, arg2) {
         this._data_obj = {}; // references to objects
         this._session = session || persistence;
         this.subscribers = {}; // observable
-
+        
         for ( var field in meta.fields) {
           (function () {
               if (meta.fields.hasOwnProperty(field)) {    
@@ -351,15 +367,20 @@ persistence.get = function(arg1, arg2) {
           if (meta.hasOne.hasOwnProperty(it)) {
             (function () {
                 var ref = it; 
+                var mixinClass = meta.hasOne[it].type.meta.isMixin ? ref + '_class' : null;
                 persistence.defineProp(that, ref, function(val) {
                     // setterCallback
                     var oldValue = that._data[ref];
                     if (val == null) {
                       that._data[ref] = null;
                       that._data_obj[ref] = undefined;
+                      if (mixinClass)
+                        that[mixinClass] = '';
                     } else if (val.id) {
                       that._data[ref] = val.id;
                       that._data_obj[ref] = val;
+                      if (mixinClass)
+                        that[mixinClass] = val._type;
                       session.add(val);
                       session.add(that);
                     } else { // let's assume it's an id
@@ -405,14 +426,18 @@ persistence.get = function(arg1, arg2) {
                       if (that._data[coll]) {
                         return that._data[coll];
                       } else {
-                        var inverseMeta = meta.hasMany[coll].type.meta;
+                        var rel = meta.hasMany[coll];
+                        var inverseMeta = rel.type.meta;
+                        var inv = inverseMeta.hasMany[rel.inverseProperty];
+                        var direct = rel.mixin ? rel.mixin.meta.name : meta.name;
+                        var inverse = inv.mixin ? inv.mixin.meta.name : inverseMeta.name;
 
                         var queryColl = new persistence.ManyToManyDbQueryCollection(session, inverseMeta.name);
                         queryColl.initManyToMany(that, coll);
                         queryColl._manyToManyFetch = {
-                            table: meta.hasMany[coll].tableName,
-                            prop: meta.name + '_' + coll,
-                            inverseProp: inverseMeta.name + '_' + meta.hasMany[coll].inverseProperty,
+                            table: rel.tableName,
+                            prop: direct + '_' + coll,
+                            inverseProp: inverse + '_' + rel.inverseProperty,
                             id: that.id
                           };
                         that._data[coll] = queryColl;
@@ -466,7 +491,13 @@ persistence.get = function(arg1, arg2) {
         var json = {id: this.id};
         for(var p in this._data) {
           if(this._data.hasOwnProperty(p)) {
-            json[p] = this._data[p];
+            if (typeof this._data[p] == "object" && this._data[p] != null) {
+              if (this._data[p].toJSON != undefined) {
+                json[p] = this._data[p].toJSON();
+              }
+            } else {
+              json[p] = this._data[p];
+            }
           }
         }
         return json;
@@ -646,7 +677,10 @@ persistence.get = function(arg1, arg2) {
             callback(this._data_obj[rel]);
           }
         } else {
-          meta.hasOne[rel].type.load(tx, this._data[rel], function(obj) {
+          var type = meta.hasOne[rel].type;
+          if (type.meta.isMixin)
+            type = getEntity(this._data[rel + '_class']);
+          type.load(tx, this._data[rel], function(obj) {
               that._data_obj[rel] = obj;
               if(callback) {
                 callback(obj);
@@ -817,6 +851,7 @@ persistence.get = function(arg1, arg2) {
             tableName: tableName
           };
           delete meta.hasOne[collName];
+          delete meta.fields[collName + "_class"]; // in case it existed
         } else {
           meta.hasMany[collName] = {
             type: otherEntity,
@@ -826,6 +861,8 @@ persistence.get = function(arg1, arg2) {
             type: Entity,
             inverseProperty: collName
           };
+          if (meta.isMixin)
+            otherMeta.fields[invRel + "_class"] = persistence.typeMapper ? persistence.typeMapper.classNameType : "TEXT";
         }
       }
 
@@ -833,8 +870,34 @@ persistence.get = function(arg1, arg2) {
         meta.hasOne[refName] = {
           type: otherEntity
         };
+        if (otherEntity.meta.isMixin)
+          meta.fields[refName + "_class"] = persistence.typeMapper ? persistence.typeMapper.classNameType : "TEXT";
       };
 
+      Entity.is = function(mixin){
+        var mixinMeta = mixin.meta;
+        if (!mixinMeta.isMixin)
+          throw new Error("not a mixin: " + mixin);
+          
+        mixin.meta.mixedIns = mixin.meta.mixedIns || [];
+        mixin.meta.mixedIns.push(meta);
+        
+        for (var field in mixinMeta.fields) {
+          if (mixinMeta.fields.hasOwnProperty(field)) 
+            meta.fields[field] = mixinMeta.fields[field];
+        }
+        for (var it in mixinMeta.hasOne) {
+          if (mixinMeta.hasOne.hasOwnProperty(it)) 
+            meta.hasOne[it] = mixinMeta.hasOne[it];
+        }
+        for (var it in mixinMeta.hasMany) {
+          if (mixinMeta.hasMany.hasOwnProperty(it)) {
+            mixinMeta.hasMany[it].mixin = mixin;
+            meta.hasMany[it] = mixinMeta.hasMany[it];            
+          }
+        }
+      }
+      
       // Allow decorator functions to add more stuff
       var fns = persistence.entityDecoratorHooks;
       for(var i = 0; i < fns.length; i++) {
@@ -844,7 +907,7 @@ persistence.get = function(arg1, arg2) {
       entityClassCache[entityName] = Entity;
       return Entity;
     }
-
+    
     persistence.jsonToEntityVal = function(value, type) {
       if(type) {
         switch(type) {
@@ -1192,6 +1255,34 @@ persistence.get = function(arg1, arg2) {
     };
 
     /**
+     * Filter that makes sure that either its left and right filter match
+     * @param left left-hand filter object
+     * @param right right-hand filter object
+     */
+    function OrFilter (left, right) {
+      this.left = left;
+      this.right = right;
+    }
+
+    OrFilter.prototype.match = function (o) {
+      return this.left.match(o) || this.right.match(o);
+    };
+
+    OrFilter.prototype.makeFit = function(o) {
+      this.left.makeFit(o);
+      this.right.makeFit(o);
+    };
+
+    OrFilter.prototype.makeNotFit = function(o) {
+      this.left.makeNotFit(o);
+      this.right.makeNotFit(o);
+    };
+
+    OrFilter.prototype.toUniqueString = function() {
+      return this.left.toUniqueString() + " OR " + this.right.toUniqueString();
+    };
+
+    /**
      * Filter that checks whether a certain property matches some value, based on an
      * operator. Supported operators are '=', '!=', '<', '<=', '>' and '>='.
      * @param property the property name
@@ -1200,7 +1291,7 @@ persistence.get = function(arg1, arg2) {
      */
     function PropertyFilter (property, operator, value) {
       this.property = property;
-      this.operator = operator;
+      this.operator = operator.toLowerCase();
       this.value = value;
     }
 
@@ -1268,6 +1359,7 @@ persistence.get = function(arg1, arg2) {
 
     persistence.NullFilter = NullFilter;
     persistence.AndFilter = AndFilter;
+    persistence.OrFilter = OrFilter;
     persistence.PropertyFilter = PropertyFilter;
 
     /**
@@ -1390,6 +1482,30 @@ persistence.get = function(arg1, arg2) {
     };
 
     /**
+     * Returns a new query collection with an OR condition between the
+     * current filter and the filter specified as argument
+     * @param filter the other filter
+     * @return the new query collection
+     */
+    QueryCollection.prototype.or = function (filter) {
+      var c = this.clone(true);
+      c._filter = new OrFilter(this._filter, filter);
+      return this._session.uniqueQueryCollection(c);
+    };
+
+    /**
+     * Returns a new query collection with an AND condition between the
+     * current filter and the filter specified as argument
+     * @param filter the other filter
+     * @return the new query collection
+     */
+    QueryCollection.prototype.and = function (filter) {
+      var c = this.clone(true);
+      c._filter = new AndFilter(this._filter, filter);
+      return this._session.uniqueQueryCollection(c);
+    };
+
+    /**
      * Returns a new query collection with an ordering imposed on the collection
      * @param property the property to sort on
      * @param ascending should the order be ascending (= true) or descending (= false)
@@ -1437,6 +1553,7 @@ persistence.get = function(arg1, arg2) {
     /**
      * Returns a new query collection which will prefetch a certain object relationship.
      * Only works with 1:1 and N:1 relations.
+     * Relation must target an entity, not a mix-in.
      * @param rel the relation name of the relation to prefetch
      * @return the query collection prefetching `rel`
      */
