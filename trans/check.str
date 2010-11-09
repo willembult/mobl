@@ -186,6 +186,24 @@ rules
 rules
 
   constraint-error :
+    VarDecl(v, _, _) -> (v, $[Variables can not have the same name as the module they are in.])
+    where <eq> (<strip-annos> v, <CompilingModule>)
+
+  constraint-error :
+    VarDeclInferred(v, _) -> (v, $[Variables can not have the same name as the module they are in.])
+    where <eq> (<strip-annos> v, <CompilingModule>)
+
+  constraint-error :
+    FArg(v, _) -> (v, $[Arguments can not have the same name as the module they are in.])
+    where <eq> (<strip-annos> v, <CompilingModule>)
+
+  constraint-error :
+    FArgOptional(v, _, _) -> (v, $[Arguments can not have the same name as the module they are in.])
+    where <eq> (<strip-annos> v, <CompilingModule>)
+
+rules
+
+  constraint-error :
     SetComp(e, fltr*) -> <oncetd(set-comp-error(|<type-of; ?GenericType(QId("mobl", "Collection"), [<id>])> e); ?err); !err> fltr*
 
   set-comp-error(|t) :

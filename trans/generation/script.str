@@ -4,9 +4,12 @@ imports
   include/MoBL
   generation/emit
   lib/editor-common
+  analyze
+  pp
 
 strategies
 
   definition-to-js :
-    //Javascript(part*) -> <emit> <map(?JSString(<id>)); concat-strings> part*
-    Javascript(mod) -> <pp-mobl-string; emit <+ debug(!"Could not pp: "); fail> mod
+    Javascript(mod) -> <emit <+ debug(!"Could not emit: "); fail> $[var __ns = [<pp-mobl-qid> <ModuleName <+ debug(!"No module name known"); fail>];
+                                [s]]
+    with s := <pp-mobl-string <+ debug(!"Could not pp: "); fail> mod

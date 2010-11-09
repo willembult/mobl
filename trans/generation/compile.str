@@ -41,8 +41,11 @@ strategies
               ; rules ( Compiled : qid ))
       ; analyze
       ; where(alltd(compile-import-module))
-      ; desugar-all
-      ; module-to-js
+      ; {| ModuleName
+         : rules ( ModuleName := qid )
+         ; desugar-all
+         ; module-to-js
+         |}
       ; where(path := <qid-to-path> qid
               ; js-filename   := <concat-strings; guarantee-extension(|"js")> [<OutputPath>, "/", path]
               ; <dirname; ensure-existing-dir> js-filename
