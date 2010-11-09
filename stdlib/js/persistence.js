@@ -197,6 +197,17 @@ persistence.get = function(arg1, arg2) {
     };
 
     /**
+     * Checks whether an entity exists
+     * 
+     * @param entityName
+     *            the name of the entity (also the table name in the database)
+     * @return `true` if the entity exists, otherwise `false`
+     */
+    persistence.isDefined = function (entityName) {
+        return !!entityMeta[entityName];
+    }
+    
+    /**
      * Define a mixin
      * 
      * @param mixinName
@@ -227,6 +238,7 @@ persistence.get = function(arg1, arg2) {
      *            the object to be tracked
      */
     persistence.add = function (obj) {
+      if(!obj) return;
       if (!this.trackedObjects[obj.id]) {
         this.trackedObjects[obj.id] = obj;
       }

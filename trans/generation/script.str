@@ -10,6 +10,5 @@ imports
 strategies
 
   definition-to-js :
-    Javascript(mod) -> <emit <+ debug(!"Could not emit: "); fail> $[var __ns = [<pp-mobl-qid> <ModuleName <+ debug(!"No module name known"); fail>];
-                                [s]]
+    Javascript(mod) -> <emit> s
     with s := <pp-mobl-string <+ debug(!"Could not pp: "); fail> mod

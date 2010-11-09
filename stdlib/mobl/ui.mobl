@@ -5,8 +5,6 @@ module mobl::ui
  * when the application is loaded, it is decided which control library is used (based on the UserAgent)
  */
 
-import mobl
-
 // Imports are just for resource copying
 dynamic import mobl::ui::ios
 dynamic import mobl::ui::generic

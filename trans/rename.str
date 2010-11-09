@@ -239,6 +239,9 @@ strategies
     DeriveDeclInferred(name, e) -> DeriveDeclInferred(<rename-ref-var> (name, <type-of> e), <rename-all> e)
 
   rename :
+    NamedHtml(name, tag, args, body, ct) -> NamedHtml(<rename-var> (name, SimpleType(QId("mobl", "JQuery"))), tag, <rename-all> args, <rename-all> body, ct)
+
+  rename :
     List(x, t, e, body) -> List(x2, t, e2, body2)
     where <is-string> x
     with rename-scope(

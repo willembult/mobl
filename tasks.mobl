@@ -1,5 +1,7 @@
 application tasks
 
+debug
+
 resource taskicon.png
 
 import mobl
@@ -28,7 +30,10 @@ screen root() {
       item { "Due: " label(t.dueDate) }
     }
   }
-  masterDetail(Task.all(), itemMaster, detail)
+  //masterDetail(Task.all() where done == false, itemMaster, detail)
+  list(task in Task.all() where done == false) {
+    itemMaster(task)
+  }
 }
 
 screen addTask() {

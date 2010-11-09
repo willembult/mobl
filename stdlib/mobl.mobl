@@ -276,6 +276,44 @@ mobl.getScreenWidth = function() { return window.innerWidth; };
 mobl.getScreenHeight = function() { return window.innerHeighth; };
 </javascript>
 
+external type JQuery { //: Dynamic {
+  length : Num
+  sync function fadeIn(fn : Callback = null) : JQuery
+  sync function fadeOut(fn : Callback = null) : JQuery
+  sync function slideUp(fn : Callback = null) : JQuery
+  sync function slideDown(fn : Callback = null) : JQuery
+  sync function slideToggle(fn : Callback = null) : JQuery
+  sync function eq(idx : Num) : JQuery
+  sync function parent() : JQuery
+  sync function parents(selector : String) : JQuery
+  sync function hide() : JQuery
+  sync function show() : JQuery
+  sync function toggle() : JQuery
+  sync function detach() : JQuery
+
+  sync function addClass(cssClass : String) : JQuery
+  sync function hasClass(cssClass : String) : Bool
+  sync function css(name : String, val : String) : JQuery
+  sync function html() : String
+  sync function val() : String
+
+  sync function bind(eventName : String, fn : Callback) : JQuery
+  sync function unbind(eventName : String, fn : Callback) : JQuery
+
+  sync function replaceWith(coll : JQuery) : JQuery
+  sync function append(coll : JQuery) : JQuery
+  sync function prepend(coll : JQuery) : JQuery
+  sync function remove() : JQuery
+  sync function position() : JQueryPosition
+}
+
+external type JQueryPosition {
+  top  : Num
+  left : Num
+}
+
+external sync function $(sel : String) : JQuery
+
 // Controls
 @doc "Injects given HTML directly into the screen"
 external control html(html : String)
@@ -291,8 +329,9 @@ control link(url : String, target : String = "_blank") {
 }
 
 <javascript>
-
 var argspec = persistence.argspec;
+
+mobl.$ = jQuery;
 
 mobl.sleep = function(time, callback) {
   setTimeout(callback, time);
@@ -312,10 +351,12 @@ mobl.log = function(s, _, callback) {
 };
 
 mobl.add = function(e, _, callback) {
-    persistence.add(e);
+    /*persistence.add(e);
     var allEnt = persistence.define(e._type).all(); // NOTE: define() is a hack!
     allEnt.triggerEvent('add', allEnt, e);
-    allEnt.triggerEvent('change', allEnt, e);
+    allEnt.triggerEvent('change', allEnt, e);*/
+    var allEnt = persistence.define(e._type).all(); // NOTE: define() is a hack!
+    allEnt.add(e);
     if(callback) callback();
 };
 

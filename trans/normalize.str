@@ -20,6 +20,9 @@ rules
     HtmlShort(tag, attr*) -> Html(tag, attr*, [], tag)
 
   normalize :
+    NamedHtmlShort(qid, tag, attr*) -> NamedHtml(qid, tag, attr*, [], tag)
+
+  normalize :
     EntityNoSuper(manno*, qid, prop*) -> Entity(manno*, qid, GenericType(QId("mobl", "Entity"), [SimpleType(qid)]), prop*)
 
   normalize :
@@ -48,6 +51,9 @@ rules
 
   normalize :
     ArrayType(t) -> GenericType(QId("mobl", "Array"), [t])
+
+  normalize :
+    DynamicType() -> SimpleType(QId("mobl", "Dynamic"))
 
   normalize :
     FunctionType(t*, rt) -> GenericType(QId("mobl", $[Function[n]]), [t*, rt])

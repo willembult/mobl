@@ -43,6 +43,8 @@ exports
     QId "<" {Type ","}* ">"        -> NFType {cons("GenericType")}
     "(" {Type ","}* ")"            -> NFType {cons("TupleType")}
     "[" Type "]"                   -> NFType {cons("ArrayType")}
+    "?"                            -> NFType {cons("DynamicType")}
+
     NFType                         -> Type
     {NFType "*"}+ "->" NFType      -> Type {cons("FunctionType"), avoid}
 

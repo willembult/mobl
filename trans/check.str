@@ -20,12 +20,12 @@ rules
 
   constraint-error :
     Application(_, _, def*) -> (qid, $[Multiple definitions of '[<pp-mobl-qid> qid]'])
-    where all-names := <filter(?_#([_, <id>, _|_]))> def*
+    where all-names := <filter({?_#([manno*, <id>, _|_]); where([] := <filter(?ConditionalAnno(_))> manno*)})> def*
         ; qid := <find-duplicate> all-names
 
   constraint-error :
     Module(_, def*) -> (qid, $[Multiple definitions of '[<pp-mobl-qid> qid]'])
-    where all-names := <filter(?_#([_, <id>, _|_]))> def*
+    where all-names := <filter({?_#([manno*, <id>, _|_]); where([] := <filter(?ConditionalAnno(_))> manno*)})> def*
         ; qid := <find-duplicate> all-names
 
   find-duplicate :
@@ -53,10 +53,35 @@ rules
     Module(qid, _) -> (qid, $[Module name does not match file path.])
     where not(<eq> ($[[<qid-to-path> qid].mobl], <CompilingFilename>))
 
-  /*constraint-error :
-    Module(_, def*) -> (qid, $[Multiple definitions of '[<pp-mobl-qid> qid]'])
-    where all-names := <filter(?_#([_, <id>, _|_]))> def*
-        ; qid := <find-duplicate> all-names*/
+rules
+
+  constraint-error :
+    Function(_, qid, _, rt, body) -> (qid, $[Function has no return statement.])
+    where not(SimpleType(QId("mobl", "void")) := rt)
+    where [] := <collect(?Return(_))> body
+
+  constraint-error :
+    Function(_, qid, _, rt, body) -> (stm, $[Return statement should return expression of type [<pp-mobl-type> rt].])
+    where not(SimpleType(QId("mobl", "void")) := rt)
+    where [stm|_] := <collect(where(?Return(<id>); type-of; not(<type-compatible> (rt, <id>))))> body
+
+  constraint-error :
+    SyncFunction(_, qid, _, rt, body) -> (qid, $[Function has no return statement.])
+    where not(SimpleType(QId("mobl", "void")) := rt)
+    where [] := <collect(?Return(_))> body
+
+  constraint-error :
+    SyncFunction(_, qid, _, rt, body) -> (stm, $[Return statement should return expression of type [<pp-mobl-type> rt].])
+    where not(SimpleType(QId("mobl", "void")) := rt)
+    where [stm|_] := <collect(where(?Return(<id>); type-of; not(<type-compatible> (rt, <id>))))> body
+
+  constraint-error :
+    Function(_, qid, _, SimpleType(QId("mobl", "void")), body) -> (stm, $[Return statement should not return a value.])
+    where [stm|_] := <collect(?Return(_))> body
+
+  constraint-error :
+    SyncFunction(_, qid, _, SimpleType(QId("mobl", "void")), body) -> (stm, $[Return statement should not return a value.])
+    where [stm|_] := <collect(?Return(_))> body
 
 rules
 
@@ -71,6 +96,10 @@ rules
 
   constraint-error :
     Html(tag, _, _, closeTag) -> (closeTag, $[Wrong closing tag])
+    where not(<eq> (tag, closeTag))
+
+  constraint-error :
+    NamedHtml(_, tag, _, _, closeTag) -> (closeTag, $[Wrong closing tag])
     where not(<eq> (tag, closeTag))
 
   constraint-error :
@@ -110,7 +139,8 @@ rules
     Call(qid, _) -> (qid, $[No such function or entity defined.])
     where not(<lookup-type> SimpleType(qid)
            <+ <lookup-function> qid
-           <+ <lookup-screen> qid)
+           <+ <lookup-screen> qid
+           <+ <type-of> Var(qid))
 
   constraint-error :
     t@Choice(_, _, _) -> (t, $[Could not determine type of: [<write-to-string> t]])

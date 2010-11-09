@@ -122,8 +122,8 @@ control searchBox(s : String, placeholder : String = null, onsearch : Callback =
 
 // CONTEXT MENU
 
-external control contextMenu()
-
+//external control contextMenu()
+/*
 <javascript>
 mobl.ui.generic.contextMenu = function(elements, callback) {
   var root = $("<span>");
@@ -158,6 +158,31 @@ mobl.ui.generic.contextMenu = function(elements, callback) {
   callback(root);
 };
 </javascript>
+*/
+
+control contextMenu() {
+  menu@<div class="contextMenu">
+    elements()
+  </div>
+  script {
+    menu.hide();
+  }
+  img@<img src="mobl/ui/generic/contextmenu.png" style="float: right;" onclick={
+    var target = img.parent();
+    img.hide();
+    menu.css("right", "5px");
+    menu.css("top", target.position().top+6 + "px");
+    menu.show();
+    $("body").bind("touchstart click", removeMenu);
+  }/>
+  function removeMenu(evt : Dynamic) {
+    if($(evt.target).parents(".contextMenu").length == 0) {
+      menu.hide();
+      img.show();
+      $("body").unbind("touchstart click", removeMenu);
+    }
+  }
+}
 
 // Higher level controls
 
@@ -201,6 +226,48 @@ control masterDetail(items : Collection<Dynamic>, masterItem : Control1<Dynamic>
       detail(current)
     </div>
   </div>
+}
+
+control zoomList(coll : Collection<?>, listCtrl : Control1<?>, zoomCtrl : Control1<?>) {
+  var selected : ? = null
+  group {
+    list(it in coll) {
+      cond(it == selected) {
+        item { zoomCtrl(it) }
+      }
+      cond(it != selected) {
+        item(onclick={
+          selected = it;
+        }) { listCtrl(it) }
+      }
+    }
+  }
+}
+
+control stagedList(coll : Collection<?>, listCtrl : Control1<?>, initialItems : Num = 10, step : Num = 10) {
+  var n : Num = initialItems
+  var total : Num = coll.count()
+  group {
+    list(it in coll limit n) {
+      item(onclick={}) { listCtrl(it) }
+    }
+    cond(n < total) {
+      <li class="loadMore" onclick={
+          n = n + step;
+        }>
+        "More"
+      </li>
+    }
+  }
+}
+
+function startLoading() {
+  var loading = $("<div id='progress'>Loading...</div>");
+  $("body").prepend(loading);
+}
+
+function endLoading() {
+  $("#progress").remove();
 }
 
 // Floating box

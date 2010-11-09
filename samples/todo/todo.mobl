@@ -3,7 +3,6 @@ application todo
 title "Todo"
 database "todo"
 
-import mobl
 import mobl::ui
 
 entity Task {

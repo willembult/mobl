@@ -10,6 +10,7 @@ imports
   type
   rename
   util
+  lookup
   generation/emit
   generation/action
   generation/cps-lift
@@ -140,8 +141,15 @@ rules
         ; not(?FieldAccess(_, _))
         ; not(?Indexer(_, _))
         ; hide-anon-controls
-        ; collect(?Var(_) <+ ?FieldAccess(_, _))
+        ; collect(?Var(_) <+ ?FieldAccess(_, _) <+ collection-method-call)
+        ; flatten-list
      <+ ![]
+
+  collection-method-call :
+    mc@MethodCall(e, x, args) -> [<id>|<collect(find-watchable-expressions)> [e, args]]
+    where def := <lookup-method> (<type-of> e, x)
+        ; (ExternalMethod(_, _, _, GenericType(QId("mobl", "Collection"), _)) := def
+        <+ ExternalSyncMethod(_, _, _, GenericType(QId("mobl", "Collection"), _)) := def)
 
   exp-to-watcher-js(|renderControl) :
     e -> $[[<ref-expression-to-js> e].addEventListener('change', function() {
@@ -161,6 +169,16 @@ rules
            $[[root].append([node]);
            [<elems-to-js(|root)> rest*]]]]
 
+  elems-to-js(|root) :
+    [tg@NamedHtml(x, tag, arg*, elems, _)|rest*] -> $[
+      var [x] = $("<[tag] [<escape> args]>");
+      [<filter(databind-tag-arg-to-js(|tg, x)); concat-strings> arg*]
+      [body]
+    ]
+    with args := <filter(tag-arg-to-html); separate-by(!" "); concat-strings> arg*
+       ; body := <elems-to-js(|x)> <concat> [elems, [
+           $[[root].append([x]);
+           [<elems-to-js(|root)> rest*]]]]
 
   elems-to-js(|root) :
     [f@Function(_, _, _, _, _)|rest*] -> $[
@@ -257,7 +275,8 @@ rules
       [r].rebind();
       [subs][subscriptions]
     ]
-    where Html(tag, arg*, _, _) := tg
+    where (Html(tag, arg*, _, _) := tg
+        <+ NamedHtml(_, tag, arg*, _, _) := tg)
         ; [] := <filter(?HtmlArg("type", String("\"checkbox\"")))> arg*
     with es := <ref-expression-to-js> e
        ; r  := <newname> "ref"
@@ -297,7 +316,8 @@ rules
         [es].set(!![node].attr('checked'));
       });
     ]
-    where Html("input", arg*, _, _) := tg
+    where (Html(tag, arg*, _, _) := tg
+        <+ NamedHtml(_, tag, arg*, _, _) := tg)
         ; not([] := <filter(?HtmlArg("type", String("\"checkbox\"")))> arg*)
     with es := <ref-expression-to-js> e
        ; r  := <newname> "ref"
