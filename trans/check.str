@@ -10,6 +10,7 @@ imports
   pp
   generation/compile
   generation/cps-lift
+  editor/editor
 
 rules
 
@@ -19,6 +20,11 @@ rules
 
   constraint-error :
     Application(_, _, def*) -> (qid, $[Multiple definitions of '[<pp-mobl-qid> qid]'])
+    where all-names := <filter(?_#([_, <id>, _|_]))> def*
+        ; qid := <find-duplicate> all-names
+
+  constraint-error :
+    Module(_, def*) -> (qid, $[Multiple definitions of '[<pp-mobl-qid> qid]'])
     where all-names := <filter(?_#([_, <id>, _|_]))> def*
         ; qid := <find-duplicate> all-names
 
@@ -36,6 +42,21 @@ rules
   find-duplicate(|el) :
    [el2|k] -> <find-duplicate(|el)> k
    where not(<eq> (el, el2))
+
+rules
+
+  constraint-warning :
+    Application(qid, _, _) -> (qid, $[Application name does not match file path.])
+    where not(<eq> ($[[<qid-to-path> qid].mobl], <CompilingFilename>))
+
+  constraint-warning :
+    Module(qid, _) -> (qid, $[Module name does not match file path.])
+    where not(<eq> ($[[<qid-to-path> qid].mobl], <CompilingFilename>))
+
+  /*constraint-error :
+    Module(_, def*) -> (qid, $[Multiple definitions of '[<pp-mobl-qid> qid]'])
+    where all-names := <filter(?_#([_, <id>, _|_]))> def*
+        ; qid := <find-duplicate> all-names*/
 
 rules
 
