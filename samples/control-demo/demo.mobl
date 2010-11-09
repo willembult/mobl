@@ -16,6 +16,8 @@ screen root() {
     itemArrow(onclick={ tabs(); }) { "Tabs" }
     itemArrow(onclick={ accordion(); }) { "Accordion" }
     itemArrow(onclick={ master(); }) { "Master detail" }
+    itemArrow(onclick={ zoom(); }) { "Zoom list" }
+    itemArrow(onclick={ staged(); }) { "Staged list" }
     itemArrow(onclick={ charts(); }) { "Charts" }
     itemArrow(onclick={ maps(); }) { "Maps" }
   }
@@ -155,6 +157,46 @@ screen master() {
   header("Master/detail") { backButton() }
   masterDetail(items, masterItem, detail)
 }
+
+function createBigList() : Collection<Person> {
+  var lst = Collection<Person>();
+  foreach(i in range(0, 40)) {
+    lst.add(Person(name="Person " + i, age=i));
+  }
+  return lst;
+}
+
+entity Person {
+  name : String
+  age  : Num
+}
+
+screen staged() {
+  var coll = createBigList()
+  header("Staged list") {
+    backButton()
+  }
+  control listCtrl(p : Person) {
+    label(p.name)
+  }
+  stagedList(coll, listCtrl)
+}
+
+screen zoom() {
+  var coll = Collection<Person>(Person(name="John", age=22), Person(name="Hank", age=35), Person(name="Joey", age=17))
+  header("Zoom list") {
+    backButton()
+  }
+  control listCtrl(p : Person) {
+    label(p.name)
+  }
+  control zoomCtrl(p : Person) {
+    label(p.name)<br/>
+    label("Age: " + p.age)
+  }
+  zoomList(coll, listCtrl, zoomCtrl)
+}
+
 
 screen charts() {
   header("Chart") { backButton() }
