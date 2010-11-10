@@ -30,10 +30,10 @@ screen root() {
       item { "Due: " label(t.dueDate) }
     }
   }
-  //masterDetail(Task.all() where done == false, itemMaster, detail)
-  list(task in Task.all() where done == false) {
+  masterDetail(Task.all(), itemMaster, detail)
+  /*list(task in Task.all() where done == false) {
     itemMaster(task)
-  }
+  }*/
 }
 
 screen addTask() {

@@ -360,8 +360,18 @@ rules
        ; list := <newname> "list"
        ; results := <newname> "results"
        ; vardecls := <map(!$[var [<id>]; ]); concat-strings> <lvalue-vars> lvalue
-       ; assigns := <desugar-all; (map(statement-to-js); concat-strings <+ statement-to-js)> Assignment(lvalue, Indexer(Var(results), Var(i)))
+       ; assigns := <list-assign-lvalue(|results, i)> lvalue//<control-scope(desugar-all); (map(statement-to-js); concat-strings <+ statement-to-js)> Assignment(lvalue, Indexer(Var(results), Var(i)))
        ; subscriptions := <hide-anon-controls; collect-all(?MethodCall(_, _, <id>) <+ ?Call(_, _)); find-watchable-expressions; map(exp-to-watcher-js(|renderList)); concat-strings> e
+
+  list-assign-lvalue(|results, i) :
+    x -> $[[x] = mobl.ref(mobl.ref([results]), [i]);]
+    where is-string
+
+  list-assign-lvalue(|results, i) :
+    LTuple(fst, rest*) -> <concat-strings> assign*
+    with tmp := <newname> "tmp"
+       ; assign* := <map-with-index(\ (idx, lv) -> $[[<lvalue-to-js> lv] = mobl.ref(mobl.ref(mobl.ref([results]), [i]), "_[<int-to-string> idx]"); ] \)> [fst|rest*] //Assignment(lv, FieldAccess(Var(tmp), <concat-strings> ["_", <inc; int-to-string> idx])) \)> rest*
+
 
   elems-to-js(|root) :
     [ConditionalDisplay(e, elems)|rest*] -> $[

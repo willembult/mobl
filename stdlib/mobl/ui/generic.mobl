@@ -236,9 +236,9 @@ control zoomList(coll : Collection<?>, listCtrl : Control1<?>, zoomCtrl : Contro
         item { zoomCtrl(it) }
       }
       cond(it != selected) {
-        item(onclick={
-          selected = it;
-        }) { listCtrl(it) }
+        item(onclick={ selected = it; }) {
+          listCtrl(it)
+        }
       }
     }
   }
@@ -259,6 +259,40 @@ control stagedList(coll : Collection<?>, listCtrl : Control1<?>, initialItems : 
       </li>
     }
   }
+}
+
+control markableList(items : [(Bool, ?)]) {
+  group {
+    list((checked, it) in items) {
+      item {
+        checkBox(checked, label=it)
+      }
+    }
+  }
+}
+
+screen selectList(title : String, coll : Collection<?>) : [?] {
+  var items = Array<(Bool, ?)>()
+  script {
+    foreach(it in coll) {
+      items.push((false, it));
+    }
+  }
+  header(title) {
+    backButton(onclick={
+      return null;
+    })
+    button("Done", onclick={
+      var selected = Array<?>();
+      foreach((checked, it) in items) {
+        if(checked) {
+          selected.push(it);
+        }
+      }
+      screen return selected;
+    })
+  }
+  markableList(items)
 }
 
 function startLoading() {

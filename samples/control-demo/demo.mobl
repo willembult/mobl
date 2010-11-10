@@ -6,6 +6,14 @@ import mobl::ui::googlechart
 import mobl::location
 import mobl::maps
 
+entity Person {
+  name : String
+  age  : Num
+
+  function toString() : String {
+    return this.name;
+  }
+}
 
 screen root() {
   header("A header")
@@ -18,6 +26,7 @@ screen root() {
     itemArrow(onclick={ master(); }) { "Master detail" }
     itemArrow(onclick={ zoom(); }) { "Zoom list" }
     itemArrow(onclick={ staged(); }) { "Staged list" }
+    itemArrow(onclick={ selectList("Select items", Collection<Person>(Person(name="Zef"), Person(name="Eelco"), Person(name="Danny"))); }) { "Markable list" }
     itemArrow(onclick={ charts(); }) { "Charts" }
     itemArrow(onclick={ maps(); }) { "Maps" }
   }
@@ -166,11 +175,6 @@ function createBigList() : Collection<Person> {
   return lst;
 }
 
-entity Person {
-  name : String
-  age  : Num
-}
-
 screen staged() {
   var coll = createBigList()
   header("Staged list") {
@@ -196,7 +200,6 @@ screen zoom() {
   }
   zoomList(coll, listCtrl, zoomCtrl)
 }
-
 
 screen charts() {
   header("Chart") { backButton() }

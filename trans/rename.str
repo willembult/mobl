@@ -245,7 +245,7 @@ strategies
     List(x, t, e, body) -> List(x2, t, e2, body2)
     where <is-string> x
     with rename-scope(
-           x2 := <rename-var> (x, t)
+           x2 := <rename-ref-var> (x, t)
            ; e2 := <rename-all> e
            ; body2 := <rename-all> body
          )
@@ -253,8 +253,8 @@ strategies
   rename :
     List(LTuple(fst, rst*), type@GenericType(_, [t|t*]), e, body) -> List(LTuple(fst2, rst2*), type, e2, body2)
     with rename-scope(
-           fst2 := <rename-var> (fst, t)
-           ; rst2* := <zip; map(rename-var)> (rst*, t*)
+           fst2 := <rename-ref-var> (fst, t)
+           ; rst2* := <zip; map(rename-ref-var)> (rst*, t*)
            ; e2 := <rename-all> e
            ; body2 := <rename-all> body
          )
@@ -265,7 +265,7 @@ strategies
     where rename-scope(
             e2 := <rename-all> e
             ; GenericType(_, [t]) := <add-namespace-all; type-of> e2
-            ; x2 := <rename-var> (x, t)
+            ; x2 := <rename-ref-var> (x, t)
             ; body2 := <rename-all> body
           )
 
@@ -274,8 +274,8 @@ strategies
     where rename-scope(
             e2 := <rename-all> e
             ; GenericType(_, [GenericType(_, [t|t*])]) := <add-namespace-all; type-of> e2
-            ; fst2 := <rename-var> (fst, t)
-            ; rst2* := <zip; map(rename-var)> (rst*, t*)
+            ; fst2 := <rename-ref-var> (fst, t)
+            ; rst2* := <zip; map(rename-ref-var)> (rst*, t*)
             ; body2 := <rename-all> body
           )
 

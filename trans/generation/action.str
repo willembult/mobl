@@ -222,6 +222,16 @@ rules // Statements
   stat-to-js :
     Assignment(LFieldAccess(le, x), e) -> $[[<exp-to-js> le].[x] = [<expression-to-js> e];]
 
+  lvalue-to-js :
+    x -> x
+    where is-string
+
+  lvalue-to-js :
+    QId(_, _) -> <qid-to-js>
+
+  lvalue-to-js :
+    LFieldAccess(le, x) -> $[[<exp-to-js> le].[x]]
+
 rules // Expressions
 
   expression-to-js =
