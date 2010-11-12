@@ -195,8 +195,17 @@ screen zoom() {
     label(p.name)
   }
   control zoomCtrl(p : Person) {
-    label(p.name)<br/>
-    label("Age: " + p.age)
+    label(p.name)
+    table {
+      row {
+        headerCol { "Age: "}
+        col { label(p.age) }
+      }
+      row {
+        headerCol { "Gender: "}
+        col { "Male" }
+      }
+    }
   }
   zoomList(coll, listCtrl, zoomCtrl)
 }

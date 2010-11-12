@@ -19,6 +19,13 @@ colorer
   UriPath  : blue
   UriPart  : blue
 
+  _.EmUnit         : darkgreen
+  _.PercentageUnit : darkgreen
+  _.PxUnit         : darkgreen
+  _.PtUnit         : darkgreen
+  _.NumUnit        : darkgreen
+  _.Num            : darkgreen
+
   environment _.Javascript : darkgreen
 
 
