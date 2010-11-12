@@ -1,0 +1,42 @@
+module MoBL-Style
+
+imports
+  Common
+  MoBL
+
+exports
+
+  context-free syntax
+
+    MetaAnno* "style" StyleSelector "{" StyleElem* "}"    -> Definition {cons("Style")}
+
+    "." ID      -> StyleSelector {cons("ClassSelector")}
+
+    STYLEPROPID ":" StyleExp+ ";" -> StyleElem {cons("StyleProperty")}
+
+    COLOR                   -> StyleExp {cons("Color")}
+    STYLEID                 -> StyleExp {cons("StyleId")}
+    STRING                  -> StyleExp {cons("String")}
+    NUMBER                  -> StyleExp {cons("Num")}
+    NUMBER Unit             -> StyleExp {cons("NumUnit")}
+    STYLEPROPID "(" {StyleExp+ ","}* ")" -> StyleExp {cons("StyleCall")}
+
+    "px" -> Unit {cons("PxUnit")}
+    "em" -> Unit {cons("EmUnit")}
+    "pt" -> Unit {cons("PtUnit")}
+    "%"  -> Unit {cons("PercentageUnit")}
+
+  lexical syntax
+    [\#][0-9a-fA-F]* -> COLOR
+    [a-zA-Z\_\-][a-zA-Z0-9\_\-]* -> STYLEPROPID
+    [a-zA-Z\_\$][a-zA-Z0-9\_]* -> STYLEID
+
+    "px" -> STYLEID {reject}
+    "em" -> STYLEID {reject}
+    "pt" -> STYLEID {reject}
+
+  lexical restrictions
+
+    STYLEID          -/- [a-zA-Z0-9\_]
+    STYLEPROPID      -/- [a-zA-Z0-9\_]
+    COLOR            -/- [a-zA-Z0-9\_\#]
