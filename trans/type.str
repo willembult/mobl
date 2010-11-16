@@ -92,7 +92,7 @@ strategies
     EntityCons(t, _) -> t
 
   eq-type-of :
-    Var(qid) -> GenericType("Type", [SimpleType(qid)])
+    Var(qid) -> GenericType(QId("mobl", "Type"), [SimpleType(qid)])
     where <lookup-type> SimpleType(qid)
 
   eq-type-of :

@@ -252,13 +252,13 @@ rules
   spec-exp-to-js :
     MethodCall(e, "all", []) -> $[[es].all(_ctx.session)]
     where ServerContext
-    where GenericType("Type", _) := <type-of> e
+    where GenericType(QId("mobl", "Type"), _) := <type-of> e
     with es := <expression-to-js> e
 
   spec-cps-exp(|stat*) :
     MethodCall(e, "findBy", e*) -> <concat-strings> [<expression-to-js> e, ".findBy(_ctx.session, ", args, ");"]
     where ServerContext
-    where GenericType("Type", _) := <type-of> e
+    where GenericType(QId("mobl", "Type"), _) := <type-of> e
     with arg-js := <map(expression-to-js)> e*
     with args := <concat; separate-by(!", "); concat-strings> [arg-js, [
 $[function(result__) {

@@ -295,6 +295,12 @@ screen selectList(title : String, coll : Collection<?>) : [?] {
   markableList(items)
 }
 
+control searchList(Ent : Type<Entity<?>>, masterItem : Control1<?>, detailItem : Control1<?>, resultLimit : Num = 10) {
+  var phrase = ""
+  searchBox(phrase, placeholder="Search term")
+  masterDetail(Ent.searchPrefix(phrase) limit resultLimit, masterItem, detailItem)
+}
+
 function startLoading() {
   var loading = $("<div id='progress'>Loading...</div>");
   $("body").prepend(loading);

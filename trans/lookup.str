@@ -108,9 +108,12 @@ strategies
     dr-all-keys(|"GetFunction")
     ; filter(?_{})
 
+  is-entity-type =
+    GetEntity
+
   lookup-method :
     (t, x) -> extern
-    where not(GenericType("Type", _) := t)
+    where not(GenericType(QId("mobl", "Type"), _) := t)
     where (ExternalType(_, _, super, method*) := <lookup-type> t
         <+ ExternalEntity(_, _, _, method*) := <lookup-type> t
            ; super := GenericType(QId("mobl", "Entity"), [t]))
@@ -129,7 +132,7 @@ strategies
 
   lookup-method :
     (t, x) -> extern
-    where not(GenericType("Type", _) := t)
+    where not(GenericType(QId("mobl", "Type"), _) := t)
     where (ExternalType(_, _, super, method*) := <lookup-type> t
         <+ ExternalEntity(_, _, _, method*) := <lookup-type> t
            ; super := GenericType(QId("mobl", "Entity"), [t]))
@@ -148,8 +151,10 @@ strategies
 
   lookup-method :
     (t2, x) -> extern
-    where GenericType("Type", [t@SimpleType(qid)]) := t2 // for static methods
-    where ExternalType(_, _, super, method*) := <GetType <+ GetEntity; <lookup-type> GenericType(QId("mobl", "Entity"), [t])> qid
+    where GenericType(QId("mobl", "Type"), [t]) := t2 // for static methods
+    where ExternalType(_, _, super, method*) := <where(is-entity-type); <lookup-type> GenericType(QId("mobl", "Entity"), [t]) <+ lookup-type> t
+
+    //where ExternalType(_, _, super, method*) := <GetType <+ GetEntity; <lookup-type> GenericType(QId("mobl", "Entity"), [t])> qid
         ; [esm@ExternalStaticMethod(manno*, _, _, _)] := <filter(?ExternalStaticMethod(_, x, farg*, rt))> method*
         ; !esm
         ; origin-track-forced(
@@ -164,8 +169,8 @@ strategies
 
   lookup-method :
     (t2, x) -> extern
-    where GenericType("Type", [t@SimpleType(qid)]) := t2 // for static methods
-    where ExternalType(_, _, super, method*) := <GetType <+ GetEntity; <lookup-type> GenericType(QId("mobl", "Entity"), [t])> qid
+    where GenericType(QId("mobl", "Type"), [t]) := t2 // for static methods
+    where ExternalType(_, _, super, method*) := <where(is-entity-type); <lookup-type> GenericType(QId("mobl", "Entity"), [t]) <+ lookup-type> t
         ; [esm@ExternalStaticSyncMethod(manno*, _, _, _)] := <filter(?ExternalStaticSyncMethod(_, x, farg*, rt))> method*
         ; !esm
         ; origin-track-forced(
@@ -183,7 +188,7 @@ strategies
 
   get-all-methods :
     type -> methods
-    where not(GenericType("Type", [t@SimpleType(qid)]) := type) // for non-static methods
+    where not(GenericType(QId("mobl", "Type"), [t]) := type) // for non-static methods
     where c#([_, _, super, members]) := <lookup-type> type
         ; own-methods := <filter(?ExternalMethod(_, _, _, _) <+ ?ExternalSyncMethod(_, _, _, _))> members
         ; if not(SimpleType(QId("mobl", "Object")) := type) then
@@ -194,8 +199,8 @@ strategies
 
   get-all-methods :
     type -> own-methods //<concat> [own-methods, super-methods]
-    where GenericType("Type", [t@SimpleType(qid)]) := type // for static methods
-    where c#([_, _, super, members]) := <GetType <+ GetEntity; <lookup-type> GenericType(QId("mobl", "Entity"), [t])> qid
+    where GenericType(QId("mobl", "Type"), [t]) := type // for static methods
+    where c#([_, _, super, members]) := <where(is-entity-type); <lookup-type> GenericType(QId("mobl", "Entity"), [t]) <+ lookup-type> t
         ; own-methods := <filter(?ExternalStaticMethod(_, _, _, _) <+ ?ExternalStaticSyncMethod(_, _, _, _))> members
 
   is-entity-type =

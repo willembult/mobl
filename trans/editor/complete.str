@@ -40,7 +40,7 @@ rules
     FieldAccess(e, COMPLETION(_)) -> [prop*, method*]
     where t := <type-of> e
         ; method* := <get-all-methods; map(\ meth@c#([_, x, args|_]) -> (<concat> [[x, "("], <filter(?FArg(<id>, _)); separate-by(!", ")> args, [")"]], <get-doc> meth) \)> t
-        ; if GenericType("Type", _) := t then
+        ; if GenericType(QId("mobl", "Type"), _) := t then
             prop* := []
           else
             prop* := <get-all-properties; map(\ prop@Property(_, x, _, _) -> ([x], <get-doc> prop) \)> t

@@ -243,6 +243,10 @@ external type Entity<T> {
   function fetch(rel : String) : T
 }
 
+external type Type<T> {
+
+}
+
 external sync function log(o : Object) : void
 external sync function alert(o : Object) : void
 
