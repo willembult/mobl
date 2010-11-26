@@ -126,12 +126,15 @@ let
 
     updatesite = import "${hydraConfig}/spoofax-fun.nix" {
       inherit pkgs;
-      name = "mobl-r${toString mobl.rev}";
+      name = "mobl";
       version = "0.2.8";
       src = moblPlugin;
+      buildInputs = [pkgs.strategoPackages.sdf];
       preConfigure = ''
         cp -Rv ${mobl} mobl
         chmod -R a+w mobl
+        mkdir -p mobl/utils
+        cp -v `find $eclipse -name StrategoMix.def` mobl/utils/StrategoMix.def
       '';
     };
   };
