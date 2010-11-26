@@ -39,7 +39,7 @@ strategies
     Callback(_) -> SimpleType(QId("mobl", "Callback"))
 
   eq-type-of :
-    RegExp(_) -> SimpleType(QId("mobl", "RegExp"))
+    RegExp(_, _) -> SimpleType(QId("mobl", "RegExp"))
 
   eq-type-of : // TODO: what about null?
     Choice(e, e1, e2) -> <type-of> e1

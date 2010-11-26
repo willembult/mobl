@@ -277,7 +277,7 @@ strategies
     ; <is-sync> e-true
     ; <is-sync> e-false
 
-  is-sync = ?RegExp(_)
+  is-sync = ?RegExp(_, _)
 
   is-sync =
     ?List(e*)

@@ -31,22 +31,22 @@ rules
   service-elem-to-js :
     Resource(_, x, farg*, rt, prop*) ->
     $[[x]: function([fargs]) {
-      var url = [url];
-      $.ajax({
-         url: url,
-         dataType: [<expression-to-js> encoding],
-         type: [<expression-to-js> method],
-         [data-property]
-         error: function(_, message, error) {
-           console.error(message);
-           console.error(error);
-           callback(null);
-         },
-         success: function(data) {
-            [<expression-to-js> mapper](data, callback);
-         }
-      });
-    }
+        var url = [url];
+        $.ajax({
+           url: url,
+           dataType: [<expression-to-js> encoding],
+           type: [<expression-to-js> method],
+           [data-property]
+           error: function(_, message, error) {
+             console.error(message);
+             console.error(error);
+             callback(null);
+           },
+           success: function(data) {
+              [<expression-to-js> mapper](data, callback);
+           }
+        });
+      }
    ]
   with fargs := <filter(farg-to-js); <concat> [<id>, ["callback"]]; separate-by(!", "); concat-strings> farg*
      ; <fetch(?PropVal("uri", uri)) <+ uri := String($["/[x]"])> prop*
@@ -63,11 +63,11 @@ rules
 
 
   build-service-url :
-    (uri, String("\"GET\""), data) -> $[this.root ? mobl.proxyUrl(this.root + [<expression-to-js> uri] + mobl.encodeUrlObj({[data]})) : [<expression-to-js> uri] + mobl.encodeUrlObj({[data]})]
+    (uri, _, data) -> $["" + (this.root ? this.root : "") + [<expression-to-js> uri]]
 
-  build-service-url :
+  /*build-service-url :
     (uri, method, data) -> $[this.root ? mobl.proxyUrl(this.root + [<expression-to-js> uri]) : [<expression-to-js> uri]]
-    where not(String("\"GET\"") := method)
+    where not(String("\"GET\"") := method)*/
 
   farg-to-js-key-val :
     FArg(x, _) -> $["[x]": [x]]
