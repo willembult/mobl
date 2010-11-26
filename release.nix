@@ -1,5 +1,7 @@
 { nixpkgs ? /etc/nixos/nixpkgs
-, mobl ? { outPath = ./.; rev = "1234"; }
+, mobl ? { outPath = ./.; rev = 1234; }
+, moblPlugin ? { outPath = ../plugin ; rev = 1234; }
+, hydraConfig ? { outPath = ../../../src/hydra-config ; rev = 1234; }
 }:
 
 let
@@ -121,6 +123,17 @@ let
       znake_client       = moblc { name = "znake"; app = "znake.mobl"; } ;
       znake_server       = moblc { name = "znake"; app = "server.mobl"; } ;
     };      
+
+    updatesite = import "${hydraConfig}/spoofax-fun.nix" {
+      inherit pkgs;
+      name = "mobl-r${toString mobl.rev}";
+      version = "0.2.8";
+      src = moblPlugin;
+      preConfigure = ''
+        cp -Rv ${mobl} mobl
+        chmod -R a+w mobl
+      '';
+    };
   };
 
 in jobs
