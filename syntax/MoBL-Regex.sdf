@@ -6,7 +6,7 @@ imports
 exports
 
   context-free syntax
-    "/" Pattern "/"            -> Exp {cons("RegExp")}
+    "/" Pattern "/" Modifiers  -> Exp {cons("RegExp")}
 
     Branche                    -> Pattern {cons("SingleBranch")}
     Pattern "|" Pattern        -> Pattern {cons("TupleBranch"), right, prefer}
@@ -134,6 +134,11 @@ sorts ClassKeyword
           -> AllChars
     "/"   -> AllChars
     "\""  -> AllChars {cons("DoubleQuote") }
+
+    "i"       -> Modifier
+    "g"       -> Modifier
+    "m"       -> Modifier
+    Modifier* -> Modifiers
 
   sorts BracketCharacter AtomCharacter
   context-free syntax

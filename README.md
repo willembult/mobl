@@ -23,3 +23,5 @@ To use plug-in
 You can easily install the plug-in from the
 `http://mobl-lang.org/update` update site. But to keep up-to-date with
 the latest developments you will have to build it yourself.
+
+For the latest unstable version, use: `http://hydra.nixos.org/build/769041/download/1/site/` as update site.

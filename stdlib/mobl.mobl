@@ -238,7 +238,7 @@ external type Entity<T> {
   static function findBy(property : String, value : String) : T
   static sync function search(query : String) : Collection<T>
   static sync function searchPrefix(query : String) : Collection<T>
-  static function fromSelectJson(json : JSON) : T
+  static function fromSelectJSON(json : JSON) : T
 
   function fetch(rel : String) : T
 }

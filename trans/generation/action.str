@@ -356,7 +356,7 @@ rules // Expressions
        ; e2s := <expression-to-js> e2
 
   exp-to-js :
-    RegExp(r) -> $[/[<pp-mobl-string; trim-whitespace> r]/]
+    RegExp(r, mod) -> $[/[<pp-mobl-string; trim-whitespace> r]/[mod]]
 
   exp-to-js :
     Choice(e, e-true, e-false) -> $[[<expression-to-js> e] ? [<expression-to-js> e-true] : [<expression-to-js> e-false]]
