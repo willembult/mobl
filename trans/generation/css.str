@@ -1,0 +1,49 @@
+module generation/css
+
+imports
+  libstratego-lib
+  include/MoBL
+  generation/emit
+  generation/compile
+
+rules
+
+  definition-to-js :
+    Style(_, qid, prop*) -> <emit-css>
+    $[[<map(qid-to-css; <concat-strings> [".", <id>]); separate-by(|" ")> qid] {
+        [<map(style-prop-to-css); separate-by(|"\n")> prop*]
+      }]
+
+  qid-to-css :
+    s -> s
+    where is-string
+
+  qid-to-css :
+    QId(qid, x) -> $[[<qid-to-css> qid]__[x]]
+
+  style-prop-to-css :
+    StyleProperty(x, e) -> $[[x]: [<map(style-exp-to-css); separate-by(|" ")> e];]
+
+  style-exp-to-css :
+    StyleCall(x, e*) -> $[[x]([<map(style-exp-to-css); separate-by(|", ")> e*])]
+
+  style-exp-to-css :
+    Num(n) -> n
+
+  style-exp-to-css :
+    NumUnit(n, unit) -> $[[n][<unit-to-css> unit]]
+
+  style-exp-to-css :
+    StyleId(x) -> x
+
+  style-exp-to-css :
+    Color(x) -> x
+
+  unit-to-css :
+    EmUnit() -> "em"
+
+  unit-to-css :
+    PxUnit() -> "px"
+
+  unit-to-css :
+    PercentageUnit() -> "%"

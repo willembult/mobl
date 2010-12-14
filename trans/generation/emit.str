@@ -12,9 +12,19 @@ strategies
     ; current := <EmittedStatements <+ ![]>
     ; rules ( EmittedStatements := <concat> [current, [stat]] )
 
+  emit-css =
+    ?css
+    ; current := <EmittedCss <+ !"">
+    ; rules ( EmittedCss := <concat-strings> [current, css] )
+
   get-all =
        Emitted
        ; rules ( Emitted := "")
+    <+ !""
+
+  get-all-css =
+       EmittedCss
+       ; rules ( EmittedCss := "")
     <+ !""
 
   get-all-tl-statements =

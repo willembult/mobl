@@ -14,6 +14,7 @@ imports
   resolve
   generation/compile
   generation/server
+  generation/css
   sync-analysis
 
 rules

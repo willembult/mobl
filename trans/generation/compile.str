@@ -18,6 +18,7 @@ imports
   generation/html
   generation/service
   generation/type
+  generation/css
   generation/server
   include/MoBL
   lib/editor-common
@@ -48,6 +49,7 @@ strategies
          |}
       ; where(path := <qid-to-path> qid
               ; js-filename   := <concat-strings; guarantee-extension(|"js")> [<OutputPath>, "/", path]
+              ; css-filename   := <concat-strings; guarantee-extension(|"css")> [<OutputPath>, "/", path]
               ; <dirname; ensure-existing-dir> js-filename
               ; index-html-filename   := <concat-strings; guarantee-extension(|"html")> [<OutputPath>, "/", path]
               ; manifest-filename   := <concat-strings; guarantee-extension(|"manifest")> [<OutputPath>, "/", path]
@@ -61,6 +63,14 @@ strategies
       ; <fputs> (<get-all>, fp)
       ; <fputs> (<get-all-tl-statements; (cps-lift-expressions; cps-statements <+ debug(!"Could not cps tl statements: "); fail)>, fp)
       ; <fclose> fp
+      // CSS
+      ; all-css := <get-all-css>
+      ; if not("" := all-css) then
+          fp_css := <fopen> (css-filename, "w")
+          ; <fputs> (all-css, fp_css)
+          ; <fclose> fp_css
+          ; <refresh-workspace-file> css-filename
+        end
       ; if !app then
         with(
           fp2 := <fopen <+ debug(!"Could not open file: "); fail> (index-html-filename, "w")
@@ -86,20 +96,30 @@ strategies
       ; <refresh-workspace-file> js-filename
 
   get-all-resources :
-    qid -> [res*, import*, $[[<qid-to-path> qid].js]]
+    qid -> [res*, import*, style*, $[[<qid-to-path> qid].js]]
     where not(ResourceProcessed)
     with rules ( ResourceProcessed : qid )
        ; def* := <get-module-defs> qid
        ; res* := <filter((?Resource(<id>) <+ ?Load(<id>)); path-to-string)> def*
        ; import* := <filter((?Import(<id>) <+ ?DynamicImport(<id>)); get-all-resources); concat> def*
+       ; if [] := <filter(?ExternalStyle(_, _))> def* then
+            style* := []
+         else
+            style* := [$[[<qid-to-path> qid].css]]
+         end
 
   get-all-resources-no-dynamic :
-    qid -> [res*, import*, $[[<qid-to-path> qid].js]]
+    qid -> [res*, import*, style*, $[[<qid-to-path> qid].js]]
     where not(ResourceProcessed)
     with rules ( ResourceProcessed : qid )
        ; def* := <get-module-defs> qid
        ; res* := <filter((?Resource(<id>) <+ ?Load(<id>)); path-to-string)> def*
        ; import* := <filter(?Import(<id>); get-all-resources); concat> def*
+       ; if [] := <filter(?ExternalStyle(_, _))> def* then
+            style* := []
+         else
+            style* := [$[[<qid-to-path> qid].css]]
+         end
 
   get-all-resources-no-dynamic :
     qid -> []

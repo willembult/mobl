@@ -189,6 +189,7 @@ persistence.get = function(arg1, arg2) {
         name: entityName,
         fields: fields,
         isMixin: false,
+        indexes: [],
         hasMany: {},
         hasOne: {}
       };
@@ -769,13 +770,23 @@ persistence.get = function(arg1, arg2) {
               var coll = persistence.get(obj, p);
               var ar = jsonObj[p].slice(0);
               var PropertyEntity = meta.hasMany[p].type;
-              persistence.asyncForEach(ar, function(item, callback) {
-                  PropertyEntity.fromSelectJSON(session, tx, item, function(result) {
-                      coll.add(result);
+              // get all current items
+              coll.list(tx, function(currentItems) {
+                  persistence.asyncForEach(ar, function(item, callback) {
+                      PropertyEntity.fromSelectJSON(session, tx, item, function(result) {
+                          // Check if not already in collection
+                          for(var i = 0; i < currentItems.length; i++) {
+                            if(currentItems[i].id === result.id) {
+                              callback();
+                              return;
+                            }
+                          }
+                          coll.add(result);
+                          callback();
+                        });
+                    }, function() {
                       callback();
                     });
-                }, function() {
-                  callback();
                 });
             }
           }, function() {
@@ -827,6 +838,16 @@ persistence.get = function(arg1, arg2) {
             callback(obj);
           });
       }
+
+
+      Entity.index = function(cols,options) {
+        var opts = options || {};
+        if (typeof cols=="string") {
+          cols = [cols];
+        }
+        opts.columns = cols;
+        meta.indexes.push(opts);
+      };
 
       /**
        * Declares a one-to-many or many-to-many relationship to another entity

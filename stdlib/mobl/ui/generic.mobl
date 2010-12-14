@@ -83,7 +83,7 @@ control textField(s : String, placeholder : String = null, label : String = null
   }
 }
 
-control numField(n : Num, placeholder : String = null, label : String = null,onchange : Callback = null) {
+control numField(n : Num, placeholder : String = null, label : String = null, onchange : Callback = null) {
   cond(label) {
     <span style="float: left; margin-top: 0.2em; width: 5em; color: #666;" databind=label/>
     <span style="float: left">

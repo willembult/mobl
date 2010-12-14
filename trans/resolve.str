@@ -66,6 +66,21 @@ strategies
     where <is-string> x
 
   add-tl-namespace :
+    Style(manno*, qid*, selem*) -> Style(manno*, qid2*, selem*)
+    where qid2* := <map(add-tl-namespace-qid)> qid*
+
+  add-tl-namespace :
+    ExternalStyle(manno*, qid*) -> ExternalStyle(manno*, qid2*)
+    where qid2* := <map(add-tl-namespace-qid)> qid*
+
+  add-tl-namespace-qid :
+    qid@QId(_, _) -> qid
+
+  add-tl-namespace-qid :
+    x -> QId(<ModuleName>, x)
+    where is-string
+
+  add-tl-namespace :
     VarDecl(x, t, e) -> VarDecl(QId(<ModuleName>, x), t, e)
     where <is-string> x
 

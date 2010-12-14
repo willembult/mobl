@@ -8,9 +8,9 @@ exports
 
   context-free syntax
 
-    MetaAnno* "style" StyleSelector "{" StyleElem* "}"    -> Definition {cons("Style")}
+    MetaAnno* "style" QId* "{" StyleElem* "}"    -> Definition {cons("Style")}
 
-    "." ID      -> StyleSelector {cons("ClassSelector")}
+    MetaAnno* "external" "style" QId* -> Definition {cons("ExternalStyle")}
 
     STYLEPROPID ":" StyleExp+ ";" -> StyleElem {cons("StyleProperty")}
 

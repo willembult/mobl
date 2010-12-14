@@ -57,6 +57,8 @@ external type Bool : Object { }
 
 external type Dynamic : Object { }
 
+external type Style : String { }
+
 @doc "RegExp type"
 external type RegExp : Object {
     global : Bool

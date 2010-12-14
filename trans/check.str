@@ -223,7 +223,7 @@ rules
     where not(<type-compatible> (t, t1))
 
   constraint-error :
-    p@Path(part*) -> (p, $[File not found. Note that paths are relative to the project root.])
+    p@Path(part*){} -> (p, $[File not found. Note that paths are relative to the project root.])
     where not(<separate-by(|"/"); concat-strings; resolve-file> part*)
 
   constraint-error :
