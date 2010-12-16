@@ -616,6 +616,22 @@ if(mobl.contextStack.length === 0) {
   }]);
 }
 
+mobl.findDeepestVisibleContext = function() {
+  var idx = mobl.contextStack.length-1;
+  while(idx >= 0) {
+    var top = mobl.contextStack[idx];
+    for(var i = 0; i < top.length; i++) {
+      if(!top[i].dom) { // body
+        top[i].dom = $("body");
+      }
+      if(top[i].dom.is(':visible')) {
+        return top[i];
+      }
+    }
+    idx--;
+  }
+};
+
 mobl.call = function (screenName, args, callback) {
     var screenFrame = {
         name: screenName,
@@ -625,16 +641,7 @@ mobl.call = function (screenName, args, callback) {
         dom: null
     };
 
-    var screenContext = mobl.contextStack[mobl.contextStack.length-1];
-    for(var i = 0; i < screenContext.length; i++) {
-      if(!screenContext[i].dom) { // body
-        screenContext[i].dom = $("body");
-      }
-      if(screenContext[i].dom.is(':visible')) {
-        screenContext = screenContext[i];
-        break;
-      }
-    }
+    var screenContext = mobl.findDeepestVisibleContext();
 
     screenContext.screens.push(screenFrame);
     var callbackFn = function () {

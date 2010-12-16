@@ -319,6 +319,44 @@ style tabbarStyle activeTabButtonStyle {
   -moz-border-radius-topleft: 8px;
 }
 
+/*
+style activeTabStyle tabbarStyle {
+  margin-left: 100px;
+}
+
+style activeTabStyle tabbarStyle inActiveTabButtonStyle {
+  padding-right: 15px;
+  padding-left: 15px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  margin-left: 5px;
+  line-height: 37px;
+  height: 37px;
+  margin-bottom: 0;
+  background-color: white;
+  color: black;
+  border: 1px solid #444;
+  -webkit-border-radius: 0;
+  -moz-border-radius: 0;
+}
+
+style activeTabStyle tabbarStyle activeTabButtonStyle {
+  background-color: #5c98f6;
+  color: #fefefe;
+  position: inline;
+  padding-right: 15px;
+  padding-left: 15px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  margin-left: 5px;
+  line-height: 37px;
+  height: 37px;
+  margin-bottom: 0;
+  border: 1px solid #444;
+  -webkit-border-radius: 0;
+  -moz-border-radius: 0;
+}*/
+
 style inActiveTabStyle {
   display: none;
 }
