@@ -41,7 +41,7 @@ external type String : Object {
   sync function replace(substr : String, newstring : String) : String
   sync function search(regexp : RegExp) : Num
   sync function slice(start : Num, end : Num) : String
-  sync function split(separator : String, limit : Num) : Array<String>
+  sync function split(separator : String, limit : Num = 1000) : Array<String>
   sync function substr(start : Num, length : Num) : String
   sync function substring(from : Num, to : Num) : String
   sync function toLowerCase() : String
@@ -185,6 +185,7 @@ external type Math {
   static sync function sqrt(n : Num) : Num
   static sync function tan(n : Num) : Num
   static sync function max(n1: Num, n2 : Num) : Num
+  static sync function pi() : Num
 }
 
 external type JSON : Dynamic {
@@ -237,6 +238,7 @@ external type Entity<T> {
 
   @doc "A virtual collection containing all instances of this entity"
   static sync function all() : Collection<T>
+  static function load(id : String) : T
   static function findBy(property : String, value : String) : T
   static sync function search(query : String) : Collection<T>
   static sync function searchPrefix(query : String) : Collection<T>
@@ -334,6 +336,14 @@ control link(url : String, target : String = "_blank") {
   </a>
 }
 
+control screenContext() {
+  <div class="screenContext">
+    <div class="initialElements">
+      elements()
+    </div>
+  </div>
+}
+
 <javascript>
 var argspec = persistence.argspec;
 
@@ -425,6 +435,7 @@ Date.prototype.toDateString = function() {
 };
 
 mobl.Math = Math;
+mobl.Math.pi = function() { return Math.PI; };
 
 mobl.JSON = JSON;
 
@@ -555,7 +566,6 @@ mobl.Map.prototype.keys = function() {
 };
 
 mobl.screenStack = [];
-
 mobl.innerHeight = false;
 setTimeout(function() {
     if(mobl.isAndroid) {
@@ -597,45 +607,50 @@ $(function() {
 
 mobl.postCallHooks = [];
 
+mobl.contextStack = [];
+
+if(mobl.contextStack.length === 0) {
+  mobl.contextStack.push([{
+    screens: [],
+    dom: null
+  }]);
+}
+
 mobl.call = function (screenName, args, callback) {
     var screenFrame = {
-        "name": screenName,
-        "args": args,
-        "callback": callback,
-        "div": screenName.replace(/\./g, '__') + mobl.screenStack.length
+        name: screenName,
+        args: args,
+        callback: callback,
+        div: screenName.replace(/\./g, '__'),
+        dom: null
     };
-    mobl.screenStack.push(screenFrame);
-    var callbackFn = function () {
-        // when callback function is called (i.e. return)
-        mobl.screenStack.pop();
-        if (mobl.screenStack.length > 0) {
-            var previousScreen = mobl.screenStack[mobl.screenStack.length - 1];
-            /* Sliding code
-            $("body > #" + screenFrame.div).hide('slide', {
-                direction: "right"
-            }, 100, function () {
-                var n = $("body > #" + screenFrame.div);
-                n.remove();
-                n.disableExtraEvents();
-                mobl.delayedUpdateScrollers();
-            });
-            $("body > #" + previousScreen.div).show('slide', {
-                direction: "left"
-            }, 100);
-            */
-            $("body > #" + screenFrame.div).remove();
-            mobl.delayedUpdateScrollers();
-            $("body > #" + previousScreen.div).show();
-            scrollTo(0, previousScreen.pageYOffset);
-            /*
-            var old = $("body > #" + screenFrame.div);
-            old.addClass('righthidden');
-            setTimeout(function() {
-                old.remove();
-            }, 350);
-            //$("body > #" + previousScreen.div).removeClass('righthidden');
-            $("body > #" + previousScreen.div).removeClass('hidden');*/
 
+    var screenContext = mobl.contextStack[mobl.contextStack.length-1];
+    for(var i = 0; i < screenContext.length; i++) {
+      if(!screenContext[i].dom) { // body
+        screenContext[i].dom = $("body");
+      }
+      if(screenContext[i].dom.is(':visible')) {
+        screenContext = screenContext[i];
+        break;
+      }
+    }
+
+    screenContext.screens.push(screenFrame);
+    var callbackFn = function () {
+        // when callback function is called (i.e. screen return)
+        screenContext.screens.pop();
+        if(screenFrame.dom.find("div.screenContext").length > 0) { // pop context
+          mobl.contextStack.pop();
+        }
+        screenFrame.dom.remove();
+        mobl.delayedUpdateScrollers();
+        if (screenContext.screens.length > 0) {
+            var previousScreen = screenContext.screens[screenContext.screens.length - 1];
+            previousScreen.dom.show();
+            scrollTo(0, previousScreen.pageYOffset);
+        } else {
+          screenContext.initialElements.show();
         }
         if (callback) {
             callback.apply(null, arguments);
@@ -647,41 +662,37 @@ mobl.call = function (screenName, args, callback) {
         current = current[parts[i]];
     }
     var screenTemplate = current;
+
     screenTemplate.apply(null, args.concat( [ function (node) {
         node.attr('id', screenFrame.div);
-        node.addClass('screen');
-        node.attr('style', "position: absolute; left: 0; top: 0; width: 100%;");
-        var body = $("body");
-        if (mobl.screenStack.length > 1) {
-            var previousScreen = mobl.screenStack[mobl.screenStack.length - 2];
-            //node.addClass('righthidden');
+        screenFrame.dom = node;
+        if (screenContext.screens.length > 1) {
+            var previousScreen = screenContext.screens[screenContext.screens.length - 2];
             previousScreen.pageYOffset = window.pageYOffset;
-            /* Slide code
-            $("body > #" + previousScreen.div).hide('slide', {
-                direction: "left"
-            }, 100);
-            node.hide().prependTo(body).show('slide', {
-                direction: "right"
-            }, 100);
-            */
-            $("body > #" + previousScreen.div).hide();
-            node.prependTo(body);
+            previousScreen.dom.hide();
+            node.prependTo(screenContext.dom);
             scrollTo(0, 0);
-            /*
-            $("body > #" + previousScreen.div).addClass('hidden');
-            node.prependTo(body);
-            setTimeout(function() {
-                node.removeClass('righthidden');
-            }, 150);*/
         } else {
-            node.prependTo(body);
+          screenContext.initialElements = screenContext.dom.find("div.initialElements");
+          screenContext.initialElements.hide();
+          node.prependTo(screenContext.dom);
+        }
+        var localScreenContexts = node.find("div.screenContext");
+        if(localScreenContexts.length > 0) {
+          var ar = [];
+          for(var i = 0; i < localScreenContexts.length; i++) {
+            ar.push({
+              screens: [],
+              dom: localScreenContexts.eq(i)
+            });
+          }
+          mobl.contextStack.push(ar);
         }
         mobl.postCallHooks.forEach(function(fn) {
           fn(node);
         });
 
         $(function () {
-        //setTimeout(function() {
             var scrollers = $("div#scrollwrapper div#content");
             var i = 0;
             if (scrollers.length > 0) {
@@ -693,7 +704,6 @@ mobl.call = function (screenName, args, callback) {
                 mobl.delayedUpdateScrollers();
             }
         });
-        //}, 200);
     }, callbackFn ]));
 };
 

@@ -124,6 +124,12 @@ rules
         ; [qid2] := <filter({c, newid: ?c; <prefix-qid(|c)> qid; ?newid; lookup-global-var-aux; !newid})> [<ModuleName>|<bagof-Imports>]
 
   add-namespace :
+    Var(qid{}) -> Var(qid2)
+    where <is-string> qid
+    where not(<lookup-style> qid)
+        ; [qid2] := <filter({c, newid: ?c; <prefix-qid(|c)> qid; ?newid; lookup-style; !newid})> [<ModuleName>|<bagof-Imports>]
+
+  add-namespace :
     Assignment(qid, e) -> Assignment(qid2, <add-namespace-all> e)
     where <is-string> qid
     where not(<lookup-global-var-aux> qid)

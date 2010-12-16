@@ -8,18 +8,23 @@ exports
 
   context-free syntax
 
-    MetaAnno* "style" QId* "{" StyleElem* "}"    -> Definition {cons("Style")}
+    MetaAnno* "style" QId+ "{" StyleElem* "}"    -> Definition {cons("Style")}
 
     MetaAnno* "external" "style" QId* -> Definition {cons("ExternalStyle")}
 
-    STYLEPROPID ":" StyleExp+ ";" -> StyleElem {cons("StyleProperty")}
+    STYLEPROPID ":" StyleExpsTL ";" -> StyleElem {cons("StyleProperty")}
 
     COLOR                   -> StyleExp {cons("Color")}
     STYLEID                 -> StyleExp {cons("StyleId")}
     STRING                  -> StyleExp {cons("String")}
     NUMBER                  -> StyleExp {cons("Num")}
     NUMBER Unit             -> StyleExp {cons("NumUnit")}
-    STYLEPROPID "(" {StyleExp+ ","}* ")" -> StyleExp {cons("StyleCall")}
+    FILENAME "/" {FILENAME "/"}+         -> StyleExp {cons("StylePath"), avoid}
+    STYLEPROPID "(" {StyleExps ","}* ")" -> StyleExp {cons("StyleCall")}
+
+    StyleExp+               -> StyleExps {cons("StyleExps"), prefer}
+    {StyleExp ","}+         -> StyleExpsTL {cons("StyleExpsCS")}
+    StyleExps               -> StyleExpsTL
 
     "px" -> Unit {cons("PxUnit")}
     "em" -> Unit {cons("EmUnit")}
@@ -29,7 +34,7 @@ exports
   lexical syntax
     [\#][0-9a-fA-F]* -> COLOR
     [a-zA-Z\_\-][a-zA-Z0-9\_\-]* -> STYLEPROPID
-    [a-zA-Z\_\$][a-zA-Z0-9\_]* -> STYLEID
+    [a-zA-Z\_\$][a-zA-Z0-9\_\-]* -> STYLEID
 
     "px" -> STYLEID {reject}
     "em" -> STYLEID {reject}

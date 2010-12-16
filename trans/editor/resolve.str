@@ -63,6 +63,11 @@ rules
     (Var(qid), position, ast, path, project-path) -> target
     where target := <ensure-origin(lookup-type|qid)> SimpleType(qid)
 
+  // For entities
+  editor-resolve:
+    (Var(qid), position, ast, path, project-path) -> target
+    where target := <ensure-origin(lookup-style|qid)> qid
+
 rules
 
   ensure-origin(lookup|qid) :

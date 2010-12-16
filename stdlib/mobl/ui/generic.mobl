@@ -2,7 +2,7 @@ module mobl::ui::generic
 
 import mobl
 
-load mobl/ui/generic.css
+load mobl/ui/generic_ext.css
 load mobl/ui/generic/search.png
 /*
 load mobl/ui/generic/css-beziers.js
@@ -12,23 +12,122 @@ load mobl/ui/generic/touchscroll.css*/
 resource mobl/ui/generic/arrow.png
 resource mobl/ui/generic/contextmenu.png
 
+style headerStyle {
+  background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#5c98f6),
+    to(#3440e4) );
+  background: -moz-linear-gradient(top, #5c98f6, #3440e4);
+  padding: 0;
+  height: 2.3em;
+  font-size: 1.3em;
+  line-height: 2.3em;
+  font-weight: bold;
+  text-align: center;
+  text-shadow: #477 0px 1px 1px;
+  color: white;
+  font-weight: bold;
+  margin: 0;
+  z-index: 2;
+}
+
+style headerContainerStyle {
+  width: 150px;
+  position: absolute;
+  left: 50%;
+}
+
+style headerTextStyle {
+  position: absolute;
+  left: -75px;
+  width: 150px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 control header(text : String, onclick : Callback = null) {
-  <div class="header" onclick=onclick>
-    <div class="headerContainer"><div databind=text class="headerText"/></div>
+  <div class=headerStyle onclick=onclick>
+    <div class=headerContainerStyle><div databind=text class=headerTextStyle/></div>
     elements()
   </div>
 }
 
+style buttonStyle {
+  font-family: Arial, Helvetica, sans-serif;
+  text-shadow: white 0px 1px 0px;
+  font-weight: bold;
+  text-align: center;
+  padding: 0.5em 1em 0.5em 1em;
+  margin: 0.3em;
+  line-height: 3em;
+  color: black;
+  -webkit-box-shadow: 0px 0px 3px #777777;
+  -moz-box-shadow: 0px 0px 3px #777777;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#fff),
+    to(#c6def2) );
+  background: -moz-linear-gradient(top, #fff, #c6def2);
+}
+
+style headerStyle buttonStyle {
+  float: right;
+  font-size: 0.7em;
+  line-height: 2em;
+  padding: 0.2em 1em 0.2em 1em;
+  margin-top: 0.5em;
+  margin-left: 0;
+  margin-right: 0.4em;
+  z-index: 3;
+}
+
 control button(text : String, onclick : Callback = null) {
-  <span class="button" onclick=onclick databind=text/>
+  <span class=buttonStyle onclick=onclick databind=text/>
+}
+
+
+style sideButtonStyle {
+  position: absolute;
+  right: 0.4em;
+  padding: 0.3em 0.8em 0.3em 0.8em;
+  margin-top: -0.2em;
+  color: black;
+  -webkit-box-shadow: 0px 0px 3px #777777;
+  -moz-box-shadow: 0px 0px 3px #777777;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#fff),
+    to(#c6def2) );
+  background: -moz-linear-gradient(top, #fff, #c6def2);
 }
 
 control sideButton(text : String, onclick : Callback = null) {
-  <span class="sideButton" onclick=onclick databind=text/>
+  <span class=sideButtonStyle onclick=onclick databind=text/>
+}
+
+style backButtonStyle {
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#fff),
+    to(#c6def2) );
+  background: -moz-linear-gradient(top, #fff, #c6def2);
+  float: left;
+  -webkit-box-shadow: 0 0 3px #777777;
+  -moz-box-shadow: 0 0 3px #777777;
+  padding: 0.2em 0.8em 0.2em 0.8em;
+  line-height: 2em;
+  margin-top: 0.5em;
+  margin-left: 0.3em;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 0.7em;
+  font-weight: bold;
+  /*line-height: 2em;*/
+  color: black;
+  text-shadow: white 0px 1px 0px;
+  z-index: 3;
 }
 
 control backButton(text : String = "Back", onclick : Callback = { screen return; }) {
-  <span class="backButton" onclick=onclick databind=text/>
+  <span class=backButtonStyle onclick=onclick databind=text/>
 }
 
 control block(cssClass : String = null, id : String = null, onclick : Callback = null) {
@@ -37,30 +136,74 @@ control block(cssClass : String = null, id : String = null, onclick : Callback =
   </div>
 }
 
-control span(cssClass : String = null, id : String = null, onclick : Callback = null) {
+control span(cssClass : Style = null, id : String = null, onclick : Callback = null) {
   <span id=id class=cssClass onclick=onclick>
   elements()
   </span>
 }
 
+style groupStyle {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
 control group() {
-  <ul class="group">
+  <ul class=groupStyle>
     elements()
   </ul>
 }
 
-control image(url : String, onclick : Callback = null) {
-  <img src=url onclick=onclick/>
+control image(url : String, onclick : Callback = null, valign : String = null) {
+  <img src=url onclick=onclick valign=valign/>
 }
 
+style itemStyle {
+  background-color: #FFFFFF;
+  border: 1px solid #cccccc;
+  border-left: 0;
+  border-right: 0;
+  color: black;
+  display: block;
+  font-size: 17px;
+  margin-bottom: -1px;
+  padding: 12px 10px;
+  text-decoration: none;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+
 control item(onclick : Callback = null, onswipe : Callback = null) {
-  <li class="item" onclick=onclick>
+  <li class=itemStyle onclick=onclick>
     elements()
   </li>
 }
 
+style itemArrowStyle {
+  background-color: #FFFFFF;
+  border: 1px solid #cccccc;
+  border-left: 0;
+  border-right: 0;
+  color: black;
+  display: block;
+  font-size: 17px;
+  margin-bottom: -1px;
+  padding: 12px 10px;
+  text-decoration: none;
+  background-image: url(generic/arrow.png);
+  background-position: right center;
+  background-repeat: no-repeat;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 control itemArrow(onclick : Callback = null, onswipe : Callback = null) {
-  <li class="itemArrow" onclick=onclick>
+  <li class=itemArrowStyle onclick=onclick>
     elements()
   </li>
 }
@@ -71,15 +214,36 @@ control checkBox(b : Bool, label : String = "") {
   <span databind=label onclick={ b = b ? false : true; }/>
 }
 
+style textFieldStyle {
+  display: inline-block;
+  -webkit-appearance: none;
+  -webkit-box-flex: 100;
+  -webkit-rtl-ordering: logical;
+  -webkit-user-select: text;
+  -webkit-text-size-adjust: 140%;
+  -moz-text-size-adjust: 140%;
+  -webkit-appearance: textarea;
+  background: #fff -webkit-gradient(linear, 0% 0%, 0% 100%, from(white),
+    to(white) );
+  border: 0;
+  color: black;
+  display: block;
+  font-size: 1.2em;
+  height: 1.2em;
+  padding: 0;
+  margin-left: 0px;
+  width: 100%;
+}
+
 control textField(s : String, placeholder : String = null, label : String = null, onchange : Callback = null) {
   cond(label) {
     <span style="float: left; margin-top: 0.2em; width: 5em; color: #666;" databind=label/>
     <span style="float: left">
-      <input type="text" placeholder=placeholder databind=s onchange=onchange onblur={ scrollUp(); }/>
+      <input type="text" class=textFieldStyle placeholder=placeholder databind=s onchange=onchange onblur={ scrollUp(); }/>
     </span>
   }
   cond(!label) {
-    <input type="text" placeholder=placeholder databind=s onchange=onchange onblur={ scrollUp(); }/>
+    <input type="text" class=textFieldStyle placeholder=placeholder databind=s onchange=onchange onblur={ scrollUp(); }/>
   }
 }
 
@@ -87,12 +251,79 @@ control numField(n : Num, placeholder : String = null, label : String = null, on
   cond(label) {
     <span style="float: left; margin-top: 0.2em; width: 5em; color: #666;" databind=label/>
     <span style="float: left">
-      <input type="text" placeholder=placeholder databind=n onchange=onchange onblur={ scrollUp(); }/>
+      <input type="text" class=textFieldStyle placeholder=placeholder databind=n onchange=onchange onblur={ scrollUp(); }/>
     </span>
   }
   cond(!label) {
-    <input type="text" placeholder=placeholder databind=n onchange=onchange onblur={ scrollUp(); }/>
+    <input type="text" class=textFieldStyle placeholder=placeholder databind=n onchange=onchange onblur={ scrollUp(); }/>
   }
+}
+
+// Tabs
+
+style tabbarStyle {
+  text-align: left;
+  font-size: 16px;
+  z-index: 3;
+  width: 100%;
+  border-bottom: 1px solid #444;
+  margin-top: 0.3em;
+  margin-bottom: 0;
+}
+
+/*div.screen div.tabbar > span {
+  margin: 0;
+  padding: 0;
+}*/
+
+style tabbarStyle inActiveTabButtonStyle {
+  padding-right: 15px;
+  padding-left: 15px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  margin-left: 5px;
+  line-height: 37px;
+  height: 37px;
+  margin-bottom: 0;
+  background-color: white;
+  color: black;
+  border-top: 1px solid #444;
+  border-right: 1px solid #444;
+  border-left: 1px solid #444;
+  -webkit-border-top-right-radius: 8px;
+  -moz-border-radius-topright: 8px;
+  -webkit-border-top-left-radius: 8px;
+  -moz-border-radius-topleft: 8px;
+}
+
+style tabbarStyle activeTabButtonStyle {
+  background-color: #5c98f6;
+  color: #fefefe;
+  position: relative;
+  top: 1px;
+
+  padding-right: 15px;
+  padding-left: 15px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  margin-left: 5px;
+  line-height: 37px;
+  height: 37px;
+  margin-bottom: 0;
+  border-top: 1px solid #444;
+  border-right: 1px solid #444;
+  border-left: 1px solid #444;
+  -webkit-border-top-right-radius: 8px;
+  -moz-border-radius-topright: 8px;
+  -webkit-border-top-left-radius: 8px;
+  -moz-border-radius-topleft: 8px;
+}
+
+style inActiveTabStyle {
+  display: none;
+}
+
+style activeTabStyle {
 }
 
 @doc "A tabset, takes a list of tuples as argument, e.g. [(\"Tab 1\", \"icon url\", tab1), (\"Tab 2\", \"icon uri\", tab2)] where tab1 and tab2 are controls with no arguments"
@@ -100,68 +331,84 @@ control tabSet(tabs : [(String, String, Control)]) {
   var activeTabName : String = tabs.get(0)._1
   var s = ""
 
-  block("tabbar") {
+  block(tabbarStyle) {
     list((tabName, tabIcon, tabControl) in tabs) {
-      span(onclick={ activeTabName = tabName; }, cssClass=activeTabName == tabName ? "tab activeTabButton" : "tab inActiveTabButton") {
+      span(onclick={ activeTabName = tabName; }, cssClass=activeTabName == tabName ? activeTabButtonStyle : inActiveTabButtonStyle) {
         label(tabName)
       }
     }
   }
   list((tabName, tabIcon, tabControl) in tabs) {
-    block(activeTabName == tabName ? "activeTab" : "inActiveTab") {
-      tabControl()
+    block(activeTabName == tabName ? activeTabStyle : inActiveTabStyle) {
+      screenContext {
+        tabControl()
+      }
     }
   }
 }
 
+style searchboxStyle {
+  background-color: #FFFFFF;
+  margin: 0;
+  border: 1px solid #999999;
+  color: #222222;
+  padding: 10px 6px;
+}
+
+style searchBoxInputStyle {
+  display: inline-block;
+  -webkit-appearance: none;
+  -webkit-box-flex: 100;
+  -webkit-rtl-ordering: logical;
+  -webkit-user-select: text;
+  -webkit-text-size-adjust: 140%;
+  -moz-text-size-adjust: 140%;
+  -webkit-appearance: textarea;
+  border: 0;
+  color: black;
+  display: block;
+  font-size: 1.2em;
+  height: 1.2em;
+  padding: 0;
+  margin-left: 0px;
+  width: 100%;
+
+  background-image: url(generic/search.png);
+  background-repeat: no-repeat;
+  background-position: right center;
+}
+
 control searchBox(s : String, placeholder : String = null, onsearch : Callback = null) {
-  <div class="searchbox">
-    <input type="text" placeholder=placeholder databind=s onchange=onsearch autocorrect="off" autocapitalize="off" autocomplete="off"/>
+  <div class=searchboxStyle>
+    <input type="text" class=searchBoxInputStyle placeholder=placeholder databind=s onchange=onsearch autocorrect="off" autocapitalize="off" autocomplete="off"/>
   </div>
 }
 
 // CONTEXT MENU
 
-//external control contextMenu()
-/*
-<javascript>
-mobl.ui.generic.contextMenu = function(elements, callback) {
-  var root = $("<span>");
-  var img = $("<img src='mobl/ui/generic/contextmenu.png' style='float: right;'/>");
-  root.append(img);
+style contextMenuStyle {
+  position: absolute;
+}
 
-  img.tap(function(event) {
-    event.stopPropagation();
-    event.preventDefault();
-    var target = img.parent();
-    img.hide();
-    var item = $("<div class='contextMenu'>");
-    item.css('right', "5px");
-    item.css('top', target.position().top+6 + "px");
-    elements(function(elements, callback) {
-      var root5175 = $("<span>");
-      callback(root5175); return;
-    }, function(node) { item.append(node); });
-    target.append(item);
-    //item.hide().fadeIn();
-    function removeMenu(evt) {
-      console.log(evt.target);
-      if($(evt.target).parents(".contextMenu").length === 0) {
-        item.remove();
-        img.show();
-        $("body").unbind('touchstart click', removeMenu);
-      }
-    }
-    $("body").bind('touchstart click', removeMenu);
-  });
-
-  callback(root);
-};
-</javascript>
-*/
+style contextMenuStyle buttonStyle {
+  font-family: Arial, Helvetica, sans-serif;
+  text-shadow: white 0px 1px 0px;
+  font-weight: bold;
+  text-align: center;
+  padding: 0.5em 0.5em 0.5em 0.5em;
+  margin: 0.1em;
+  line-height: 2em;
+  color: black;
+  -webkit-box-shadow: 0px 0px 3px #777777;
+  -moz-box-shadow: 0px 0px 3px #777777;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#fff), to(#c6def2) );
+  background: -moz-linear-gradient(top, #fff, #c6def2);
+}
 
 control contextMenu() {
-  menu@<div class="contextMenu">
+  menu@<div class=contextMenuStyle>
     elements()
   </div>
   script {
@@ -176,7 +423,7 @@ control contextMenu() {
     $("body").bind("touchstart click", removeMenu);
   }/>
   function removeMenu(evt : Dynamic) {
-    if($(evt.target).parents(".contextMenu").length == 0) {
+    if($(evt.target).parents("." + contextMenuStyle).length == 0) {
       menu.hide();
       img.show();
       $("body").unbind("touchstart click", removeMenu);
@@ -301,8 +548,24 @@ control searchList(Ent : Type<Entity<?>>, masterItem : Control1<?>, detailItem :
   masterDetail(Ent.searchPrefix(phrase) limit resultLimit, masterItem, detailItem)
 }
 
+style progressStyle {
+    -webkit-border-radius: 10px;
+    background-color: rgba(0,0,0,0.7);
+    color: white;
+    font-size: 2em;
+    line-height: 2em;
+    font-weight: bold;
+    left: 10%;
+    margin: 0 auto;
+    position: absolute;
+    text-align: center;
+    top: 40%;
+    width: 80%;
+    z-index: 99;
+}
+
 function startLoading() {
-  var loading = $("<div id='progress'>Loading...</div>");
+  var loading = $("<div id='progress' class='" + progressStyle + "'>Loading...</div>");
   $("body").prepend(loading);
 }
 
@@ -358,7 +621,10 @@ mobl.ui.generic.floatBox = function(top, right, bottom, left, elements, callback
 </javascript>
 
 
-external control floatBox(top : Num = null, right : Num = null, bottom : Num = null, left : Num = null) /*{
+external control floatBox(top : Num = null, right : Num = null, bottom : Num = null, left : Num = null)
+
+
+ /*{
   var id = random(9999)
   <div id="floatBox"+id style="position: absolute;">
     elements()
@@ -408,7 +674,7 @@ control accordion(sections : [(String, Control)]) {
   </div>
 }
 
-@doc "Renders a table, use row { } rows and cell { } for cells"
+@doc "Renders a table, use row { } for rows and cell { } for cells"
 control table() {
   <table>elements()</table>
 }

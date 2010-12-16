@@ -5,14 +5,18 @@ imports
   include/MoBL
   generation/emit
   generation/compile
+  generation/action
 
 rules
 
   definition-to-js :
-    Style(_, qid, prop*) -> <emit-css>
-    $[[<map(qid-to-css; <concat-strings> [".", <id>]); separate-by(|" ")> qid] {
+    Style(_, qid*, prop*) -> <emit-css>
+    $[[<map(qid-to-css; <concat-strings> [".", <id>]); separate-by(|" ")> qid*] {
         [<map(style-prop-to-css); separate-by(|"\n")> prop*]
       }]
+    with qid := <reverse; Hd> qid*
+    where <emit> $[[<qid-to-js> qid] = '[<qid-to-css> qid]';
+]
 
   qid-to-css :
     s -> s
@@ -22,7 +26,7 @@ rules
     QId(qid, x) -> $[[<qid-to-css> qid]__[x]]
 
   style-prop-to-css :
-    StyleProperty(x, e) -> $[[x]: [<map(style-exp-to-css); separate-by(|" ")> e];]
+    StyleProperty(x, e) -> $[[x]: [<style-exp-to-css> e];]
 
   style-exp-to-css :
     StyleCall(x, e*) -> $[[x]([<map(style-exp-to-css); separate-by(|", ")> e*])]
@@ -38,6 +42,15 @@ rules
 
   style-exp-to-css :
     Color(x) -> x
+
+  style-exp-to-css :
+    StylePath(p, p*) -> $[[p]/[<separate-by(|"/"); concat-strings> p*]]
+
+  style-exp-to-css :
+    StyleExps(e*) -> <map(style-exp-to-css); separate-by(|" "); concat-strings> e*
+
+  style-exp-to-css :
+    StyleExpsCS(e*) -> <map(style-exp-to-css); separate-by(|", "); concat-strings> e*
 
   unit-to-css :
     EmUnit() -> "em"

@@ -108,6 +108,10 @@ strategies
     Var(qid) -> t
     where ExternalVarDecl(_, t) := <lookup-global-var-aux> qid
 
+  eq-type-of :
+    Var(qid) -> SimpleType(QId("mobl", "Style"))
+    where <lookup-style> qid
+
   fargs-to-function-type :
     farg* -> GenericType(QId("mobl", $[Function[n]]), t*)
     where t* := <map(?FArg(_, <id>) <+ ?FArgOptional(_, <id>, _))> farg*
