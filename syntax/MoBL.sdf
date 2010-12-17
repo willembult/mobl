@@ -37,6 +37,8 @@ exports
     "load" Path                    -> Definition {cons("Load")}
     "resource" Path                -> Definition {cons("Resource")}
 
+    "mixin" QId                    -> Definition {cons("Mixin")}
+
     ID ":" Type                    -> FArg {cons("FArg")}
     ID ":" Type "=" Exp            -> FArg {cons("FArgOptional")}
 

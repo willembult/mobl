@@ -19,6 +19,10 @@ colorer
   UriPath  : blue
   UriPart  : blue
 
+  _.StyleConfigRef      : brown
+
+  _.StyleFieldAccess    : brown
+
   _.EmUnit         : darkgreen
   _.PercentageUnit : darkgreen
   _.PxUnit         : darkgreen

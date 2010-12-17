@@ -3,6 +3,7 @@ module generation/script
 imports
   include/MoBL
   generation/emit
+  generation/action
   lib/editor-common
   analyze
   pp
@@ -10,5 +11,6 @@ imports
 strategies
 
   definition-to-js :
-    Javascript(mod) -> <emit> s
+    Javascript(mod) -> <emit> $[__ns = [<ModuleName; qid-to-js>];
+                                [s]]
     with s := <pp-mobl-string <+ debug(!"Could not pp: "); fail> mod

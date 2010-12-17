@@ -74,6 +74,12 @@ rules
   function-to-proposal-qid :
     f@ExternalSyncFunction(manno*, qid, args, rt) -> <function-to-proposal-qid> ExternalFunction(manno*, qid, args, rt)
 
+  editor-complete-proposal :
+    StyleFieldAccess(_, COMPLETION(_)) -> [(["r"], "red component"), (["g"], "green component"), (["b"], "blue component")]
+    where
+      all-types := <get-all-types>;
+      proposals    := <map(type-name-to-proposal); flatten-list> all-types
+
 
 rules
 

@@ -12,10 +12,25 @@ load mobl/ui/generic/touchscroll.css*/
 resource mobl/ui/generic/arrow.png
 resource mobl/ui/generic/contextmenu.png
 
+// blue
+//style config baseColor = rgb(72, 100, 180)
+// green
+//style config baseColor = rgb(60, 150, 30)
+// red
+//style config baseColor = rgb(150, 50, 20)
+// red-ish
+style config baseColor = rgb(150, 80, 0)
+
+style config buttonFromColor = rgb($baseColor.r+170, $baseColor.g+170, $baseColor.b+170)
+style config buttonToColor = rgb($baseColor.r+120, $baseColor.g+120, $baseColor.b + 120)
+style config textButtonColor = rgb($baseColor.r~50, $baseColor.g~50, $baseColor.b~50)
+style config textButtonShadowColor = rgb($baseColor.r+100, $baseColor.g+100, $baseColor.b+100)
+
 style headerStyle {
-  background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#5c98f6),
-    to(#3440e4) );
-  background: -moz-linear-gradient(top, #5c98f6, #3440e4);
+  background: -webkit-gradient(linear, 0% 0%, 0% 100%, from($baseColor),
+  // 52,64,228
+    to(rgb($baseColor.r~40, $baseColor.g~40, $baseColor.b~40)) );
+  background: -moz-linear-gradient(top, $baseColor, rgb($baseColor.r~40, $baseColor.g~40, $baseColor.b~40));
   padding: 0;
   height: 2.3em;
   font-size: 1.3em;
@@ -51,22 +66,24 @@ control header(text : String, onclick : Callback = null) {
   </div>
 }
 
+// 198,222,242
 style buttonStyle {
   font-family: Arial, Helvetica, sans-serif;
-  text-shadow: white 0px 1px 0px;
+  text-shadow: $textButtonShadowColor 0px 1px 0px;
   font-weight: bold;
   text-align: center;
   padding: 0.5em 1em 0.5em 1em;
   margin: 0.3em;
   line-height: 3em;
-  color: black;
+  color: $textButtonColor;
   -webkit-box-shadow: 0px 0px 3px #777777;
   -moz-box-shadow: 0px 0px 3px #777777;
   -moz-border-radius: 5px;
   -webkit-border-radius: 5px;
-  background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#fff),
-    to(#c6def2) );
-  background: -moz-linear-gradient(top, #fff, #c6def2);
+  background: -webkit-gradient(linear, 0% 0%, 0% 100%, from($buttonFromColor),
+    to($buttonToColor) );
+    //to(#c6def2) );
+  background: -moz-linear-gradient(top, #fff, $buttonToColor);
 }
 
 style headerStyle buttonStyle {
@@ -90,14 +107,13 @@ style sideButtonStyle {
   right: 0.4em;
   padding: 0.3em 0.8em 0.3em 0.8em;
   margin-top: -0.2em;
-  color: black;
+  color: $textButtonColor;
   -webkit-box-shadow: 0px 0px 3px #777777;
   -moz-box-shadow: 0px 0px 3px #777777;
   -moz-border-radius: 5px;
   -webkit-border-radius: 5px;
-  background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#fff),
-    to(#c6def2) );
-  background: -moz-linear-gradient(top, #fff, #c6def2);
+  background: -webkit-gradient(linear, 0% 0%, 0% 100%, from($buttonFromColor), to($buttonToColor) );
+  background: -moz-linear-gradient(top, $buttonFromColor, $buttonToColor);
 }
 
 control sideButton(text : String, onclick : Callback = null) {
@@ -107,9 +123,9 @@ control sideButton(text : String, onclick : Callback = null) {
 style backButtonStyle {
   -moz-border-radius: 5px;
   -webkit-border-radius: 5px;
-  background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#fff),
-    to(#c6def2) );
-  background: -moz-linear-gradient(top, #fff, #c6def2);
+  background: -webkit-gradient(linear, 0% 0%, 0% 100%, from($buttonFromColor),
+    to($buttonToColor) );
+  background: -moz-linear-gradient(top, $buttonFromColor, $buttonToColor);
   float: left;
   -webkit-box-shadow: 0 0 3px #777777;
   -moz-box-shadow: 0 0 3px #777777;
@@ -121,8 +137,8 @@ style backButtonStyle {
   font-size: 0.7em;
   font-weight: bold;
   /*line-height: 2em;*/
-  color: black;
-  text-shadow: white 0px 1px 0px;
+  color: $textButtonColor;
+  text-shadow: $textButtonShadowColor 0px 1px 0px;
   z-index: 3;
 }
 
@@ -296,8 +312,9 @@ style tabbarStyle inActiveTabButtonStyle {
   -moz-border-radius-topleft: 8px;
 }
 
+// 92,152,246
 style tabbarStyle activeTabButtonStyle {
-  background-color: #5c98f6;
+  background-color: $baseColor;
   color: #fefefe;
   position: relative;
   top: 1px;
@@ -319,9 +336,15 @@ style tabbarStyle activeTabButtonStyle {
   -moz-border-radius-topleft: 8px;
 }
 
-/*
 style activeTabStyle tabbarStyle {
-  margin-left: 100px;
+  width: auto;
+  display: inline-block;
+  margin-top: 10px;
+  margin-bottom: 0;
+  margin-left: auto;
+  margin-right: auto;
+  border: 1px solid #444;
+  margin-top: 0.3em;
 }
 
 style activeTabStyle tabbarStyle inActiveTabButtonStyle {
@@ -329,33 +352,33 @@ style activeTabStyle tabbarStyle inActiveTabButtonStyle {
   padding-left: 15px;
   padding-top: 10px;
   padding-bottom: 10px;
-  margin-left: 5px;
+  margin-left: 0;
   line-height: 37px;
   height: 37px;
   margin-bottom: 0;
   background-color: white;
   color: black;
-  border: 1px solid #444;
+  border: 0;
   -webkit-border-radius: 0;
   -moz-border-radius: 0;
 }
 
 style activeTabStyle tabbarStyle activeTabButtonStyle {
-  background-color: #5c98f6;
+  background-color: $baseColor;
   color: #fefefe;
-  position: inline;
+  position: static;
   padding-right: 15px;
   padding-left: 15px;
   padding-top: 10px;
   padding-bottom: 10px;
-  margin-left: 5px;
+  margin-left: 0;
   line-height: 37px;
   height: 37px;
   margin-bottom: 0;
-  border: 1px solid #444;
+  border: 0;
   -webkit-border-radius: 0;
   -moz-border-radius: 0;
-}*/
+}
 
 style inActiveTabStyle {
   display: none;
@@ -430,7 +453,7 @@ style contextMenuStyle {
 
 style contextMenuStyle buttonStyle {
   font-family: Arial, Helvetica, sans-serif;
-  text-shadow: white 0px 1px 0px;
+  text-shadow: $textButtonShadowColor 0px 1px 0px;
   font-weight: bold;
   text-align: center;
   padding: 0.5em 0.5em 0.5em 0.5em;
@@ -441,7 +464,7 @@ style contextMenuStyle buttonStyle {
   -moz-box-shadow: 0px 0px 3px #777777;
   -moz-border-radius: 5px;
   -webkit-border-radius: 5px;
-  background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#fff), to(#c6def2) );
+  background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#fff), to($buttonToColor) );
   background: -moz-linear-gradient(top, #fff, #c6def2);
 }
 
@@ -491,7 +514,7 @@ screen detailScreen(it : Dynamic, detail : Control1<Dynamic>) {
 @cond getScreenWidth() > 500
 control masterDetail(items : Collection<Dynamic>, masterItem : Control1<Dynamic>, detail : Control1<Dynamic>) {
   control itemSelected(onclick : Callback = null, onswipe : Callback = null) {
-    <li class="item" onclick=onclick style="background: #cccccc;">
+    <li class=itemStyle onclick=onclick style="background: #cccccc;">
       elements()
     </li>
   }
@@ -612,11 +635,8 @@ function endLoading() {
 }
 
 // Floating box
-
-external sync function setupFloatBox(id : Num, top : Num = null, right : Num = null, bottom : Num = null, left : Num = null) : void
-
 <javascript>
-mobl.ui.generic.floatBox = function(top, right, bottom, left, elements, callback) {
+__ns.floatBox = function(top, right, bottom, left, elements, callback) {
   var root928 = $("<span>");
   var node280 = $("<div style=\"position: absolute;\">");
 
@@ -672,27 +692,6 @@ external control floatBox(top : Num = null, right : Num = null, bottom : Num = n
   }
 }*/
 
-<javascript>
-mobl.ui.generic.setupFloatBox = function(id, top, right, bottom, left) {
-  setTimeout(function() {
-    var box = $("div#floatBox"+id);
-    if(top !== null) box.css("top", "" + top + "px");
-    if(right !== null) box.css("right", "" + right + "px");
-    if(bottom !== null) box.css("top", "" + (window.pageYOffset + window.innerHeight - box.outerHeight() - bottom) + "px");
-    if(left !== null) box.css("left", "" + left + "px");
-    function updateLocation() {
-      if(top !== null) {
-        box.css("top", "" + (window.pageYOffset + top) + "px");
-      }
-      if(bottom !== null) {
-        box.css("top", "" + (window.pageYOffset + window.innerHeight - box.outerHeight() - bottom) + "px");
-      }
-    }
-    $(window).bind('scroll', updateLocation);
-    $(window).bind('resize', updateLocation);
-  }, 200);
-};
-</javascript>
 
 resource mobl/ui/generic/accordion-down.png
 resource mobl/ui/generic/accordion-right.png
@@ -761,11 +760,11 @@ jQuery.fn.tap = function (callback) {
 };
 
 
-mobl.ui.generic.scrollUp = function() {
+__ns.scrollUp = function() {
   scrollTo(0, 0);
 };
 
-mobl.ui.generic.setupScrollers = function() {
+__ns.setupScrollers = function() {
   setTimeout(function() {
     var allScrollers = $("div.scroller");
     for(var i = 0; i < allScrollers.length; i++) {

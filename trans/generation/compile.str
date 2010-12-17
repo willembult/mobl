@@ -42,7 +42,7 @@ strategies
               ; rules ( Compiled : qid ))
       ; analyze
       ; where(alltd(compile-import-module))
-      ; {| ModuleName
+      ; {| ModuleName, StyleConfig
          : rules ( ModuleName := qid )
          ; desugar-all
          ; module-to-js

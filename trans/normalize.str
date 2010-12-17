@@ -1,11 +1,25 @@
 module normalize
 
-imports include/MoBL
+imports
+  include/MoBL
+  editor-common
+  generation/compile
+  mobl
 
 rules
 
   normalize-all =
     innermost(normalize)
+
+  normalize :
+    Module(qid, def*) -> Module(qid, def2*)
+    where def2* := <flatten-list> def*
+        ; not(<eq> (def*, def2*))
+
+  normalize :
+    Application(qid, setting*, def*) -> Application(qid, setting*, def2*)
+    where def2* := <flatten-list> def*
+        ; not(<eq> (def*, def2*))
 
   normalize :
     FunctionNoReturnType(manno*, name, farg*, stat*) -> Function(manno*, name, farg*, SimpleType(QId("mobl", "void")), stat*)
@@ -54,6 +68,10 @@ rules
 
   normalize :
     DynamicType() -> SimpleType(QId("mobl", "Dynamic"))
+
+  normalize :
+    Mixin(qid) -> def*
+    with Module(_, def*) := <parse-file> <resolve-file> <concat-strings> [<qid-to-path> qid, ".mobl"]
 
   normalize :
     FunctionType(t*, rt) -> GenericType(QId("mobl", $[Function[n]]), [t*, rt])

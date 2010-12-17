@@ -19,6 +19,14 @@ exports
     STRING                  -> StyleExp {cons("String")}
     NUMBER                  -> StyleExp {cons("Num")}
     NUMBER Unit             -> StyleExp {cons("NumUnit")}
+    "$" ID                  -> StyleExp {cons("StyleConfigRef")}
+    StyleExp "+" StyleExp   -> StyleExp {cons("StyleAdd"), left}
+    StyleExp "~" StyleExp   -> StyleExp {cons("StyleSub"), left}
+    StyleExp "*" StyleExp   -> StyleExp {cons("StyleMul"), left}
+    "$" ID "." ID          -> StyleExp {cons("StyleFieldAccess")}
+    %%"(" StyleExp ")"        -> StyleExp {bracket}
+
+
     FILENAME "/" {FILENAME "/"}+         -> StyleExp {cons("StylePath"), avoid}
     STYLEPROPID "(" {StyleExps ","}* ")" -> StyleExp {cons("StyleCall")}
 
@@ -31,10 +39,21 @@ exports
     "pt" -> Unit {cons("PtUnit")}
     "%"  -> Unit {cons("PercentageUnit")}
 
+  context-free priorities
+      StyleExp "*" StyleExp -> StyleExp
+    > {
+      StyleExp "+" StyleExp -> StyleExp
+      StyleExp "~" StyleExp -> StyleExp
+    }
+
+  context-free syntax
+
+    "style" "config" ID "=" StyleExp -> Definition {cons("StyleConfig")}
+
   lexical syntax
     [\#][0-9a-fA-F]* -> COLOR
-    [a-zA-Z\_\-][a-zA-Z0-9\_\-]* -> STYLEPROPID
-    [a-zA-Z\_\$][a-zA-Z0-9\_\-]* -> STYLEID
+    [a-zA-Z\_\-][a-zA-Z0-9\_\-]+ -> STYLEPROPID
+    [a-zA-Z\_][a-zA-Z0-9\_\-]+ -> STYLEID
 
     "px" -> STYLEID {reject}
     "em" -> STYLEID {reject}
@@ -44,4 +63,5 @@ exports
 
     STYLEID          -/- [a-zA-Z0-9\_]
     STYLEPROPID      -/- [a-zA-Z0-9\_]
+    STYLECONFIGID    -/- [a-zA-Z0-9\_]
     COLOR            -/- [a-zA-Z0-9\_\#]
