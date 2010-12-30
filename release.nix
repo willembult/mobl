@@ -52,7 +52,6 @@ let
       '';
     };
 
-
   jobs = {
     manual = pkgs.stdenv.mkDerivation {
       name = "mobl-manual-${mobl.rev}";
