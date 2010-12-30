@@ -292,8 +292,19 @@ rules
                });
              ]
          else
-           method := "text"
-           ; subs := ""
+           if "select" := tag then
+             method := "val"
+             ; subs := $[
+                 [node].change(function() {
+                   [ignore] = true;
+                   [es].set([typeconverter]([node].[method]()));
+                   [ignore] = false;
+                 });
+               ]
+           else
+             method := "text"
+             ; subs := ""
+           end
          end
          ; watch-expr* := <find-watchable-expressions> e
          ; subscriptions := <map(exp-to-html-databind-watcher-js(|node, method, <expression-to-js> e)); concat-strings> watch-expr*

@@ -13,7 +13,7 @@ resource mobl/ui/generic/arrow.png
 resource mobl/ui/generic/contextmenu.png
 
 // blue
-//style config baseColor = rgb(72, 100, 180)
+style config baseColor = rgb(72, 100, 180)
 // green
 //style config baseColor = rgb(60, 150, 30)
 // red
@@ -298,8 +298,8 @@ style tabbarStyle inActiveTabButtonStyle {
   padding-top: 10px;
   padding-bottom: 10px;
   margin-left: 5px;
-  line-height: 37px;
-  height: 37px;
+  line-height: 39px;
+  height: 39px;
   margin-bottom: 0;
   background-color: white;
   color: black;
@@ -317,7 +317,7 @@ style tabbarStyle activeTabButtonStyle {
   background-color: $baseColor;
   color: #fefefe;
   position: relative;
-  top: 1px;
+  top: 2px;
 
   padding-right: 15px;
   padding-left: 15px;
@@ -325,7 +325,7 @@ style tabbarStyle activeTabButtonStyle {
   padding-bottom: 10px;
   margin-left: 5px;
   line-height: 37px;
-  height: 37px;
+  height: 39px;
   margin-bottom: 0;
   border-top: 1px solid #444;
   border-right: 1px solid #444;
@@ -336,6 +336,7 @@ style tabbarStyle activeTabButtonStyle {
   -moz-border-radius-topleft: 8px;
 }
 
+/*
 style activeTabStyle tabbarStyle {
   width: auto;
   display: inline-block;
@@ -354,7 +355,7 @@ style activeTabStyle tabbarStyle inActiveTabButtonStyle {
   padding-bottom: 10px;
   margin-left: 0;
   line-height: 37px;
-  height: 37px;
+  height: 39px;
   margin-bottom: 0;
   background-color: white;
   color: black;
@@ -379,7 +380,7 @@ style activeTabStyle tabbarStyle activeTabButtonStyle {
   -webkit-border-radius: 0;
   -moz-border-radius: 0;
 }
-
+*/
 style inActiveTabStyle {
   display: none;
 }
@@ -478,9 +479,12 @@ control contextMenu() {
   img@<img src="mobl/ui/generic/contextmenu.png" style="float: right;" onclick={
     var target = img.parent();
     img.hide();
+    menu.detach();
+    $("body").prepend(menu);
     menu.css("right", "5px");
-    menu.css("top", target.position().top+6 + "px");
+    var height = target.innerHeight();
     menu.show();
+    menu.css("top", "" + (target.offset().top + (Math.round(height/2)-14)) + "px");
     $("body").bind("touchstart click", removeMenu);
   }/>
   function removeMenu(evt : Dynamic) {

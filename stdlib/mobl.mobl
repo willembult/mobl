@@ -175,7 +175,7 @@ external type Math {
   static sync function acos(n : Num) : Num
   static sync function asin(n : Num) : Num
   static sync function atan(n : Num) : Num
-  static sync function atan2(n : Num) : Num
+  static sync function atan2(n : Num, n2 : Num) : Num
   static sync function cos(n : Num) : Num
   static sync function exp(n : Num) : Num
   static sync function log(n : Num) : Num
@@ -292,6 +292,7 @@ external type JQuery { //: Dynamic {
   sync function slideDown(fn : Callback = null) : JQuery
   sync function slideToggle(fn : Callback = null) : JQuery
   sync function eq(idx : Num) : JQuery
+  sync function find(selector : String) : JQuery
   sync function parent() : JQuery
   sync function parents(selector : String) : JQuery
   sync function hide() : JQuery
@@ -304,6 +305,7 @@ external type JQuery { //: Dynamic {
   sync function css(name : String, val : String) : JQuery
   sync function html() : String
   sync function val() : String
+  sync function is(what : String) : Bool
 
   sync function bind(eventName : String, fn : Callback) : JQuery
   sync function unbind(eventName : String, fn : Callback) : JQuery
@@ -313,6 +315,13 @@ external type JQuery { //: Dynamic {
   sync function prepend(coll : JQuery) : JQuery
   sync function remove() : JQuery
   sync function position() : JQueryPosition
+  sync function offset() : JQueryPosition
+
+  sync function innerWidth() : Num
+  sync function innerHeight() : Num
+  sync function outerWidth() : Num
+  sync function outerHeight() : Num
+  sync function scrollTop() : Num
 }
 
 external type JQueryPosition {

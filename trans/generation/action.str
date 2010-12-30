@@ -292,6 +292,12 @@ rules // Expressions
   exp-to-js :
     Call(qid, e*) -> $[[<qid-to-js> qid]([args])]
     where not(<lookup-type> SimpleType(qid))
+    where not(<is-ref> qid)
+    with args := <arguments-to-js; separate-by(!", "); concat-strings> e*
+
+  exp-to-js :
+    Call(qid, e*) -> $[[<qid-to-js> qid].get()([args])]
+    where <is-ref> qid
     with args := <arguments-to-js; separate-by(!", "); concat-strings> e*
 
   exp-to-js :

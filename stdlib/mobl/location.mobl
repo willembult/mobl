@@ -2,13 +2,13 @@ module mobl::location
 
 import mobl
 
-external type Coordinates {
+type Coordinates {
   latitude  : Num
   longitude : Num
   accuracy  : Num
 }
 
-external function getPosition() : Coordinates
+external function getPosition(highAccuracy : Bool = false) : Coordinates
 external sync function isSupported() : Bool
 
 <javascript>
@@ -16,11 +16,13 @@ mobl.location.isSupported = function() {
   return !!navigator.geolocation;
 };
 
-mobl.location.getPosition = function(callback) {
+mobl.location.getPosition = function(highAccuracy, callback) {
   if(navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(function(position) {
       callback({latitude: position.coords.latitude, longitude: position.coords.longitude, accuracy: position.coords.accuracy});
-    });
+    }, function() {
+      callback(null);
+    }, {enableHighAccuracy: highAccuracy});
   } else {
     callback(null);
   }
