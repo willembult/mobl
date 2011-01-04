@@ -755,15 +755,6 @@ setTimeout(function() {
   scrollTo(0, -1);
 }, 250);
 
-jQuery.fn.tap = function (callback) {
-  if(mobl.isIphone() || mobl.isAndroid() || mobl.isIpad()) {
-    new NoClickDelay(this[0], callback);
-  } else {
-    this.click(callback);
-  }
-};
-
-
 __ns.scrollUp = function() {
   scrollTo(0, 0);
 };

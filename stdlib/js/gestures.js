@@ -120,13 +120,40 @@ NoClickDelay.prototype = {
     }
 };
 
-jQuery.fn.tap = function (callback) {
+/*jQuery.fn.tap = function (callback) {
     // if (true) {//(mobl.isIphone) {
      //new NoClickDelay(this[0], callback);
     // } else {
      this.click(callback);
     // }
 };
+
+jQuery.fn.tap = function (callback) {
+    if(mobl.isIphone() || mobl.isAndroid() || mobl.isIpad()) {
+      new NoClickDelay(this[0], callback);
+    } else {
+      this.click(callback);
+    }
+  };
+*/
+
+$.event.special.tap = {
+  add: function (callback) {
+    if(mobl.isIphone() || mobl.isAndroid() || mobl.isIpad()) {
+      new NoClickDelay(this, callback);
+    } else {
+      $(this).bind('click', callback);
+    }
+  },
+  remove: function(callback) {
+    if(mobl.isIphone() || mobl.isAndroid() || mobl.isIpad()) {
+      //new NoClickDelay(this, callback); // TODO FIX THIS!!
+    } else {
+      $(this).unbind('click', callback);
+    }
+  }
+};
+
 
 $.event.special.touchdown = {
     add: function (callback) {

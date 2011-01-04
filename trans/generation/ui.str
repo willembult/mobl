@@ -22,7 +22,9 @@ rules
     Control(manno*, qid, farg*, elems) -> <emit> $[
       [<qid-to-js> qid] = function([fargs]) {
         var [root] = $("<span>");
+        var subs__ = new mobl.CompSubscription();
         [body]
+        return subs__;
       };
       ]
     where [] := <filter(?ConditionalAnno(_))> manno*
@@ -37,7 +39,9 @@ rules
     Control(manno*, qid, farg*, elems) -> <emit> $[
       [<qid-to-js> qid] = mobl.conditionalDef([<qid-to-js> qid], function() { return [<expression-to-js> cond-e]; }, function([fargs]) {
         var [root] = $("<span>");
+        var subs__ = new mobl.CompSubscription();
         [body]
+        return subs__;
       });
       ]
     where [ConditionalAnno(cond-e)] := <filter(?ConditionalAnno(_))> manno*
@@ -52,7 +56,9 @@ rules
     Screen(_, qid, farg*, rt, elems) -> <emit> $[
       [<qid-to-js> qid] = function([fargs]) {
         var [root] = $("<div>");
+        var subs__ = new mobl.CompSubscription();
         [body]
+        return subs__;
       };
       ]
     with {| InControl
@@ -63,13 +69,15 @@ rules
           |}
 
   elems-to-js-callback(|root) =
-    <concat; elems-to-js(|root)> [<id>, [$[callback([root]); return;]]]
+    <concat; elems-to-js(|root)> [<id>, [$[callback([root]); return subs__;]]]
 
   elems-to-js(|root) :
     [Control(_, qid, farg*, elems)|rest*] -> $[
       var [<qid-to-js> qid] = function([fargs]) {
         var [root2] = $("<span>");
+        var subs__ = new mobl.CompSubscription();
         [body]
+        return subs__;
       };
       [<elems-to-js(|root)> rest*]
       ]
@@ -89,7 +97,9 @@ rules
        ; nodes := <newname> "nodes"
        ; elems-fun := $[function(_, callback) {
                           var [elem-root] = $("<span>");
+                          var subs__ = new mobl.CompSubscription();
                           [<elems-to-js-callback(|elem-root)> elems]
+                          return subs__;
                         }]
        ; args  := <ref-arguments-to-js; <concat> [<id>, [elems-fun,
            $[function(node) {
@@ -98,7 +108,7 @@ rules
                oldNodes.replaceWith([nodes]);
              }]
          ]]; separate-by(!", "); concat-strings> arg*
-       ; controlcall := <concat-strings> ["(", <expression-to-js> e, ")(", args, ");"]
+       ; controlcall := <concat-strings> ["subs__.addSub((", <expression-to-js> e, ")(", args, "));"]
 
   // Dynamic control call
   elems-to-js(|root) :
@@ -119,7 +129,9 @@ rules
        ; renderControl := <newname> "renderControl"
        ; elems-fun := $[function(elements, callback) {
                           var [elem-root] = $("<span>");
+                          var subs__ = new mobl.CompSubscription();
                           [<elems-to-js-callback(|elem-root)> elems]
+                          return subs__;
                         }]
        ; watch-e-expr* := <hide-anon-controls; collect(?Var(_) <+ ?FieldAccess(_, _))> e
        ; subscriptions := <map(exp-to-watcher-js(|renderControl)); concat-strings> watch-e-expr*
@@ -130,7 +142,7 @@ rules
                oldNodes.replaceWith([nodes]);
              }]
          ]]; separate-by(!", "); concat-strings> arg*
-       ; controlcall := <concat-strings> ["(", <expression-to-js> e, ")(", args, ");"]
+       ; controlcall := <concat-strings> ["subs__.addSub((", <expression-to-js> e, ")(", args, "));"]
 
   hide-anon-controls =
     alltd(\ AnonymousControl(_) -> Null() \)
@@ -152,9 +164,9 @@ rules
         <+ ExternalSyncMethod(_, _, _, GenericType(QId("mobl", "Collection"), _)) := def)
 
   exp-to-watcher-js(|renderControl) :
-    e -> $[[<ref-expression-to-js> e].addEventListener('change', function() {
+    e -> $[subs__.addSub([<ref-expression-to-js> e].addEventListener('change', function() {
              [renderControl]();
-           });
+           }));
 ]
 
   elems-to-js(|root) :
@@ -208,16 +220,16 @@ rules
       var [r] = [es];
       if([r].get() !== null) {
         [node].attr('[name]', [r].get());
-        [r].addEventListener('change', function(_, ref, val) {
+        subs__.addSub([r].addEventListener('change', function(_, ref, val) {
           if(ref === [r]) {
             [node].attr('[name]', val);
           } else {
             console.log("Garbage!");
           }
-        });
+        }));
         [subscriptions]
       }
-      [r].rebind();
+      subs__.addSub([r].rebind());
     ]
     where not(String(_) := e)
         ; not(SimpleType(QId("mobl", "Callback")) := <type-of> e <+ GenericType(QId("mobl", "Function0"), _) := <type-of> e)
@@ -227,9 +239,9 @@ rules
        ; subscriptions := <map(exp-to-html-watcher-js(|node, name, <expression-to-js> e)); concat-strings> watch-expr*
 
   exp-to-html-watcher-js(|node, attr, es) :
-    e -> $[[<ref-expression-to-js> e].addEventListener('change', function() {
+    e -> $[subs__.addSub([<ref-expression-to-js> e].addEventListener('change', function() {
              [node].attr('[attr]', [es]);
-           });
+           }));
 ]
 
 
@@ -237,7 +249,7 @@ rules
     HtmlArg(name, e) -> $[
       var [val] = [es];
       if([val] !== null) {
-        [node].bind('[<string-replace(|"on", "")> name]', [val]);
+        subs__.addSub(mobl.domBind([node], '[<string-replace(|"on", "")> name]', [val]));
       }
     ]
     where (SimpleType(QId("mobl", "Callback")) := <type-of> e
@@ -250,7 +262,7 @@ rules
     HtmlArg("onclick", e) -> $[
       var [val] = [es];
       if([val] !== null) {
-        [node].tap([val]);
+        subs__.addSub(mobl.domBind([node], 'tap', [val]));
       }
     ]
     where (SimpleType(QId("mobl", "Callback")) := <type-of> e
@@ -264,15 +276,11 @@ rules
       var [r] = [es];
       [node].[method]([r].get().toString());
       var [ignore] = false;
-      [r].addEventListener('change', function(_, ref, val) {
+      subs__.addSub([r].addEventListener('change', function(_, ref, val) {
         if([ignore]) return;
-        if(ref === [r]) {
-          [node].[method](val.toString());
-        } else {
-          console.log("Garbage!");
-        }
-      });
-      [r].rebind();
+        [node].[method](val.toString());
+      }));
+      subs__.addSub([r].rebind());
       [subs][subscriptions]
     ]
     where (Html(tag, arg*, _, _) := tg
@@ -285,21 +293,21 @@ rules
        ; if "input" := tag <+ "textarea" := tag then
            method := "val"
            ; subs := $[
-               [node].keyup(function() {
+               subs__.addSub(mobl.domBind([node], 'keyup', function() {
                  [ignore] = true;
                  [es].set([typeconverter]([node].[method]()));
                  [ignore] = false;
-               });
+               }));
              ]
          else
            if "select" := tag then
              method := "val"
              ; subs := $[
-                 [node].change(function() {
+               subs__.addSub(mobl.domBind([node], 'change', function() {
                    [ignore] = true;
                    [es].set([typeconverter]([node].[method]()));
                    [ignore] = false;
-                 });
+                 }));
                ]
            else
              method := "text"
@@ -320,12 +328,12 @@ rules
     HtmlDatabindArg(e) -> $[
       var [r] = [es];
       [node].attr('checked', !![r].get());
-      [r].addEventListener('change', function(_, ref, val) {
+      subs__.addSub([r].addEventListener('change', function(_, ref, val) {
         if(ref === [r]) [node].attr('checked', !!val);
-      });
-      [node].change(function() {
+      }));
+      subs__.addSub(mobl.domBind([node], 'change', function() {
         [es].set(!![node].attr('checked'));
-      });
+      }));
     ]
     where (Html(tag, arg*, _, _) := tg
         <+ NamedHtml(_, tag, arg*, _, _) := tg)
@@ -338,7 +346,10 @@ rules
       var [node] = mobl.loadingSpan();
       [root].append([node]);
       var [list];
+      var listSubs__ = new mobl.CompSubscription();
+      subs__.addSub(listSubs__);
       var [renderList] = function() {
+        var subs__ = listSubs__;
         [list] = [<expression-to-js> e];
         [list].list(function([results]) {
           [node].empty();
@@ -359,8 +370,8 @@ rules
         });
       };
       [renderList]();
-      [list].addEventListener('change', function() { [renderList](true); });
-      [<ref-expression-to-js> e].addEventListener('change', function() { [renderList](true); });
+      subs__.addSub([list].addEventListener('change', function() { listSubs__.unsubscribe(); [renderList](true); }));
+      subs__.addSub([<ref-expression-to-js> e].addEventListener('change', function() { listSubs__.unsubscribe(); [renderList](true); }));
       [subscriptions]
       [<elems-to-js(|root)> rest*]
     ]
@@ -388,7 +399,11 @@ rules
     [ConditionalDisplay(e, elems)|rest*] -> $[
       var [node] = $("<span>");
       [root].append([node]);
+      var condSubs__ = new mobl.CompSubscription();
+      subs__.addSub(condSubs__);
       var [renderCond] = function() {
+        var subs__ = condSubs__;
+        subs__.unsubscribe();
         var [value] = [<expression-to-js> e];
         [node].empty();
         if([value]) {
@@ -440,11 +455,20 @@ rules
         ; subscriptions := <find-watchable-expressions; map(exp-to-update-ref-js(|x, e)); concat-strings> e
 
   exp-to-update-ref-js(|x, exp) :
-    e -> $[[es].addEventListener('change', function() {
+    e -> $[subs__.addSub([es].addEventListener('change', function() {
              [x].set([<expression-to-js> exp]);
-           });
+           }));
 ]
-  where es := <ref-expression-to-js> e
+  where <is-sync> exp
+  with es := <ref-expression-to-js> e
+
+  exp-to-update-ref-js(|x, exp) :
+    e -> $[subs__.addSub([es].addEventListener('change', function() {
+             [<concat; cps-statements> [<cps-lift-expressions> [Assignment(x, exp)]]]
+           }));
+] //, [$[[x].set(result__);]]]]
+  where not(<is-sync> exp)///////////////////////////////////
+  with es := <ref-expression-to-js> e
 
 /*  elems-to-js(|root) :
     [vd@VarDeclInferred(x, e)|rest] -> <concat; elems-to-js(|root)> [<cps-lift-expressions> [vd], rest]

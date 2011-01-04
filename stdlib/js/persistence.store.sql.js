@@ -183,6 +183,9 @@ persistence.store.sql.config = function(persistence, dialect) {
               queries.push([dialect.createIndex(meta.name, [rel]), null]);
             }
           }
+          for (var i = 0; i < meta.indexes.length; i++) {
+            queries.push([dialect.createIndex(meta.name, meta.indexes[i].columns, meta.indexes[i]), null]);
+          }
         }
         for (var rel in meta.hasMany) {
           if (meta.hasMany.hasOwnProperty(rel) && meta.hasMany[rel].manyToMany) {
@@ -350,7 +353,7 @@ persistence.store.sql.config = function(persistence, dialect) {
     if(!row[prefix+'id']) { // null value, no entity found
       return null;
     }
-    var o = new ent();
+    var o = new ent(session);
     o.id = tm.dbValToEntityVal(row[prefix + 'id'], tm.idType);
     o._new = false;
     for ( var p in row) {
@@ -524,12 +527,13 @@ persistence.store.sql.config = function(persistence, dialect) {
   };
 
   persistence.PropertyFilter.prototype.sql = function (meta, alias, values) {
-	var tm = persistence.typeMapper;
+    var tm = persistence.typeMapper;
+    var aliasPrefix = alias ? "`" + alias + "`." : "";
   	var sqlType = meta.fields[this.property] || tm.idType;
     if (this.operator === '=' && this.value === null) {
-      return "`" + alias + '`.`' + this.property + "` IS NULL";
+      return aliasPrefix + '`' + this.property + "` IS NULL";
     } else if (this.operator === '!=' && this.value === null) {
-      return "`" + alias + '`.`' + this.property + "` IS NOT NULL";
+      return aliasPrefix + '`' + this.property + "` IS NOT NULL";
     } else if (this.operator === 'in') {
       var vals = this.value;
       var qs = [];
@@ -541,7 +545,7 @@ persistence.store.sql.config = function(persistence, dialect) {
         // Optimize this a little
         return "1 = 0";
       } else {
-        return "`" + alias + '`.`' + this.property + "` IN (" + qs.join(', ') + ")";
+        return aliasPrefix + '`' + this.property + "` IN (" + qs.join(', ') + ")";
       }
     } else if (this.operator === 'not in') {
       var vals = this.value;
@@ -555,7 +559,7 @@ persistence.store.sql.config = function(persistence, dialect) {
         // Optimize this a little
         return "1 = 1";
       } else {
-        return "`" + alias + '`.`' + this.property + "` NOT IN (" + qs.join(', ') + ")";
+        return aliasPrefix + '`' + this.property + "` NOT IN (" + qs.join(', ') + ")";
       }
     } else {
       var value = this.value;
@@ -563,7 +567,7 @@ persistence.store.sql.config = function(persistence, dialect) {
         value = value ? 1 : 0;
       }
       values.push(tm.entityValToDbVal(value, sqlType));
- 	  return "`" + alias + '`.`' + this.property + "` " + this.operator + " " + tm.outVar("?", sqlType);
+ 	  return aliasPrefix + '`' + this.property + "` " + this.operator + " " + tm.outVar("?", sqlType);
    }
   };
 
@@ -757,17 +761,19 @@ persistence.store.sql.config = function(persistence, dialect) {
 
     var args = [];
     var whereSql = "WHERE "
-    + [ this._filter.sql(meta, "", args) ].concat(additionalWhereSqls).join(' AND ');
+    + [ this._filter.sql(meta, null, args) ].concat(additionalWhereSqls).join(' AND ');
 
     var selectSql = "SELECT id FROM `" + entityName + "` " + joinSql + ' ' + whereSql;
     var deleteSql = "DELETE FROM `" + entityName + "` " + joinSql + ' ' + whereSql;
+    var args2 = args.slice(0);
 
     session.flush(tx, function () {
         tx.executeSql(selectSql, args, function(results) {
             for(var i = 0; i < results.length; i++) {
               delete session.trackedObjects[results[i].id];
+              session.objectsRemoved.push({id: results[i].id, entity: entityName});
             }
-            tx.executeSql(deleteSql, args, callback);
+            tx.executeSql(deleteSql, args2, callback);
           });
       });
   };

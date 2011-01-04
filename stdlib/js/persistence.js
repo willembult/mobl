@@ -84,6 +84,7 @@ persistence.get = function(arg1, arg2) {
     // Per-session data
     persistence.trackedObjects = {};
     persistence.objectsToRemove = {};
+    persistence.objectsRemoved = []; // {id: ..., type: ...}
     persistence.globalPropertyListeners = {}; // EntityType__prop -> QueryColleciton obj
     persistence.queryCollectionCache = {}; // entityName -> uniqueString -> QueryCollection
 
@@ -162,6 +163,7 @@ persistence.get = function(arg1, arg2) {
     function Session(conn) {
       this.trackedObjects = {};
       this.objectsToRemove = {};
+      this.objectsRemoved = [];
       this.globalPropertyListeners = {}; // EntityType__prop -> QueryColleciton obj
       this.queryCollectionCache = {}; // entityName -> uniqueString -> QueryCollection
       this.conn = conn;
@@ -254,6 +256,7 @@ persistence.get = function(arg1, arg2) {
       if (!this.objectsToRemove[obj.id]) {
         this.objectsToRemove[obj.id] = obj;
       }
+      this.objectsRemoved.push({id: obj.id, entity: obj._type});
       this.objectRemoved(obj);
       return this;
     };
@@ -982,7 +985,7 @@ persistence.get = function(arg1, arg2) {
     persistence.dump = function(tx, entities, callback) {
       var args = argspec.getArgs(arguments, [
           { name: 'tx', optional: true, check: persistence.isTransaction, defaultValue: null },
-          { name: 'entities', optional: true, check: function(obj) { return obj && obj.length; }, defaultValue: null },
+          { name: 'entities', optional: true, check: function(obj) { return !obj || (obj && obj.length && !obj.apply); }, defaultValue: null },
           { name: 'callback', optional: false, check: argspec.isCallback(), defaultValue: function(){} }
         ]);
       tx = args.tx;
@@ -1177,6 +1180,16 @@ persistence.get = function(arg1, arg2) {
 
     ////////////////// QUERY COLLECTIONS \\\\\\\\\\\\\\\\\\\\\\\
 
+    function Subscription(obj, eventType, fn) {
+      this.obj = obj;
+      this.eventType = eventType;
+      this.fn = fn;
+    }
+
+    Subscription.prototype.unsubscribe = function() {
+      this.obj.removeEventListener(this.eventType, this.fn);
+    };
+
     /**
      * Simple observable function constructor
      * @constructor
@@ -1186,21 +1199,11 @@ persistence.get = function(arg1, arg2) {
     }
 
     Observable.prototype.addEventListener = function (eventType, fn) {
-      if (typeof eventType == 'object') { // assume it's an array
-        var eventTypes = eventType;
-        for ( var i = 0; i < eventTypes.length; i++) {
-          var eventType = eventTypes[i];
-          if (!this.subscribers[eventType]) {
-            this.subscribers[eventType] = [];
-          }
-          this.subscribers[eventType].push(fn);
-        }
-      } else {
-        if (!this.subscribers[eventType]) {
-          this.subscribers[eventType] = [];
-        }
-        this.subscribers[eventType].push(fn);
+      if (!this.subscribers[eventType]) {
+        this.subscribers[eventType] = [];
       }
+      this.subscribers[eventType].push(fn);
+      return new Subscription(this, eventType, fn);
     };
 
     Observable.prototype.removeEventListener = function(eventType, fn) {
@@ -1899,7 +1902,7 @@ persistence.get = function(arg1, arg2) {
     persistence.ManyToManyDbQueryCollection = ManyToManyDbQueryCollection;
     persistence.LocalQueryCollection        = LocalQueryCollection;
     persistence.Observable                  = Observable;
-
+    persistence.Subscription                = Subscription;
   }());
 
 // ArgSpec.js library: http://github.com/zefhemel/argspecjs

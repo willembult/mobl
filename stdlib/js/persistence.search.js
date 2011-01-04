@@ -123,7 +123,7 @@ persistence.search.config = function(persistence, dialect) {
   SearchQueryCollection.prototype = new persistence.DbQueryCollection();
 
   SearchQueryCollection.prototype.order = function() {
-    throw "Imposing additional orderings is not support for search query collections.";
+    throw new Error("Imposing additional orderings is not support for search query collections.");
   };
 
   persistence.entityDecoratorHooks.push(function(Entity) {
@@ -207,4 +207,8 @@ persistence.search.config = function(persistence, dialect) {
       persistence.executeQueriesSeq(tx, queries);
     });
 };
+
+if(typeof exports === 'object') {
+  exports.config = persistence.search.config;
+}
 

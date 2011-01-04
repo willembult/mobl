@@ -194,6 +194,7 @@ external type JSON : Dynamic {
 }
 
 external sync function now() : DateTime
+external sync function parseNum(s : String) : Num
 
 external type Object {
   sync function toString() : String
@@ -373,6 +374,10 @@ mobl.alert = function(s, _, callback) {
 mobl.log = function(s, _, callback) {
     console.log(s);
     if(callback) callback();
+};
+
+__ns.parseNum = function(s) {
+  return parseInt(s, 10);
 };
 
 mobl.add = function(e, _, callback) {
@@ -655,6 +660,7 @@ mobl.call = function (screenName, args, callback) {
     screenContext.screens.push(screenFrame);
     var callbackFn = function () {
         // when callback function is called (i.e. screen return)
+        subs.unsubscribe();
         screenContext.screens.pop();
         if(screenFrame.dom.find("div.screenContext").length > 0) { // pop context
           mobl.contextStack.pop();
@@ -679,7 +685,7 @@ mobl.call = function (screenName, args, callback) {
     }
     var screenTemplate = current;
 
-    screenTemplate.apply(null, args.concat( [ function (node) {
+    var subs = screenTemplate.apply(null, args.concat( [ function (node) {
         node.attr('id', screenFrame.div);
         screenFrame.dom = node;
         if (screenContext.screens.length > 1) {
@@ -880,53 +886,38 @@ mobl.implementInterface = function(sourceModule, targetModule, items) {
       return obj;
     };
 
-    function Template(renderFn) {
-        this.render = renderFn;
-        this.calledTemplates = [];
-        this.subscriptions = [];
+    function CompSubscription(name) {
+      this.subscriptions = [];
+      this.name = name;
     }
 
-    Template.prototype.addSubscription = function(subId) {
-        this.subscriptions.push(subId);
+    CompSubscription.prototype.addSub = function(sub) {
+      if(sub) {
+        this.subscriptions.push(sub);
+      }
     };
 
-    Template.prototype.addCalledTemplate = function(template) {
-        this.calledTemplates.push(template);
+    CompSubscription.prototype.unsubscribe = function() {
+      this.subscriptions.forEach(function(sub) {
+        sub.unsubscribe();
+      });
+      this.subscriptions = [];
     };
 
-    function LinkedMap (parent, values) {
-        this.values = values || {};
-        this.parent = parent;
+
+    function DomSubscription(node, eventType, fn) {
+      this.node = node;
+      this.eventType = eventType;
+      this.fn = fn;
     }
 
-    LinkedMap.prototype.get = function (key) {
-        if (key in this.values) {
-            return this.values[key];
-        } else if (this.parent) {
-            return this.parent.get(key);
-        } else {
-            return undefined;
-        }
+    DomSubscription.prototype.unsubscribe = function() {
+      this.node.unbind(this.eventType, this.fn);
     };
 
-    LinkedMap.prototype.set = function (key, value) {
-        var current = this;
-        while (!(key in current.values) && current.parent) {
-            current = current.parent;
-        }
-        if (key in current.values) {
-            current.values[key] = value;
-        } else {
-            this.values[key] = value;
-        }
-    };
-
-    LinkedMap.prototype.setLocal = function (key, value) {
-        this.values[key] = value;
-    };
-
-    LinkedMap.prototype.getRoot = function () {
-        return !this.parent ? this : this.parent.getRoot();
+    mobl.domBind = function(node, eventType, fn) {
+      node.bind(eventType, fn);
+      return new DomSubscription(node, eventType, fn);
     };
 
     function Reference(ref, prop) {
@@ -946,19 +937,23 @@ mobl.implementInterface = function(sourceModule, targetModule, items) {
     Reference.prototype.addEventListener = function(eventType, callback) {
         if(eventType === 'change' && this.prop !== undefined && this.ref.get().addEventListener) {
             var that = this;
-            this.ref.get().addEventListener('change', function(_, _, prop, value) {
+            var subs = new CompSubscription();
+            subs.addSub(this.ref.get().addEventListener('change', function(_, _, prop, value) {
                 if(prop === that.prop) {
                     callback(eventType, that, value);
                 }
-            });
+            }));
+            subs.addSub(this.oldAddListener(eventType, callback));
+            return subs;
+        } else {
+            return this.oldAddListener(eventType, callback);
         }
-        this.oldAddListener(eventType, callback);
     };
 
     Reference.prototype.addSetListener = function(callback) {
         var that = this;
         if(this.ref.addEventListener) {
-           this.ref.addEventListener('change', function(_, _, prop, value) {
+           return this.ref.addEventListener('change', function(_, _, prop, value) {
              if(prop === that.prop) {
                callback(eventType, that, value);
              }
@@ -994,27 +989,28 @@ mobl.implementInterface = function(sourceModule, targetModule, items) {
 
     Reference.prototype.rebind = function() {
         var that = this;
+        var subs = new mobl.CompSubscription();
         if(this.prop !== undefined) {
             if(this.ref.get().addEventListener) {
-                window.newTask2 = this.ref.get();
-                this.ref.get().addEventListener('change', function(_, _, prop, value) {
+                subs.addSub(this.ref.get().addEventListener('change', function(_, _, prop, value) {
                     if(prop === that.prop) {
                         that.triggerEvent('change', that, value);
                     }
-                });
+                }));
             } else {
                 //console.log("Could not rebind for: " + this.prop);
                 //console.log(this.ref.get());
             }
         }
         for(var i = 0; i < this.childRefs.length; i++) {
-            this.childRefs[i].rebind(value[this.childRefs[i].prop]);
+            subs.addSub(this.childRefs[i].rebind(value[this.childRefs[i].prop]));
         }
+        return subs;
     };
 
     mobl.Tuple = Tuple;
-    mobl.LinkedMap = LinkedMap;
     mobl.Reference = Reference;
+    mobl.CompSubscription = CompSubscription;
 }());
 </javascript>
 
