@@ -31,6 +31,9 @@ rules
     IfNoElse(e, block) -> If(e, block, Block([]))
 
   normalize :
+    WhenNoElse(e, block) -> When(e, block, [])
+
+  normalize :
     HtmlShort(tag, attr*) -> Html(tag, attr*, [], tag)
 
   normalize :

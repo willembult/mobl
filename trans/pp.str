@@ -179,12 +179,6 @@ strategies // UI
         [<map(pp-mobl-elem); separate-by(|"\n"); concat-strings> elem*]
       }]
 
-  pp-mobl-elem :
-    ConditionalDisplay(e, elem*) ->
-    $[cond([<pp-mobl-exp> e]) {
-        [<map(pp-mobl-elem); separate-by(|"\n"); concat-strings> elem*]
-      }]
-
   pp-mobl-elem = pp-mobl-def
 
   pp-mobl-elem =

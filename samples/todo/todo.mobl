@@ -3,7 +3,7 @@ application todo
 title "Todo"
 database "todo"
 
-import mobl::ui
+import mobl::ui::generic
 
 entity Task {
   name        : String (searchable)

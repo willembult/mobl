@@ -394,20 +394,24 @@ rules
     with tmp := <newname> "tmp"
        ; assign* := <map-with-index(\ (idx, lv) -> $[[<lvalue-to-js> lv] = mobl.ref(mobl.ref(mobl.ref([results]), [i]), "_[<int-to-string> idx]"); ] \)> [fst|rest*] //Assignment(lv, FieldAccess(Var(tmp), <concat-strings> ["_", <inc; int-to-string> idx])) \)> rest*
 
-
   elems-to-js(|root) :
-    [ConditionalDisplay(e, elems)|rest*] -> $[
+    [When(e, elems, elems2)|rest*] -> $[
       var [node] = $("<span>");
       [root].append([node]);
-      var condSubs__ = new mobl.CompSubscription();
-      subs__.addSub(condSubs__);
+      var [condSubs] = new mobl.CompSubscription();
+      subs__.addSub([condSubs]);
+      var [oldValue];
       var [renderCond] = function() {
-        var subs__ = condSubs__;
-        subs__.unsubscribe();
         var [value] = [<expression-to-js> e];
+        if([oldValue] === [value]) return;
+        [oldValue] = [value];
+        var subs__ = [condSubs];
+        subs__.unsubscribe();
         [node].empty();
         if([value]) {
           [<elems-to-js(|node)> elems]
+        } else {
+          [<elems-to-js(|node)> elems2]
         }
       };
       [renderCond]();
@@ -416,8 +420,11 @@ rules
     ]
     with node := <newname> "node"
        ; value := <newname> "value"
+       ; oldValue := <newname> "oldValue"
        ; renderCond := <newname> "renderCond"
+       ; condSubs := <newname> "condSubs"
        ; subscriptions := <hide-anon-controls; collect(?Var(_) <+ ?FieldAccess(_, _)); map(exp-to-watcher-js(|renderCond)); concat-strings> e
+
 
   elems-to-js(|root) :
     [ScreenString(s)|rest*] -> $[

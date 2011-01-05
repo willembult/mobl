@@ -224,11 +224,10 @@ screen maps() {
     }
   }
   header("Your location") { backButton() }
-  cond(position != null) {
+  when(position != null) {
     label("Position: " + position.latitude + ", " + position.longitude)
     map(position, zoom=15, width=320, height=400)
-  }
-  cond(position == null) {
+  } else {
     "Determining current location... (requires recent webkit or Firefox)"
   }
 }

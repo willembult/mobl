@@ -10,13 +10,22 @@ imports
 rules
 
   definition-to-js :
-    Style(_, qid*, prop*) -> <emit-css>
-    $[[<map(qid-to-css; <concat-strings> [".", <id>]); separate-by(|" ")> qid*] {
+    Style(_, sel*, prop*) -> <emit-css>
+    $[[<map(sel-to-css; <concat-strings> [".", <id>]); separate-by(|" ")> sel*] {
         [<map(style-prop-to-css); separate-by(|"\n")> prop*]
       }]
-    with qid := <reverse; Hd> qid*
+    with qid := <reverse; Hd; ?_#([<id>|_])> sel*
     where <emit> $[[<qid-to-js> qid] = '[<qid-to-css> qid]';
 ]
+
+  sel-to-css :
+    StyleSelector(qid) -> <qid-to-css> qid
+
+  sel-to-css :
+    StyleSelectorWithPseudo(qid, pt) -> $[[<qid-to-css> qid]:[pt]]
+
+  sel-to-css :
+    StyleSelectorWithPseudoArg(qid, pt, arg) -> $[[<qid-to-css> qid]:[pt]([arg])]
 
   qid-to-css :
     s -> s
@@ -42,6 +51,9 @@ rules
 
   style-exp-to-css :
     Color(x) -> x
+
+  style-exp-to-css :
+    String(s) -> s
 
   style-exp-to-css :
     StylePath(p, p*) -> $[[p]/[<separate-by(|"/"); concat-strings> p*]]

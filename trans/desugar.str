@@ -227,3 +227,31 @@ rules // style
 
   desugar :
     StyleMul(Num(n1), Num(n2)) -> Num(<apply-real-to-str-tuple(mul)> (n1, n2))
+
+rules
+
+  desugar :
+    Application(qid, setting*, def*) -> Application(qid, setting*, def2*)
+    where def2* := <find-cond-control> def*
+    where not(<eq> (def*, def2*))
+
+  desugar :
+    Module(qid, def*) -> Module(qid, def2*)
+    where def2* := <find-cond-control> def*
+    where not(<eq> (def*, def2*))
+
+  find-cond-control :
+    [Control(manno*, qid, farg*, elem*)|rest*] -> [Control([], qid, farg*, [When(e, elem2*, elem*)])|<filter(not(?ctrl)); find-cond-control> rest*]
+    where [ctrl@Control(manno2*, _, _, elem2*)|_] := <filter(?Control(_, qid, _, _))> rest*
+    where <fetch-elem(?ConditionalAnno(e))> manno2*
+
+  find-cond-control :
+    [ctrl@Control(manno*, qid, farg*, elem*)|rest*] -> [ctrl|<find-cond-control> rest*]
+    where [] := <filter(?Control(_, qid, _, _))> rest*
+
+  find-cond-control :
+    [fst|rest*] -> [fst|<find-cond-control> rest*]
+    where not(Control(manno*, qid, farg*, elem*) := fst)
+
+  find-cond-control :
+    [] -> []

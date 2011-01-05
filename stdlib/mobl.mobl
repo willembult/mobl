@@ -272,8 +272,6 @@ external sync function isIpad() : Bool
 external sync function isAndroid() : Bool
 external sync function isLandscape() : Bool
 external sync function isPortrait() : Bool
-external sync function getScreenWidth() : Num
-external sync function getScreenHeight() : Num
 
 <javascript>
 mobl.isIphone = function() { return !!navigator.userAgent.match(/iPhone/i) || !!navigator.userAgent.match(/iPod/i); };
@@ -281,8 +279,6 @@ mobl.isIpad = function() { return !!navigator.userAgent.match(/iPad/i); };
 mobl.isAndroid = function() { return !!navigator.userAgent.match(/Android/i); };
 mobl.isLandscape = function() { return window.innerHeight < window.innerWidth; };
 mobl.isPortrait = function() { return window.innerHeight >= window.innerWidth; };
-mobl.getScreenWidth = function() { return window.innerWidth; };
-mobl.getScreenHeight = function() { return window.innerHeighth; };
 </javascript>
 
 external type JQuery { //: Dynamic {
@@ -935,7 +931,7 @@ mobl.implementInterface = function(sourceModule, targetModule, items) {
     Reference.prototype.oldAddListener = Reference.prototype.addEventListener;
 
     Reference.prototype.addEventListener = function(eventType, callback) {
-        if(eventType === 'change' && this.prop !== undefined && this.ref.get().addEventListener) {
+        if(eventType === 'change' && this.prop !== undefined && this.ref.get() && this.ref.get().addEventListener) {
             var that = this;
             var subs = new CompSubscription();
             subs.addSub(this.ref.get().addEventListener('change', function(_, _, prop, value) {
@@ -1014,13 +1010,19 @@ mobl.implementInterface = function(sourceModule, targetModule, items) {
 }());
 </javascript>
 
-var window : Window = null;
 
-external type Window {
+type Window {
   innerWidth : Num
   innerHeight : Num
 }
 
+var window : Window = Window();
+
 <javascript>
-mobl.window = mobl.ref(window);
+__ns.window.get().innerWidth = window.innerWidth;
+__ns.window.get().innerHeight = window.innerHeight;
+window.onresize = function() {
+  mobl.window.get().innerWidth = window.innerWidth;
+  mobl.window.get().innerHeight = window.innerHeight;
+};
 </javascript>

@@ -8,11 +8,15 @@ exports
 
   context-free syntax
 
-    MetaAnno* "style" QId+ "{" StyleElem* "}"    -> Definition {cons("Style")}
+    MetaAnno* "style" StyleSelector+ "{" StyleElem* "}"    -> Definition {cons("Style")}
 
-    MetaAnno* "external" "style" QId* -> Definition {cons("ExternalStyle")}
+    MetaAnno* "external" "style" StyleSelector+ -> Definition {cons("ExternalStyle")}
 
     STYLEPROPID ":" StyleExpsTL ";" -> StyleElem {cons("StyleProperty")}
+
+    QId                     -> StyleSelector {cons("StyleSelector")}
+    QId ":" STYLEPROPID              -> StyleSelector {cons("StyleSelectorWithPseudo")}
+    QId ":" STYLEPROPID "(" STYLEPROPID ")"   -> StyleSelector {cons("StyleSelectorWithPseudoArg")}
 
     COLOR                   -> StyleExp {cons("Color")}
     STYLEID                 -> StyleExp {cons("StyleId")}
@@ -23,7 +27,8 @@ exports
     StyleExp "+" StyleExp   -> StyleExp {cons("StyleAdd"), left}
     StyleExp "~" StyleExp   -> StyleExp {cons("StyleSub"), left}
     StyleExp "*" StyleExp   -> StyleExp {cons("StyleMul"), left}
-    "$" ID "." ID          -> StyleExp {cons("StyleFieldAccess")}
+    "$" ID "." ID           -> StyleExp {cons("StyleFieldAccess")}
+
     %%"(" StyleExp ")"        -> StyleExp {bracket}
 
 
@@ -63,5 +68,4 @@ exports
 
     STYLEID          -/- [a-zA-Z0-9\_]
     STYLEPROPID      -/- [a-zA-Z0-9\_]
-    STYLECONFIGID    -/- [a-zA-Z0-9\_]
     COLOR            -/- [a-zA-Z0-9\_\#]

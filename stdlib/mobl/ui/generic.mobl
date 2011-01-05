@@ -142,6 +142,10 @@ style backButtonStyle {
   z-index: 3;
 }
 
+style backButtonStyle:before {
+  content: "\00ab\00a0";
+}
+
 control backButton(text : String = "Back", onclick : Callback = { screen return; }) {
   <span class=backButtonStyle onclick=onclick databind=text/>
 }
@@ -252,25 +256,23 @@ style textFieldStyle {
 }
 
 control textField(s : String, placeholder : String = null, label : String = null, onchange : Callback = null) {
-  cond(label) {
+  when(label) {
     <span style="float: left; margin-top: 0.2em; width: 5em; color: #666;" databind=label/>
     <span style="float: left">
       <input type="text" class=textFieldStyle placeholder=placeholder databind=s onchange=onchange onblur={ scrollUp(); }/>
     </span>
-  }
-  cond(!label) {
+  } else {
     <input type="text" class=textFieldStyle placeholder=placeholder databind=s onchange=onchange onblur={ scrollUp(); }/>
   }
 }
 
 control numField(n : Num, placeholder : String = null, label : String = null, onchange : Callback = null) {
-  cond(label) {
+  when(label) {
     <span style="float: left; margin-top: 0.2em; width: 5em; color: #666;" databind=label/>
     <span style="float: left">
       <input type="text" class=textFieldStyle placeholder=placeholder databind=n onchange=onchange onblur={ scrollUp(); }/>
     </span>
-  }
-  cond(!label) {
+  } else {
     <input type="text" class=textFieldStyle placeholder=placeholder databind=n onchange=onchange onblur={ scrollUp(); }/>
   }
 }
@@ -515,7 +517,7 @@ screen detailScreen(it : Dynamic, detail : Control1<Dynamic>) {
   detail(it)
 }
 
-@cond getScreenWidth() > 500
+@cond window.innerWidth > 500
 control masterDetail(items : Collection<Dynamic>, masterItem : Control1<Dynamic>, detail : Control1<Dynamic>) {
   control itemSelected(onclick : Callback = null, onswipe : Callback = null) {
     <li class=itemStyle onclick=onclick style="background: #cccccc;">
@@ -544,16 +546,34 @@ control zoomList(coll : Collection<?>, listCtrl : Control1<?>, zoomCtrl : Contro
   var selected : ? = null
   group {
     list(it in coll) {
-      cond(it == selected) {
+      when(it == selected) {
         item { zoomCtrl(it) }
-      }
-      cond(it != selected) {
+      } else {
         item(onclick={ selected = it; }) {
           listCtrl(it)
         }
       }
     }
   }
+}
+
+style loadMoreStyle {
+  background-color: #ffffff;
+  border: 1px solid #cccccc;
+  border-left: 0;
+  border-right: 0;
+  color: #888;
+  display: block;
+  font-size: 17px;
+  text-align: center;
+  margin-bottom: -1px;
+  padding: 12px 10px;
+  font-weight: bold;
+  white-space: nowrap;
+  -webkit-border-bottom-left-radius: 20px;
+  -moz-border-radius-bottomleft: 20px;
+  -webkit-border-bottom-right-radius: 20px;
+  -moz-border-radius-bottomright: 20px;
 }
 
 control stagedList(coll : Collection<?>, listCtrl : Control1<?>, initialItems : Num = 10, step : Num = 10) {
@@ -563,8 +583,8 @@ control stagedList(coll : Collection<?>, listCtrl : Control1<?>, initialItems : 
     list(it in coll limit n) {
       item(onclick={}) { listCtrl(it) }
     }
-    cond(n < total) {
-      <li class="loadMore" onclick={
+    when(n < total) {
+      <li class=loadMoreStyle onclick={
           n = n + step;
         }>
         "More"
@@ -700,40 +720,154 @@ external control floatBox(top : Num = null, right : Num = null, bottom : Num = n
 resource mobl/ui/generic/accordion-down.png
 resource mobl/ui/generic/accordion-right.png
 
+style accordionStyle {
+  width: 100%;
+}
+
+style accordionStyle activeSectionHeaderStyle {
+  background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#eee),
+    to(#aaa) );
+  background: -moz-linear-gradient(top, #5c98f6, #3440e4);
+  padding: 0;
+  height: 1.9em;
+  font-size: 1em;
+  line-height: 1.9em;
+  font-weight: bold;
+  text-align: left;
+  color: #333;
+  font-weight: bold;
+  margin: 0;
+  z-index: 2;
+  width: 100%;
+  display: block;
+}
+
+style accordionStyle inActiveSectionHeaderStyle {
+  background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#eee),
+    to(#aaa) );
+  background: -moz-linear-gradient(top, #5c98f6, #3440e4);
+  padding: 0;
+  height: 1.9em;
+  font-size: 1em;
+  line-height: 1.9em;
+  font-weight: bold;
+  text-align: left;
+  color: #333;
+  font-weight: bold;
+  margin: 0;
+  z-index: 2;
+  width: 100%;
+  display: block;
+}
+
+style accordionStyle activeSectionHeaderStyle:before {
+  content: url("generic/accordion-down.png");
+}
+
+style accordionStyle inActiveSectionHeaderStyle:before {
+  content: url("generic/accordion-right.png");
+}
+
+style accordionStyle inActiveSectionStyle {
+  display: none;
+}
+
+style accordionStyle activeSectionStyle {
+  display: block;
+}
+
 control accordion(sections : [(String, Control)]) {
   var activeSection : String = sections.get(0)._1
 
-  <div class="accordion">
+  block(accordionStyle) {
     list((sectionName, sectionControl) in sections) {
-      <span onclick={ activeSection = sectionName; } class=activeSection == sectionName ? "section activeSection" : "section inActiveSection">
+      span(onclick={ activeSection = sectionName; }, cssClass=activeSection == sectionName ? activeSectionHeaderStyle : inActiveSectionHeaderStyle) {
         label(sectionName)
-      </span>
-      <div class=activeSection == sectionName ? "activeSection" : "inActiveSection">
+      }
+      block(activeSection == sectionName ? activeSectionStyle : inActiveSectionStyle) {
         sectionControl()
-      </div>
+      }
     }
-  </div>
+  }
+}
+
+style tableStyle {
+  padding: 8px 10px 8px 10px;
+  width: 100%;
+  border-spacing: 0;
+}
+
+style tdStyle {
+  padding: 8px;
+}
+
+style trStyle {
+  padding: 8px;
+}
+
+style trStyle:nth-child(even) {
+  background: #eeeeee;
+}
+
+style trStyle:nth-child(odd) {
+  background: #ffffff;
+}
+
+style trStyle:first-child tdStyle:first-child {
+  -webkit-border-top-left-radius: 8px;
+  -moz-border-radius-topleft: 8px;
+  border-left: 1px solid #000;
+  border-top: 1px solid #000;
+}
+
+style trStyle:first-child tdStyle:last-child {
+  -webkit-border-top-right-radius: 8px;
+  -moz-border-radius-topright: 8px;
+  border-right: 1px solid #000;
+  border-top: 1px solid #000;
+}
+
+style trStyle:last-child tdStyle:first-child {
+  -webkit-border-bottom-left-radius: 8px;
+  -moz-border-radius-bottomleft: 8px;
+  border-left: 1px solid #000;
+  border-bottom: 1px solid #000;
+}
+
+style trStyle:last-child tdStyle:last-child {
+  -webkit-border-bottom-right-radius: 8px;
+  -moz-border-radius-bottomright: 8px;
+  border-right: 1px solid #000;
+  border-bottom: 1px solid #000;
+}
+
+style trStyle tdStyle:first-child {
+  border-left: 1px solid #000;
+}
+
+style trStyle tdStyle:last-child {
+  border-right: 1px solid #000;
 }
 
 @doc "Renders a table, use row { } for rows and cell { } for cells"
 control table() {
-  <table>elements()</table>
+  <table class=tableStyle>elements()</table>
 }
 
 control row() {
-  <tr>elements()</tr>
+  <tr class=trStyle>elements()</tr>
 }
 
 control cell(width : String = null) {
-  <td width=width>elements()</td>
+  <td width=width class=tdStyle>elements()</td>
 }
 
 control col(width : String = null) {
-  <td width=width>elements()</td>
+  <td width=width class=tdStyle>elements()</td>
 }
 
 control headerCol(width : String = null) {
-  <td width=width><strong>elements()</strong></td>
+  <td width=width class=tdStyle><strong>elements()</strong></td>
 }
 
 // SCROLLERS, disabled ATM

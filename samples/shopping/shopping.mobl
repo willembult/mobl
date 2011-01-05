@@ -59,7 +59,7 @@ control showFavorites() {
     list(it in Item.all().filter("favorite", "=", true).order("order", true)) {
       item(onclick={ editItem(it); }) {
         label(it.name)
-        cond(it.onlist == false) {
+        when(!it.onlist) {
           sideButton("Add", onclick={ it.onlist = true; })
         }
       }

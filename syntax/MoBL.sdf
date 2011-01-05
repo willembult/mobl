@@ -100,8 +100,10 @@ exports
     "true" -> ID {reject}
     "false" -> ID {reject}
     "if" -> ID {reject}
+    "else" -> ID {reject}
     "databind" -> HTMLID {reject}
     "cond" -> ID {reject}
+    "when" -> ID {reject}
     "this" -> ID {reject}
     "javascript" -> ID {reject}
 
