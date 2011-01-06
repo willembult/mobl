@@ -10,6 +10,7 @@ imports
   MoBL-Regex
   MoBL-External
   MoBL-Style
+  MoBL-Config
   MoBL-Server
   js/Javascript
 
@@ -23,14 +24,7 @@ exports
     ID                               -> QId
     QId "::" ID                      -> QId {cons("QId")}
     "module" QId Definition*         -> Start {cons("Module")}
-    "application" ID Setting* Definition* -> Start {cons("Application")}
-
-    "title" STRING                   -> Setting {cons("TitleSetting")}
-    "database" STRING                -> Setting {cons("DatabaseSetting")}
-    "offline"  Exp                   -> Setting {cons("OfflineSetting")}
-    "icon" Path                      -> Setting {cons("IconSetting")}
-    "version" STRING                 -> Setting {cons("VersionSetting")}
-    "debug"                          -> Setting {cons("DebugSetting")}
+    "application" ID Definition* -> Start {cons("Application")}
 
     "dynamic" "import" QId         -> Definition {cons("DynamicImport")}
     "import" QId                   -> Definition {cons("Import")}
@@ -52,13 +46,14 @@ exports
     {NFType "*"}+ "->" NFType      -> Type {cons("FunctionType"), avoid}
 
     "@doc" STRING                  -> MetaAnno {cons("DocAnno")}
-    "@cond" Exp                    -> MetaAnno {cons("ConditionalAnno")}
+    "@when" Exp                    -> MetaAnno {cons("WhenAnno")}
     "@persistable"                 -> MetaAnno {cons("PersistableAnno")}
 
     "@" Exp                        -> MetaAnno {cons("DecoratorAnno"), avoid}
 
   context-free syntax %% Paths
     {FILENAME "/"}+                  -> Path {cons("Path")}
+    "/" {FILENAME "/"}+              -> Path {cons("AbsolutePath")}
     STRING                           -> Path {cons("QuotedPath")}
 
   %%syntax

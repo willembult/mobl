@@ -26,7 +26,7 @@ imports
 strategies
 
   module-to-js =
-    (?Module(qid, def*) <+ ?Application(qid, _, def*) <+ ?ServerApplication(qid, _, def*))
+    (?Module(qid, def*) <+ ?Application(qid, def*) <+ ?ServerApplication(qid, _, def*))
     ; entities := <filter(?Entity(_, _, _, _))> def*
     ; rest := <filter(not(?Entity(_, _, _, _) <+ ?Import(_)))> def*
     ; to-import := <concat; make-set> [<filter(not(?Import(_))); collect-om(?QId(<id>, _)); filter(not(?qid))> def*, <filter(?Import(<id>))> def*]
@@ -59,6 +59,9 @@ strategies
 
   path-to-string :
     QuotedPath(s) -> <un-double-quote> s
+
+  path-to-string :
+    AbsolutePath(s*) -> <separate-by(|"/"); !["/"|<id>]; concat-strings> s*
 
   definition-to-js :
     VarDecl(qid, t, e) -> <statement-to-js; emit>

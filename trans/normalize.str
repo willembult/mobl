@@ -17,7 +17,7 @@ rules
         ; not(<eq> (def*, def2*))
 
   normalize :
-    Application(qid, setting*, def*) -> Application(qid, setting*, def2*)
+    Application(qid, def*) -> Application(qid, def2*)
     where def2* := <flatten-list> def*
         ; not(<eq> (def*, def2*))
 

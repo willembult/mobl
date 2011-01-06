@@ -78,7 +78,7 @@ control backButton(s : String = "Back", theme : Theme = Theme.blue(), onclick : 
 
 control button(s : String, icon : Icon = null, theme : Theme = Theme.blue(), onclick : Callback = null) {
   <span class="ui-btn ui-btn-inline ui-btn-corner-all ui-shadow ui-btn-down-" + theme + " ui-btn-hover-" + theme + " " + (icon != null ? "ui-btn-icon-left" : "") onclick=onclick>
-    cond(icon != null) {
+    when(icon != null) {
       <span class="ui-icon ui-icon-" + icon + " ui-icon-shadow"></span>
     }
     <span class="ui-btn-inner ui-btn-corner-all"><span class="ui-btn-text" databind=s/></span>

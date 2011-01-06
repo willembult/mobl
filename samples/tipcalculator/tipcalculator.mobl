@@ -3,7 +3,7 @@ application tipcalculator
 import mobl::ui::generic
 
 screen root() {
-  var amount     =  10
+  var amount     =  20
   var percentage =  10
 
   header("Tip calculator")

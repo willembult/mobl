@@ -13,8 +13,24 @@ imports
   editor/resolve
   editor/complete
   editor/hover
+  generation/compile
+  generation/action
 
 rules
+
+  setup-paths =
+    setting* := <get-configuration> $[[<ProjectPath; string-replace(|"\\", "/")>]/config.mobl]
+    ; if <fetch-elem(?StdLibSetting(stdlib-p))> setting* then
+         stdlib-path := <path-to-string; resolve-file> stdlib-p
+      else
+        stdlib-path := <concat-strings> [<plugin-path>, "/stdlib"]
+      end
+    ; path* := <filter(\ LibSetting(p) -> <path-to-string; resolve-file> p \)> setting*
+    ; rules(
+        IncludePaths    := [<ProjectPath>, stdlib-path, path*]
+        OutputPath  := <concat-strings> [<ProjectPath>, "/www"]
+        ServerOutputPath  := <concat-strings> [<ProjectPath>, "/server"]
+      )
 
   // Analyzes the current program, returning a tuple with errors, warnings, and notes;
   // each a list of (term, message) tuples or simply (message) terms.
@@ -26,12 +42,10 @@ rules
       ; dr-scope-all-start
     with
       rules ( ProjectPath := project-path
-              IsImported  : path
-              OutputPath  := <concat-strings> [project-path, "/www"]
-              ServerOutputPath  := <concat-strings> [project-path, "/server"]
-              IncludePaths := [project-path, <concat-strings> [<plugin-path>, "/stdlib"]])
+              IsImported  : path )
+      ; setup-paths
       ; ast2 := <analyze; store-result> ast
-      ; (Module(mod-name, _) := ast2 <+ Application(mod-name, _, _) := ast2 <+ ServerApplication(mod-name, _, _) := ast2)
+      ; (Module(mod-name, _) := ast2 <+ Application(mod-name, _) := ast2 <+ ServerApplication(mod-name, _, _) := ast2 <+ Configuration(_) := ast2; mod-name := "")
       ; rules ( CompilingModule := mod-name
                 CompilingFilename := path )
       ; errors   := <collect-all(constraint-error, conc)> ast2
@@ -54,10 +68,8 @@ rules
     (selected, position, ast, path, project-path) -> (filename, <desugar-all> ast2)
     with
             rules ( ProjectPath := project-path
-              IsImported  : path
-              OutputPath  := <concat-strings> [project-path, "/www"]
-              ServerOutputPath  := <concat-strings> [project-path, "/server"]
-              IncludePaths := [project-path, <concat-strings> [<plugin-path>, "/stdlib"]])
+                    IsImported  : path )
+      ; setup-paths
       ; ast2 := <analyze; store-result> ast
       ; filename := <guarantee-extension(|"aterm")> "desugared"
 

@@ -48,19 +48,21 @@ rules // Main editor interface (defined by editor/MoBL-Builders and -References.
   generate-artifacts:
     (selected, position, ast, path, project-path) -> None() //(filename-html, result-html)
     where not(HasErrors)
+    where not(Configuration(_) := ast)
     with
       // Ensure all dynamic rules are properly scoped
       try(dr-scope-all-end)
       ; dr-scope-all-start
     with
       rules ( ProjectPath     := project-path
-              CachedParseAst  : path -> ast
-              OutputPath      := <concat-strings> [project-path, "/www"]
-              ServerOutputPath      := <concat-strings> [project-path, "/server"]
-              IncludePaths    := [project-path, <concat-strings> [<plugin-path>, "/stdlib"]])
-      ; (Module(mod-name, _)  := ast <+ Application(mod-name, _, _) := ast <+ ServerApplication(mod-name, _, _) := ast)
+              CachedParseAst  : path -> ast )
+      ; setup-paths
+      ; (Module(mod-name, _)  := ast <+ Application(mod-name, _) := ast <+ ServerApplication(mod-name, _, _) := ast)
       ; rules ( CompilingModule := mod-name )
       ; <compile> ast
+
+  generate-artifacts:
+    (selected, position, Configuration(_), path, project-path) -> None()
 
   generate-artifacts:
     _ -> None() //(filename-html, result-html)

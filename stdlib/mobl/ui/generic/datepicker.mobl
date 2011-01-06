@@ -8,12 +8,12 @@ function getMonthName(m : Num) : String {
   return months.get(m);
 }
 
-control narrowNumField(n : Num, onchange : Callback = null) {
-  <input type="text" databind=n onchange=onchange class="narrowNumField"/>
+style narrowNumFieldStyle {
+  width: 4em;
 }
 
-style input.narrowNumField {
-  width: 4em;
+control narrowNumField(n : Num, onchange : Callback = null) {
+  <input type="text" databind=n onchange=onchange class=narrowNumFieldStyle/>
 }
 
 control datePicker(d : DateTime) {
@@ -23,7 +23,7 @@ control datePicker(d : DateTime) {
     visible = visible ? false : true;
   })
   <div>
-  cond(visible) {
+  when(visible) {
     <div style="float: left; text-align: center;">
     button("+", onclick={
       d.setDate(d.getDate() + 1);

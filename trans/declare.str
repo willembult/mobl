@@ -10,7 +10,7 @@ strategies
 
   declare-all =
     with(
-      (?Module(_, def*) <+ ?Application(_, _, def*) <+ ?ServerApplication(_, _, def*))
+      (?Module(_, def*) <+ ?Application(_, def*) <+ ?ServerApplication(_, _, def*))
       ; <filter(origin-track-forced(declare))> def*
     )
 

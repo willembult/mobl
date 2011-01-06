@@ -20,7 +20,7 @@ imports
 rules
 
   analyze =
-    (?Module(qid, def*) <+ ?Application(qid, _, def*) <+ ?ServerApplication(qid, _, def*))
+    (?Module(qid, def*) <+ ?Application(qid, def*) <+ ?ServerApplication(qid, _, def*))
     ; {| ModuleName, Imports
        : rules ( ModuleName := qid )
        ; ensure-mobl-import
@@ -37,6 +37,9 @@ rules
        ; declare-all
        |}
 
+  analyze =
+     ?Configuration(_)
+
   ensure-mobl-import :
     Module(qid, def*) -> Module(qid, def2*)
     where if <"mobl" := qid <+ fetch(?Import("mobl"))> def* then
@@ -46,7 +49,7 @@ rules
           end
 
   ensure-mobl-import :
-    Application(qid, setting*, def*) -> Application(qid, setting*, def2*)
+    Application(qid, def*) -> Application(qid, def2*)
     where if <"mobl" := qid <+ fetch(?Import("mobl"))> def* then
             def2* := def*
           else
@@ -60,6 +63,9 @@ rules
           else
             def2* := [Import("mobl")|def*]
           end
+
+  ensure-mobl-import :
+    Configuration(_) -> <id>
 
   import-all =
     alltd(import-module)
@@ -109,8 +115,8 @@ rules
     with def2* := <analyze; ?Module(_, <id>); filter(origin-track-forced(definition-to-external))>
 
   externalize-module :
-    Application(qid, _, def*) -> def2*
-    with def2* := <analyze; ?Application(_, _, <id>); filter(definition-to-external)>
+    Application(qid, def*) -> def2*
+    with def2* := <analyze; ?Application(_, <id>); filter(definition-to-external)>
 
   externalize-module :
     ServerApplication(qid, _, def*) -> def2*

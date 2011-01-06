@@ -15,17 +15,17 @@ imports
 rules
 
   constraint-error :
-    Application(qid, _, def*) -> (qid, $[No 'root' screen defined with no arguments. The root screen functions as the application's entry point and is required.])
+    Application(qid, def*) -> (qid, $[No 'root' screen defined with no arguments. The root screen functions as the application's entry point and is required.])
     where [] := <filter(?Screen(_, QId(qid, "root"), [], _, _))> def*
 
   constraint-error :
-    Application(_, _, def*) -> (qid, $[Multiple definitions of '[<pp-mobl-qid> qid]'])
-    where all-names := <filter({?_#([manno*, <id>, _|_]); where([] := <filter(?ConditionalAnno(_))> manno*)})> def*
+    Application(_, def*) -> (qid, $[Multiple definitions of '[<pp-mobl-qid> qid]'])
+    where all-names := <filter({?_#([manno*, <id>, _|_]); where([] := <filter(?WhenAnno(_))> manno*)})> def*
         ; qid := <find-duplicate> all-names
 
   constraint-error :
     Module(_, def*) -> (qid, $[Multiple definitions of '[<pp-mobl-qid> qid]'])
-    where all-names := <filter({?_#([manno*, <id>, _|_]); where([] := <filter(?ConditionalAnno(_))> manno*)})> def*
+    where all-names := <filter({?_#([manno*, <id>, _|_]); where([] := <filter(?WhenAnno(_))> manno*)})> def*
         ; qid := <find-duplicate> all-names
 
   find-duplicate :
@@ -46,7 +46,7 @@ rules
 rules
 
   constraint-warning :
-    Application(qid, _, _) -> (qid, $[Application name does not match file path.])
+    Application(qid, _) -> (qid, $[Application name does not match file path.])
     where not(<eq> ($[[<qid-to-path> qid].mobl], <CompilingFilename>))
 
   constraint-warning :
@@ -225,6 +225,10 @@ rules
   constraint-error :
     p@Path(part*){} -> (p, $[File not found. Note that paths are relative to the project root.])
     where not(<separate-by(|"/"); concat-strings; resolve-file> part*)
+
+  constraint-error :
+    p@AbsolutePath(part*){} -> (p, $[File not found. Note that paths are relative to the project root.])
+    where not(<separate-by(|"/"); !["/"|<id>]; concat-strings; resolve-file> part*)
 
   constraint-error :
     Import(qid) -> (qid, $[Module not found.])

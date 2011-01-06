@@ -15,7 +15,7 @@ imports
 strategies
 
   main =
-    init-moblc-options 
+    init-moblc-options
   ; xtc-io-wrap(
         moblc-options
       , moblc-usage
@@ -30,17 +30,17 @@ strategies
     ; ast := <parse-file> filename
     ; output-path := $[[<getcwd>]/[<OutputPath <+ !"www">]]
     ; include-params := <get-config>"-I"
-    ; if [] then 
+    ; if [] then
         include-path := [$[[<getcwd>]/stdlib] ]
       else
         include-path := include-params
-      end 
-    ; cwd := <getcwd> 
+      end
+    ; cwd := <getcwd>
     ; rules ( ProjectPath     := cwd
               CachedParseAst  : filename -> ast
               OutputPath      := output-path
               IncludePaths    := ["."| include-path])
-    ; (Module(mod-name, _)  := ast <+ Application(mod-name, _, _) := ast <+ ServerApplication(mod-name, _, _) := ast)
+    ; (Module(mod-name, _)  := ast <+ Application(mod-name, _) := ast <+ ServerApplication(mod-name, _, _) := ast)
     ; rules ( CompilingModule := mod-name )
     ; ast2 := <analyze> ast
     ; errors   := <collect-all(constraint-error, conc); map(?(_, <id>); <concat-strings> ["Error: ", <id>])> ast2
@@ -54,7 +54,7 @@ strategies
         <exit> 1
       end
 
-  init-moblc-options = 
+  init-moblc-options =
     where(<set-config>("-I",[]))
 
   moblc-options =

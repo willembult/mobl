@@ -36,7 +36,7 @@ strategies
     ; separate-by(|"/"); concat-strings
 
   compile =
-      (?Module(qid, def*) <+ ?app@Application(qid, setting*, def*))
+      (?Module(qid, def*) <+ ?app@Application(qid, def*))
       ; where(not(ServerContext))
       ; where(<pp-mobl-qid; debug(!"Now compiling: ")> qid
               ; rules ( Compiled : qid ))
@@ -47,6 +47,9 @@ strategies
          ; desugar-all
          ; module-to-js
          |}
+      ; if !app then
+          setting* := <get-configuration> $[[<ProjectPath; string-replace(|"\\", "/")>]/config.mobl]
+        end
       ; where(path := <qid-to-path> qid
               ; js-filename   := <concat-strings; guarantee-extension(|"js")> [<OutputPath>, "/", path]
               ; css-filename   := <concat-strings; guarantee-extension(|"css")> [<OutputPath>, "/", path]
@@ -75,11 +78,11 @@ strategies
         with(
           fp2 := <fopen <+ debug(!"Could not open file: "); fail> (index-html-filename, "w")
           ; {| ResourceProcessed
-             : <fputs> (<generate-index-html(|<get-all-resources-no-dynamic> qid) <+ debug(!"Could not generate index.html")> app, fp2)
+             : <fputs> (<generate-index-html(|<get-all-resources-no-dynamic> qid, setting*) <+ debug(!"Could not generate index.html")> app, fp2)
              |}
           ; <fclose> fp2
           ; <refresh-workspace-file> index-html-filename
-          ; if <fetch(?OfflineSetting(True()))> setting* then
+          ; if <fetch(?OfflineSetting())> setting* then
               fp3 := <fopen <+ debug(!"Could not open file: "); fail> (manifest-filename, "w")
               ; {| ResourceProcessed
                  : <fputs> (<generate-manifest <+ debug(!"Could not generate index.html")> [<get-all-resources> qid], fp3)
@@ -88,12 +91,21 @@ strategies
               ; <refresh-workspace-file> manifest-filename
             end
          ; fp4 := <fopen <+ debug(!"Could not open file: "); fail> (chrome-manifest-filename, "w")
-          ; <fputs> (<generate-chrome-manifest(|<get-all-resources-no-dynamic> qid)> app, fp4)
+          ; <fputs> (<generate-chrome-manifest(|<get-all-resources-no-dynamic> qid, setting*)> app, fp4)
           ; <fclose> fp4
           ; <refresh-workspace-file> chrome-manifest-filename
         )
         end
       ; <refresh-workspace-file> js-filename
+
+  get-configuration :
+    filename -> setting*
+    where file-exists
+    with Configuration(setting*) := <parse-file> filename
+
+  get-configuration :
+    filename -> []
+    where not(file-exists)
 
   get-all-resources :
     qid -> [res*, import*, style*, $[[<qid-to-path> qid].js]]

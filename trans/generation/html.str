@@ -8,8 +8,8 @@ imports
 
 strategies
 
-  generate-index-html(|res*) :
-    Application(qid, setting*, _) -> $[
+  generate-index-html(|res*, setting*) :
+    Application(qid, _) -> $[
 <!DOCTYPE html>
 <html [html-manifest]>
     <head>
@@ -47,10 +47,10 @@ strategies
     with <filter(?TitleSetting(title))> setting*
        ; <filter(?DatabaseSetting(dbname))> setting*
        ; <filter(?IconSetting(icon))> setting*
-       ; html-manifest := <fetch(?OfflineSetting(True())); !$[manifest="[<qid-to-path> qid].manifest"] <+ !""> setting*
+       ; html-manifest := <fetch(?OfflineSetting()); !$[manifest="[<qid-to-path> qid].manifest"] <+ !""> setting*
 
-  generate-chrome-manifest(|res*) :
-    Application(qid, setting*, _) -> $[
+  generate-chrome-manifest(|res*, setting*) :
+    Application(qid, _) -> $[
 {
   "name": "[<!<un-double-quote> title <+ <qid-to-js> qid>]",
   "version": "[<!<un-double-quote> version <+ !"1">]",

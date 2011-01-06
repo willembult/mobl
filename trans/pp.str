@@ -13,9 +13,8 @@ strategies
     where is-string
 
   pp-mobl :
-    Application(qid, setting*, def*) ->
+    Application(qid, def*) ->
     $[application [<pp-mobl-qid> qid]["\n"]
-      [<map(pp-mobl-setting); separate-by(|"\n"); concat-strings> setting*]
       [<map(pp-mobl-def); separate-by(|"\n\n"); concat-strings> def*]]
 
   pp-mobl :

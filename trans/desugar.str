@@ -231,7 +231,7 @@ rules // style
 rules
 
   desugar :
-    Application(qid, setting*, def*) -> Application(qid, setting*, def2*)
+    Application(qid, def*) -> Application(qid, def2*)
     where def2* := <find-cond-control> def*
     where not(<eq> (def*, def2*))
 
@@ -243,7 +243,7 @@ rules
   find-cond-control :
     [Control(manno*, qid, farg*, elem*)|rest*] -> [Control([], qid, farg*, [When(e, elem2*, elem*)])|<filter(not(?ctrl)); find-cond-control> rest*]
     where [ctrl@Control(manno2*, _, _, elem2*)|_] := <filter(?Control(_, qid, _, _))> rest*
-    where <fetch-elem(?ConditionalAnno(e))> manno2*
+    where <fetch-elem(?WhenAnno(e))> manno2*
 
   find-cond-control :
     [ctrl@Control(manno*, qid, farg*, elem*)|rest*] -> [ctrl|<find-cond-control> rest*]

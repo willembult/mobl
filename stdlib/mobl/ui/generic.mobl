@@ -517,7 +517,7 @@ screen detailScreen(it : Dynamic, detail : Control1<Dynamic>) {
   detail(it)
 }
 
-@cond window.innerWidth > 500
+@when window.innerWidth > 500
 control masterDetail(items : Collection<Dynamic>, masterItem : Control1<Dynamic>, detail : Control1<Dynamic>) {
   control itemSelected(onclick : Callback = null, onswipe : Callback = null) {
     <li class=itemStyle onclick=onclick style="background: #cccccc;">

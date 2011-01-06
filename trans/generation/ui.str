@@ -27,7 +27,7 @@ rules
         return subs__;
       };
       ]
-    where [] := <filter(?ConditionalAnno(_))> manno*
+    where [] := <filter(?WhenAnno(_))> manno*
     with {| InControl
           : rules ( InControl := 1 )
           ; root := <newname> "root"
@@ -44,7 +44,7 @@ rules
         return subs__;
       });
       ]
-    where [ConditionalAnno(cond-e)] := <filter(?ConditionalAnno(_))> manno*
+    where [WhenAnno(cond-e)] := <filter(?WhenAnno(_))> manno*
     with {| InControl
           : rules ( InControl := 1 )
           ; root := <newname> "root"

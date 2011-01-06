@@ -49,7 +49,7 @@ completions
 completions
 
   completion template : LimitedExp =
-    "where " <prop> " = " <value>
+    "where " <prop> " == " <value>
 
   completion template : LimitedExp =
     "order by " <prop> " asc"
@@ -72,7 +72,7 @@ completions
       "if" "(" <e> ") {\n\t\n} else {\n\t\n}" (blank)
 
     completion template : Statement =
-      "for" "(" <x> " in " <coll> ") {\n\t\n}" (blank)
+      "foreach" "(" <x> " in " <coll> ") {\n\t\n}" (blank)
 
     completion template : Statement =
       "var " <x> " = " <value> ";" (blank)
@@ -92,7 +92,10 @@ completions
       "list" "(" <x> " in " <coll> ") {\n\t\n}" (blank)
 
     completion template : ScreenElem =
-      "cond" "(" <e> ") {\n\t\n}" (blank)
+      "when" "(" <e> ") {\n\t\n}" (blank)
+
+    completion template : ScreenElem =
+      "when" "(" <e> ") {\n\t\n} else {\n\t\n}" (blank)
 
 completions
 
