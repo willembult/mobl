@@ -17,6 +17,13 @@ To build the mobl compiler you will need a recent version of Eclipse
 installed, simply clone the mobl repository and import it into
 Eclipse, then build the project (Ctrl+Alt+b or Ctrl+Cmd+b).
 
+To clone the repository:
+
+    git clone git://github.com/mobl/mobl.git
+    cd mobl
+    git submodule init
+    git submodule update
+
 To use plug-in
 --------------
 
