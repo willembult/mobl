@@ -13,38 +13,44 @@ completions
 
 completions
 
-    completion template : Start =
-      "application tasks" "\n\nimport mobl::ui::generic\n\nentity Task {\n\tname : String\n\tdone : Bool\n}\n\nscreen root() {\n\theader(\"Tasks\")\n\tgroup {\n\t\tlist(t in Task.all()) {\n\n\t\t}\n\t}\n}"
+  completion template : Start =
+    "application tasks" "\n\nimport mobl::ui::generic\n\nentity Task {\n\tname : String\n\tdone : Bool\n}\n\nscreen root() {\n\theader(\"Tasks\")\n\tgroup {\n\t\tlist(t in Task.all()) {\n\n\t\t}\n\t}\n}"
 
-    completion template : Definition =
-      "control " <name> "() {\n\t\n}" (blank)
+  completion template : Start =
+    "module " <name>
 
-    completion template : Definition =
-      "screen " <name> "() {\n\t\n}" (blank)
+  completion template : Start =
+    "configuration"
 
-    completion template : Definition =
-      "entity " <name> " {\n\t\n}" (blank)
+  completion template : Definition =
+    "control " <name> "() {\n\t\n}" (blank)
 
-    completion template : Definition =
-      "service " <name> " {\n\tresource someResource() : Dynamic {\n\t\turi = \"/someResource\"\n\t}\n}" (blank)
+  completion template : Definition =
+    "screen " <name> "() {\n\t\n}" (blank)
 
-    completion template : Definition =
-      "import " <some::module> (blank)
+  completion template : Definition =
+    "entity " <name> " {\n\t\n}" (blank)
 
-    completion template : Definition =
-      "resource " <some/file.png> (blank)
+  completion template : Definition =
+    "service " <name> " {\n\tresource someResource() : Dynamic {\n\t\turi = \"/someResource\"\n\t}\n}" (blank)
 
-    completion template : Definition =
-      "load " <some/file.js> (blank)
+  completion template : Definition =
+    "import " <some::module> (blank)
 
-    completion template : Definition =
-      "external type " <name> "{\n\t\n}" (blank)
+  completion template : Definition =
+    "resource " <some/file.png> (blank)
 
-    completion template : Definition =
-      "type " <name> "{\n\t\n}" (blank)
+  completion template : Definition =
+    "load " <some/file.js> (blank)
 
-    completion template : Definition =
-      "external function " <name> "() {\n\t\n\}" (blank)
+  completion template : Definition =
+    "external type " <name> "{\n\t\n}" (blank)
+
+  completion template : Definition =
+    "type " <name> "{\n\t\n}" (blank)
+
+  completion template : Definition =
+    "external function " <name> "() {\n\t\n\}" (blank)
 
 completions
 
@@ -65,51 +71,74 @@ completions
 
 completions
 
-    completion template : Statement =
-      "if" "(" <e> ") {\n\t\n}" (blank)
+  completion template : Statement =
+    "if" "(" <e> ") {\n\t\n}" (blank)
 
-    completion template : Statement =
-      "if" "(" <e> ") {\n\t\n} else {\n\t\n}" (blank)
+  completion template : Statement =
+    "if" "(" <e> ") {\n\t\n} else {\n\t\n}" (blank)
 
-    completion template : Statement =
-      "foreach" "(" <x> " in " <coll> ") {\n\t\n}" (blank)
+  completion template : Statement =
+    "foreach" "(" <x> " in " <coll> ") {\n\t\n}" (blank)
 
-    completion template : Statement =
-      "var " <x> " = " <value> ";" (blank)
+  completion template : Statement =
+    "var " <x> " = " <value> ";" (blank)
 
-    completion template : Statement =
-      "return " <value> ";" (blank)
+  completion template : Statement =
+    "return " <value> ";" (blank)
 
-    completion template : Statement =
-      "screen return " <value> ";" (blank)
-
-completions
-
-    completion template : ScreenElem =
-      "var " <x> " = " <value> (blank)
-
-    completion template : ScreenElem =
-      "list" "(" <x> " in " <coll> ") {\n\t\n}" (blank)
-
-    completion template : ScreenElem =
-      "when" "(" <e> ") {\n\t\n}" (blank)
-
-    completion template : ScreenElem =
-      "when" "(" <e> ") {\n\t\n} else {\n\t\n}" (blank)
+  completion template : Statement =
+    "screen return " <value> ";" (blank)
 
 completions
 
-    completion template : Definition =
-      "@service GET /" "\nfunction " <myService> "(req : Request, res : Response) {\n\t\n}" (blank)
+  completion template : ScreenElem =
+    "var " <x> " = " <value> (blank)
 
-    completion template : Definition =
-      "@service PUT /" "\nfunction " <myService> "(req : Request, res : Response) {\n\t\n}" (blank)
+  completion template : ScreenElem =
+    "list" "(" <x> " in " <coll> ") {\n\t\n}" (blank)
 
-    completion template : Definition =
-      "@service POST /" "\nfunction " <myService> "(req : Request, res : Response) {\n\t\n}" (blank)
+  completion template : ScreenElem =
+    "when" "(" <e> ") {\n\t\n}" (blank)
 
-    completion template : Definition =
-      "@service DELETE /" "\nfunction " <myService> "(req : Request, res : Response) {\n\t\n}" (blank)
+  completion template : ScreenElem =
+    "when" "(" <e> ") {\n\t\n} else {\n\t\n}" (blank)
 
-    completion template : Definition =
-      "database host " <"localhost"> " name \"dbname\" username \"user\" password \"pass\"" (blank)
+completions
+
+  completion template : Definition =
+    "@service GET /" "\nfunction " <myService> "(req : Request, res : Response) {\n\t\n}" (blank)
+
+  completion template : Definition =
+    "@service PUT /" "\nfunction " <myService> "(req : Request, res : Response) {\n\t\n}" (blank)
+
+  completion template : Definition =
+    "@service POST /" "\nfunction " <myService> "(req : Request, res : Response) {\n\t\n}" (blank)
+
+  completion template : Definition =
+    "@service DELETE /" "\nfunction " <myService> "(req : Request, res : Response) {\n\t\n}" (blank)
+
+  completion template : Definition =
+    "database host " <"localhost"> " name \"dbname\" username \"user\" password \"pass\"" (blank)
+
+completions
+
+  completion template : Setting =
+    "debug" (blank)
+
+  completion template : Setting =
+    "offline" (blank)
+
+  completion template : Setting =
+    "stdlib " <path> (blank)
+
+  completion template : Setting =
+    "lib " <path> (blank)
+
+  completion template : Setting =
+    "title " <"My Application"> (blank)
+
+  completion template : Setting =
+    "icon " <path> (blank)
+
+  completion template : Setting =
+    "database " <"mydb"> (blank)

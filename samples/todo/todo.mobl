@@ -1,8 +1,5 @@
 application todo
 
-title "Todo"
-database "todo"
-
 import mobl::ui::generic
 
 entity Task {

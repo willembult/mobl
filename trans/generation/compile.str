@@ -101,7 +101,7 @@ strategies
   get-configuration :
     filename -> setting*
     where file-exists
-    with Configuration(setting*) := <parse-file> filename
+    with Configuration(setting*) := <parse-file <+ !Configuration([])> filename
 
   get-configuration :
     filename -> []
