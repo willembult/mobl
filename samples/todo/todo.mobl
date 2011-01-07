@@ -10,18 +10,18 @@ entity Task {
 }
 
 screen addTask() {
-  var newTask : Task = Task()
+  var newTask = Task()
 
   header("Add") {
-    backButton("Back", onclick={ screen return; })
+    backButton()
+    button("Add", onclick={
+      add(newTask);
+      screen return;
+    })
   }
   group {
     item { textField(newTask.name, placeholder="Task name") }
   }
-  button("Add", onclick={
-    add(newTask);
-    screen return;
-  })
 }
 
 screen editTask(t : Task) {
@@ -32,35 +32,25 @@ screen editTask(t : Task) {
     item { textField(t.name, placeholder="Task name") }
     item { textField(t.description, placeholder="Task description") }
   }
-  button("Delete", onclick={
-    remove(t);
-    screen return;
-  })
 }
 
 screen root() {
-  control defaultView(t : Task, editing : Bool) {
-    item(onswipe={ editing = true; }) {
-      checkBox(t.done) " "
-      label(t.name)
-    }
-  }
-  control editView(t : Task, editing : Bool) {
-    item(onswipe={ editing = false; }) {
-      checkBox(t.done) " "
-      label(t.name)
-      sideButton("Delete", onclick={ remove(t); })
-    }
-  }
-  var searchQuery = ""
   header("Tasks") {
     button("Add", onclick={ addTask(); })
   }
-  searchBox(searchQuery)
   group {
-    list(t in Task.searchPrefix(searchQuery)) {
-      var editing = false
-      (editing ? editView : defaultView)(t, editing)
+    list(t in Task.all() order by date desc) {
+      item {
+        checkBox(t.done, label=t.name)
+        contextMenu {
+          button("Delete", onclick={
+            remove(t);
+          })
+          button("Edit", onclick={
+            editTask(t);
+          })
+        }
+      }
     }
   }
 }
