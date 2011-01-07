@@ -3,6 +3,20 @@ application todo
 import mobl::ui::generic
 import model
 
+control taskItem(t : Task) {
+  item {
+    checkBox(t.done, label=t.name)
+    contextMenu {
+      button("Delete", onclick={
+        remove(t);
+      })
+      button("Edit", onclick={
+        editTask(t);
+      })
+    }
+  }
+}
+
 screen addTask() {
   var newTask = Task()
 
@@ -41,20 +55,6 @@ screen search() {
   }
 }
 
-control taskItem(t : Task) {
-  item {
-    checkBox(t.done, label=t.name)
-    contextMenu {
-      button("Delete", onclick={
-        remove(t);
-      })
-      button("Edit", onclick={
-        editTask(t);
-      })
-    }
-  }
-}
-
 screen root() {
   header("Tasks") {
     button("Add", onclick={ addTask(); })
@@ -64,7 +64,5 @@ screen root() {
       taskItem(t)
     }
   }
-  button("Search", onclick={
-    search();
-  })
+  button("Search", onclick={ search(); })
 }
