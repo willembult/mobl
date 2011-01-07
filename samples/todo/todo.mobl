@@ -34,23 +34,43 @@ screen editTask(t : Task) {
   }
 }
 
+screen search() {
+  header("Search") {
+    backButton()
+  }
+  var phrase = ""
+  searchBox(phrase, placeholder="Search term")
+  group {
+    list(t in Task.searchPrefix(phrase)) {
+      taskItem(t)
+    }
+  }
+}
+
+control taskItem(t : Task) {
+  item {
+    checkBox(t.done, label=t.name)
+    contextMenu {
+      button("Delete", onclick={
+        remove(t);
+      })
+      button("Edit", onclick={
+        editTask(t);
+      })
+    }
+  }
+}
+
 screen root() {
   header("Tasks") {
     button("Add", onclick={ addTask(); })
   }
   group {
     list(t in Task.all() order by date desc) {
-      item {
-        checkBox(t.done, label=t.name)
-        contextMenu {
-          button("Delete", onclick={
-            remove(t);
-          })
-          button("Edit", onclick={
-            editTask(t);
-          })
-        }
-      }
+      taskItem(t)
     }
   }
+  button("Search", onclick={
+    search();
+  })
 }
