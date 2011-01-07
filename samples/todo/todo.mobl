@@ -1,6 +1,6 @@
 application todo
 
-import mobl::ui::generic
+import ui
 import model
 
 control taskItem(t : Task) {

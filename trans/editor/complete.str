@@ -11,12 +11,13 @@ imports
   type
   pp
   normalize
+  desugar
 
 rules
 
   editor-complete :
     (t, position, ast, path, project-path) -> proposals
-    where ast' := <analyze> ast
+    where ast' := <analyze; capture-style-configs> ast
     where {| Proposals, CompletionVars, Parents
            : rules ( Parents := [] )
            ; <alltd({props, stack:
@@ -80,6 +81,11 @@ rules
       all-types := <get-all-types>;
       proposals    := <map(type-name-to-proposal); flatten-list> all-types
 
+  editor-complete-proposal :
+    StyleConfigRef(COMPLETION(_)) -> <map(\ s -> ([s], "") \)> <all-keys-StyleConfig>
+
+  editor-complete-proposal :
+    StyleConfig(COMPLETION(_), _) -> <map(\ s -> ([s], "") \)> <all-keys-StyleConfig>
 
 rules
 

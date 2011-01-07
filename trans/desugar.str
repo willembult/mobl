@@ -11,7 +11,7 @@ imports
 strategies
 
   desugar-all =
-    style-desugar
+    capture-style-configs
     ; innermost(desugar)
     ; topdown(try(flatten-list))
 
@@ -192,11 +192,10 @@ rules
 
 rules // style
 
-  style-desugar = alltd(capture-style-config)
+  capture-style-configs = alltd(capture-style-config)
 
   capture-style-config :
     StyleConfig(x, e) -> <id>
-    where not(<StyleConfig> x) // ignore redefinitions
     where rules ( StyleConfig : x -> e )
 
   floorS = string-tokenize(|<explode-string> "."); Hd
@@ -206,15 +205,15 @@ rules // style
 
   desugar :
     StyleFieldAccess(x, "r") -> r
-    where StyleCall("rgb", [StyleExps([r]), StyleExps([g]), StyleExps([b])]) := <StyleConfig> x
+    where StyleCall("rgb", [StyleExps([r]), StyleExps([g]), StyleExps([b])]) := <StyleConfig; desugar-all> x
 
   desugar :
     StyleFieldAccess(x, "g") -> g
-    where StyleCall("rgb", [StyleExps([r]), StyleExps([g]), StyleExps([b])]) := <StyleConfig> x
+    where StyleCall("rgb", [StyleExps([r]), StyleExps([g]), StyleExps([b])]) := <StyleConfig; desugar-all> x
 
   desugar :
     StyleFieldAccess(x, "b") -> b
-    where StyleCall("rgb", [StyleExps([r]), StyleExps([g]), StyleExps([b])]) := <StyleConfig> x
+    where StyleCall("rgb", [StyleExps([r]), StyleExps([g]), StyleExps([b])]) := <StyleConfig; desugar-all> x
 
   desugar :
     StyleConfigRef(x) -> <StyleConfig> x

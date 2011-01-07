@@ -44,7 +44,7 @@ rules
       rules ( ProjectPath := project-path
               IsImported  : path )
       ; setup-paths
-      ; ast2 := <analyze; store-result> ast
+      ; ast2 := <analyze; capture-style-configs; store-result> ast
       ; (Module(mod-name, _) := ast2 <+ Application(mod-name, _) := ast2 <+ ServerApplication(mod-name, _, _) := ast2 <+ Configuration(_) := ast2; mod-name := "")
       ; rules ( CompilingModule := mod-name
                 CompilingFilename := path )
