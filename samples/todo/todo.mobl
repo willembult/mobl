@@ -1,13 +1,7 @@
 application todo
 
 import mobl::ui::generic
-
-entity Task {
-  name        : String (searchable)
-  description : String (searchable)
-  done        : Bool
-  date        : DateTime
-}
+import model
 
 screen addTask() {
   var newTask = Task()
