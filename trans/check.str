@@ -259,12 +259,6 @@ rules
 rules
 
   constraint-error :
-    StyleConfigRef(x) -> (x, $[Unknown style configuration.])
-    where not(<StyleConfig> x)
-
-rules
-
-  constraint-error :
     SetComp(e, fltr*) -> <oncetd(set-comp-error(|<type-of; ?GenericType(QId("mobl", "Collection"), [<id>])> e); ?err); !err> fltr*
 
   set-comp-error(|t) :

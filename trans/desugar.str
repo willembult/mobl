@@ -7,6 +7,7 @@ imports
   type
   lookup
   ui-lift
+  style
 
 strategies
 
@@ -189,43 +190,6 @@ rules
     ([NamedExp(x, e)|arg*], [FArg(y, _)|farg*]) -> <fail>
     where not(<eq> (x, y))
     //where debug(!"Unmatched named exp: ")
-
-rules // style
-
-  capture-style-configs = alltd(capture-style-config)
-
-  capture-style-config :
-    StyleConfig(x, e) -> <id>
-    where rules ( StyleConfig : x -> e )
-
-  floorS = string-tokenize(|<explode-string> "."); Hd
-
-  apply-real-to-str-tuple(s) =
-    (string-to-real, string-to-real) ; s ; real-to-string; floorS
-
-  desugar :
-    StyleFieldAccess(x, "r") -> r
-    where StyleCall("rgb", [StyleExps([r]), StyleExps([g]), StyleExps([b])]) := <StyleConfig; desugar-all> x
-
-  desugar :
-    StyleFieldAccess(x, "g") -> g
-    where StyleCall("rgb", [StyleExps([r]), StyleExps([g]), StyleExps([b])]) := <StyleConfig; desugar-all> x
-
-  desugar :
-    StyleFieldAccess(x, "b") -> b
-    where StyleCall("rgb", [StyleExps([r]), StyleExps([g]), StyleExps([b])]) := <StyleConfig; desugar-all> x
-
-  desugar :
-    StyleConfigRef(x) -> <StyleConfig> x
-
-  desugar :
-    StyleAdd(Num(n1), Num(n2)) -> Num(<apply-real-to-str-tuple(add)> (n1, n2))
-
-  desugar :
-    StyleSub(Num(n1), Num(n2)) -> Num(<apply-real-to-str-tuple(subt)> (n1, n2))
-
-  desugar :
-    StyleMul(Num(n1), Num(n2)) -> Num(<apply-real-to-str-tuple(mul)> (n1, n2))
 
 rules
 

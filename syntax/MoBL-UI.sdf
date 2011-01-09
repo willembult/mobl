@@ -48,6 +48,7 @@ exports
 
     "list" "(" LValue ":" Type "in" Exp ")" "{" ScreenElem* "}"       -> ScreenElem {cons("List")}
     "list" "(" LValue "in" Exp ")" "{" ScreenElem* "}"                -> ScreenElem {cons("ListInferred")}
+
     "cond" "(" Exp ")" "{" ScreenElem* "}"                            -> ScreenElem {cons("WhenNoElse"), deprecated("Please use when instead, same syntax, different keyword")}
     "when" "(" Exp ")" "{" ScreenElem* "}" "else" "{" ScreenElem* "}" -> ScreenElem {cons("When")}
     "when" "(" Exp ")" "{" ScreenElem* "}"                            -> ScreenElem {cons("WhenNoElse")}

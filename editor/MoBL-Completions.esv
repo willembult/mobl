@@ -10,6 +10,7 @@ completions
     identifier lexical  : [A-Za-z0-9_\$]+
     completion trigger  : "\."
     completion trigger  : "::"
+    completion trigger  : "\$"
 
 completions
 
@@ -51,6 +52,15 @@ completions
 
   completion template : Definition =
     "external function " <name> "() {\n\t\n\}" (blank)
+
+  completion template : Definition =
+    "style " <name> " {\n\t\n}" (blank)
+
+  completion template : Definition =
+    "style mixin " <name> "() {\n\t\n}" (blank)
+
+  completion template : Definition =
+    "style $" <name> " = rgb(255, 255, 255)" (blank)
 
 completions
 

@@ -66,26 +66,6 @@ strategies
     where <is-string> x
 
   add-tl-namespace :
-    Style(manno*, sel*, selem*) -> Style(manno*, sel2*, selem*)
-    where sel2* := <map(try(add-tl-namespace-sel))> sel*
-
-  add-tl-namespace :
-    ExternalStyle(manno*, sel*) -> ExternalStyle(manno*, sel2*)
-    where sel2* := <map(try(add-tl-namespace-sel))> sel*
-
-  add-tl-namespace-sel :
-    StyleSelector(x) -> StyleSelector(QId(<ModuleName>, x))
-    where <is-string> x
-
-  add-tl-namespace-sel :
-    StyleSelectorWithPseudo(x, pt) -> StyleSelectorWithPseudo(QId(<ModuleName>, x), pt)
-    where <is-string> x
-
-  add-tl-namespace-sel :
-    StyleSelectorWithPseudoArg(x, pt, arg) -> StyleSelectorWithPseudoArg(QId(<ModuleName>, x), pt, arg)
-    where <is-string> x
-
-  add-tl-namespace :
     VarDecl(x, t, e) -> VarDecl(QId(<ModuleName>, x), t, e)
     where <is-string> x
 
@@ -127,12 +107,6 @@ rules
     where <is-string> qid
     where not(<lookup-global-var-aux> qid)
         ; [qid2] := <filter({c, newid: ?c; <prefix-qid(|c)> qid; ?newid; lookup-global-var-aux; !newid})> [<ModuleName>|<bagof-Imports>]
-
-  add-namespace :
-    Var(qid{}) -> Var(qid2)
-    where <is-string> qid
-    where not(<lookup-style> qid)
-        ; [qid2] := <filter({c, newid: ?c; <prefix-qid(|c)> qid; ?newid; lookup-style; !newid})> [<ModuleName>|<bagof-Imports>]
 
   add-namespace :
     Assignment(qid, e) -> Assignment(qid2, <add-namespace-all> e)

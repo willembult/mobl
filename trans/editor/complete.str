@@ -12,6 +12,7 @@ imports
   pp
   normalize
   desugar
+  style
 
 rules
 
@@ -80,12 +81,6 @@ rules
     where
       all-types := <get-all-types>;
       proposals    := <map(type-name-to-proposal); flatten-list> all-types
-
-  editor-complete-proposal :
-    StyleConfigRef(COMPLETION(_)) -> <map(\ s -> ([s], "") \)> <all-keys-StyleConfig>
-
-  editor-complete-proposal :
-    StyleConfig(COMPLETION(_), _) -> <map(\ s -> ([s], "") \)> <all-keys-StyleConfig>
 
 rules
 

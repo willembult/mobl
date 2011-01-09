@@ -19,7 +19,8 @@ colorer
   UriPath  : blue
   UriPart  : blue
 
-  _.StyleConfigRef      : brown
+  _.StyleVar      : brown
+  _.StyleFArg     : brown
 
   _.StyleFieldAccess    : brown
 

@@ -9,13 +9,22 @@ exports
   context-free syntax
 
     MetaAnno* "style" StyleSelector+ "{" StyleElem* "}"    -> Definition {cons("Style")}
+    MetaAnno* "style" "mixin" QId "(" {StyleFArg ","}* ")" "{" StyleElem* "}"    -> Definition {cons("StyleMixin")}
+
+    "$" STYLEID -> StyleFArg {cons("StyleFArg")}
+
+    "style" StyleVar "=" StyleExp -> Definition {cons("StyleVarDecl")}
+
+    "$" STYLEID -> StyleVar {cons("StyleVar")}
 
     MetaAnno* "external" "style" StyleSelector+ -> Definition {cons("ExternalStyle")}
 
-    STYLEPROPID ":" StyleExpsTL ";" -> StyleElem {cons("StyleProperty")}
+    STYLEPROPID ":" StyleExpsTL ";"  -> StyleElem {cons("StyleProperty")}
+    QId "(" {StyleExps ","}* ")" ";" -> StyleElem {cons("StyleMixinCall")}
+    QId ";" -> StyleElem {cons("StyleElemRecover"), avoid}
 
-    QId                     -> StyleSelector {cons("StyleSelector")}
-    QId ":" STYLEPROPID              -> StyleSelector {cons("StyleSelectorWithPseudo")}
+    QId                                       -> StyleSelector {cons("StyleSelector")}
+    QId ":" STYLEPROPID                       -> StyleSelector {cons("StyleSelectorWithPseudo")}
     QId ":" STYLEPROPID "(" STYLEPROPID ")"   -> StyleSelector {cons("StyleSelectorWithPseudoArg")}
 
     COLOR                   -> StyleExp {cons("Color")}
@@ -23,11 +32,11 @@ exports
     STRING                  -> StyleExp {cons("String")}
     NUMBER                  -> StyleExp {cons("Num")}
     NUMBER Unit             -> StyleExp {cons("NumUnit")}
-    "$" ID                  -> StyleExp {cons("StyleConfigRef")}
+    StyleVar                -> StyleExp
     StyleExp "+" StyleExp   -> StyleExp {cons("StyleAdd"), left}
     StyleExp "~" StyleExp   -> StyleExp {cons("StyleSub"), left}
     StyleExp "*" StyleExp   -> StyleExp {cons("StyleMul"), left}
-    "$" ID "." ID           -> StyleExp {cons("StyleFieldAccess")}
+    StyleVar "." ID         -> StyleExp {cons("StyleFieldAccess")}
 
     %%"(" StyleExp ")"        -> StyleExp {bracket}
 
@@ -51,10 +60,6 @@ exports
       StyleExp "~" StyleExp -> StyleExp
     }
 
-  context-free syntax
-
-    "style" "config" ID "=" StyleExp -> Definition {cons("StyleConfig")}
-
   lexical syntax
     [\#][0-9a-fA-F]* -> COLOR
     [a-zA-Z\_\-][a-zA-Z0-9\_\-]+ -> STYLEPROPID
@@ -63,6 +68,7 @@ exports
     "px" -> STYLEID {reject}
     "em" -> STYLEID {reject}
     "pt" -> STYLEID {reject}
+    "mixin" -> ID {reject}
 
   lexical restrictions
 

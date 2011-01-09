@@ -19,6 +19,7 @@ imports
   resolve
   analyze
   type
+  style
   desugar
   declare
   pp

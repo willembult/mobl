@@ -13,7 +13,8 @@ rules
     Style(_, sel*, prop*) -> <emit-css>
     $[[<map(sel-to-css; <concat-strings> [".", <id>]); separate-by(|" ") <+ debug(!"Could not generate for: "); fail> sel*] {
         [<map(style-prop-to-css); separate-by(|"\n") <+ debug(!"Could not generate for: "); fail> prop*]
-      }]
+      }
+      ]
     with qid := <reverse; Hd; ?_#([<id>|_])> sel*
     with <emit> $[[<qid-to-js> qid] = '[<qid-to-css> qid]';
 ]

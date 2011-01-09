@@ -134,23 +134,6 @@ strategies
           GetGlobalVar : qid -> extern
         )
 
-  declare :
-    Style(_, qid*, _) -> <fail>
-    with
-      extern := <origin-track-forced(definition-to-external)>
-      ; last-qid := <reverse; Hd; ?_#([<id>|_])> qid*
-      ; rules (
-          GetStyle : last-qid -> extern
-        )
-
-  declare :
-    extern@ExternalStyle(_, qid*) -> <fail>
-    with
-      last-qid := <reverse; Hd; ?_#([<id>|_])> qid*
-      ; rules (
-          GetStyle : last-qid -> extern
-        )
-
 strategies // convert to externals
 
   definition-to-external :
@@ -186,9 +169,6 @@ strategies // convert to externals
 
   type-def-to-external :
     SyncFunction(manno*, x, farg*, rt, _) -> ExternalSyncMethod(manno*, x, farg*, rt)
-
-  definition-to-external :
-    Style(manno*, sel*, _) -> ExternalStyle(manno*, sel*)
 
   // For signatures we turn a webservice into an external type and resources into external methods
   service-elem-to-external :
