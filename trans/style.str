@@ -127,6 +127,11 @@ rules
     sv@StyleMixinCall(qid, _) -> (sv, $[Unkown style mixin.])
     where not(<lookup-style-mixin> qid)
 
+  constraint-error :
+    sv@StyleMixinCall(qid, se*) -> (sv, $[Invalid number of arguments, excepted: [<length> farg*]])
+    where StyleMixin(_, _, farg*, _) := <lookup-style-mixin> qid
+        ; not(<eq> (<length> se*, <length> farg*))
+
   editor-complete-proposal :
     StyleVar(COMPLETION(_)) -> <map(\ s -> ([s], "") \)> <all-keys-StyleVar>
 
