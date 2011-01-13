@@ -16,7 +16,7 @@ strategies
 
   // Records the definition of an entity in a dynamic rule GetEntity.
   declare:
-    Entity(_, qid, super, body) -> <fail>
+    Entity(_, qid, super, body) -> <id>
     with
       extern := <origin-track-forced(definition-to-external)>
       ; rules(
@@ -24,38 +24,38 @@ strategies
         )
 
   declare:
-    Type(manno*, qid, super, def*) -> <fail>
+    Type(manno*, qid, super, def*) -> <id>
     with extern := <origin-track-forced(definition-to-external)>
        ; rules (
            GetType : qid -> extern
          )
 
   declare:
-    extern@ExternalType(manno*, qid, super, method*) -> <fail>
+    extern@ExternalType(manno*, qid, super, method*) -> <id>
     with rules (
            GetType : qid -> extern
          )
 
   declare:
-    extern@ExternalGenericType(manno*, qid, arg*, method*) -> <fail>
+    extern@ExternalGenericType(manno*, qid, arg*, method*) -> <id>
     with rules (
            GetGenericType : qid -> extern
          )
 
   declare:
-    extern@ExternalEntity(manno*, qid, super, prop*) -> <fail>
+    extern@ExternalEntity(manno*, qid, super, prop*) -> <id>
     with rules (
              GetEntity : qid -> extern
            )
 
   declare:
-    extern@ExternalFunction(manno*, qid, farg*, rt) -> <fail>
+    extern@ExternalFunction(manno*, qid, farg*, rt) -> <id>
     with rules (
            GetFunction : qid -> extern
          )
 
   declare:
-    extern@ExternalSyncFunction(manno*, qid, farg*, rt) -> <fail>
+    extern@ExternalSyncFunction(manno*, qid, farg*, rt) -> <id>
     with rules (
            GetFunction : qid -> extern
          )

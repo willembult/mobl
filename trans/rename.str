@@ -214,7 +214,7 @@ rules
   rename :
     Callback(body) -> Callback(body2)
     with action-scope(
-           <rename-var> ("event", SimpleType(QId("mobl", "Event")))
+           <rename-var> ("event", SimpleType(QId("mobl", "DOMEvent")))
            ; body2 := <rename-all> body
          )
 

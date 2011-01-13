@@ -7,6 +7,7 @@ imports
   check
   desugar
   pp
+  style
   lib/editor-common
 
 imports
@@ -51,6 +52,7 @@ rules
       ; errors   := <collect-all(constraint-error, conc)> ast2
       ; if not([] := errors) then
           rules ( HasErrors := True() )
+          ; debug(!"Errors: ")
         end
       ; warnings := <collect-all(constraint-warning, conc)> ast2
       ; notes    := <collect-all(constraint-note, conc)> ast2

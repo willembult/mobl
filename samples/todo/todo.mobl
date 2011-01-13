@@ -21,7 +21,7 @@ screen addTask() {
   var newTask = Task()
 
   header("Add") {
-    backButton()
+    backButton("Back", onclick= { screen return; })
     button("Add", onclick={
       add(newTask);
       screen return;
@@ -42,7 +42,7 @@ screen editTask(t : Task) {
   }
 }
 
-screen search() {
+control search() {
   header("Search") {
     backButton()
   }
@@ -55,7 +55,7 @@ screen search() {
   }
 }
 
-screen root() {
+control tasks() {
   header("Tasks") {
     button("Add", onclick={ addTask(); })
   }
@@ -64,5 +64,8 @@ screen root() {
       taskItem(t)
     }
   }
-  button("Search", onclick={ search(); })
+}
+
+screen root() {
+  tabSet([("Tasks", "", tasks), ("Search", "", search)])
 }

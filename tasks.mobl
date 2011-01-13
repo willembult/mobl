@@ -1,10 +1,7 @@
 application tasks
 
-debug
-
 resource taskicon.png
 
-import mobl
 import mobl::ui::generic
 
 entity Task {
@@ -17,23 +14,26 @@ screen root() {
   header("Todo") {
     button("Add", onclick={
       addTask();
-     })
+    })
+    button("Whatever", onclick={
+      var t = Task(name="Whatever");
+      add(t);
+    })
   }
-  control itemMaster(t : Task) {
-    checkBox(t.done, label=t.name)
-  }
-  control detail(t : Task) {
-    "Task details"
-    group {
-      item { "Name: " label(t.name) }
-      item { "Done: " label(t.done) }
-      item { "Due: " label(t.dueDate) }
+  var phrase = ""
+  searchBox(phrase)
+  group {
+    list(task in Task.searchPrefix(phrase) where done == false) {
+      item {
+        checkBox(task.done, label=task.name)
+        contextMenu() {
+          button("Remove", onclick={
+            remove(task);
+          })
+        }
+      }
     }
   }
-  masterDetail(Task.all(), itemMaster, detail)
-  /*list(task in Task.all() where done == false) {
-    itemMaster(task)
-  }*/
 }
 
 screen addTask() {

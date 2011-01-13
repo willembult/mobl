@@ -23,9 +23,9 @@ rules
     (?Module(qid, def*) <+ ?Application(qid, def*) <+ ?ServerApplication(qid, _, def*))
     ; {| ModuleName, Imports
        : rules ( ModuleName := qid )
+       ; normalize-all
        ; ensure-mobl-import
        ; import-all
-       ; normalize-all
        ; alltd(origin-track-forced(add-tl-namespace))
        ; declare-all
        ; rename-all

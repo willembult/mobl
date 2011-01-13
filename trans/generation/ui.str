@@ -367,11 +367,11 @@ rules
             }());
           }
           mobl.delayedUpdateScrollers();
+          subs__.addSub([list].addEventListener('change', function() { listSubs__.unsubscribe(); [renderList](true); }));
+          subs__.addSub([<ref-expression-to-js> e].addEventListener('change', function() { listSubs__.unsubscribe(); [renderList](true); }));
         });
       };
       [renderList]();
-      subs__.addSub([list].addEventListener('change', function() { listSubs__.unsubscribe(); [renderList](true); }));
-      subs__.addSub([<ref-expression-to-js> e].addEventListener('change', function() { listSubs__.unsubscribe(); [renderList](true); }));
       [subscriptions]
       [<elems-to-js(|root)> rest*]
     ]

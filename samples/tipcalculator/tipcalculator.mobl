@@ -6,7 +6,9 @@ screen root() {
   var amount     =  20
   var percentage =  10
 
-  header("Tip calculator")
+  header("Tip calculator") {
+    button("Up", onclick={ amount = amount + 10; })
+  }
   group {
     item { numField(amount, label="amount") }
     item { numField(percentage, label="percentage") }

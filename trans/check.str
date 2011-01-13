@@ -235,6 +235,10 @@ rules
     where not(<qid-to-path; <concat-strings> [<id>, ".mobl"]; resolve-file> qid)
 
   constraint-error :
+    Mixin(qid) -> (qid, $[Module not found.])
+    where not(<qid-to-path; <concat-strings> [<id>, ".mobl"]; resolve-file> qid)
+
+  constraint-error :
     t@SetComp(e, fltr) -> (t, $[Comprehensions can only be used with expressions of type Collection<T>.])
     where not(GenericType(QId("mobl", "Collection"), _) := <type-of> e)
 
