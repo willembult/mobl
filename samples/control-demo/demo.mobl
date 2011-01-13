@@ -18,17 +18,17 @@ entity Person {
 screen root() {
   header("A header")
   group {
-    itemArrow(onclick={ buttons(); }) { "Buttons" }
-    itemArrow(onclick={ lists(); }) { "Lists/tables" }
-    itemArrow(onclick={ forms(); }) { "Forms" }
-    itemArrow(onclick={ tabs(); }) { "Tabs" }
-    itemArrow(onclick={ accordion(); }) { "Accordion" }
-    itemArrow(onclick={ master(); }) { "Master detail" }
-    itemArrow(onclick={ zoom(); }) { "Zoom list" }
-    itemArrow(onclick={ staged(); }) { "Staged list" }
-    itemArrow(onclick={ selectList("Select items", Collection<Person>(Person(name="Zef"), Person(name="Eelco"), Person(name="Danny"))); }) { "Markable list" }
-    itemArrow(onclick={ charts(); }) { "Charts" }
-    itemArrow(onclick={ maps(); }) { "Maps" }
+    item(onclick={ buttons(); }) { "Buttons" }
+    item(onclick={ lists(); }) { "Lists/tables" }
+    item(onclick={ forms(); }) { "Forms" }
+    item(onclick={ tabs(); }) { "Tabs" }
+    item(onclick={ accordion(); }) { "Accordion" }
+    item(onclick={ master(); }) { "Master detail" }
+    item(onclick={ zoom(); }) { "Zoom list" }
+    item(onclick={ staged(); }) { "Staged list" }
+    item(onclick={ selectList("Select items", Collection<Person>(Person(name="Zef"), Person(name="Eelco"), Person(name="Danny"))); }) { "Markable list" }
+    item(onclick={ charts(); }) { "Charts" }
+    item(onclick={ maps(); }) { "Maps" }
   }
   link("jqdemo.html", target="_top") { "Demo of jQuery Mobile controls" }
 }
@@ -60,7 +60,7 @@ screen lists() {
   }
   group {
     item { "Group item" }
-    itemArrow(onclick={ clickedArrow(); }) { "Arrowed group item" }
+    item(onclick={ clickedArrow(); }) { "Arrowed group item" }
     item {
       "Group item with context"
       contextMenu {
