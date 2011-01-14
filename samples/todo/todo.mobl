@@ -4,17 +4,29 @@ import ui
 import model
 
 control taskItem(t : Task) {
-  item {
-    checkBox(t.done, label=t.name)
-    contextMenu {
-      button("Delete", onclick={
-        remove(t);
-      })
-      button("Edit", onclick={
-        editTask(t);
-      })
+  checkBox(t.done, label=t.name)
+  contextMenu {
+    button("Delete", onclick={
+      remove(t);
+    })
+    button("Edit", onclick={
+      editTask(t);
+    })
+  }
+}
+
+control taskDetail(t : Task) {
+  group {
+    item { label(t.name) }
+    when(t.description) {
+      item { label(t.description) }
+    }
+    item {
+      label(t.done ? "This task has been performed"
+                   : "This task has not been performed")
     }
   }
+  button("Edit", onclick={ editTask(t); })
 }
 
 screen addTask() {
@@ -37,33 +49,23 @@ screen editTask(t : Task) {
     button("Done", onclick={ screen return; })
   }
   group {
-    item { textField(t.name, placeholder="Task name") }
-    item { textField(t.description, placeholder="Task description") }
+    item { textField(t.name,
+                     placeholder="Task name") }
+    item { textField(t.description,
+                     placeholder="Task description") }
   }
 }
 
 control search() {
-  header("Search") {
-    backButton()
-  }
-  var phrase = ""
-  searchBox(phrase, placeholder="Search term")
-  group {
-    list(t in Task.searchPrefix(phrase)) {
-      taskItem(t)
-    }
-  }
+  header("Search")
+  searchList(Task, taskItem, taskDetail, resultLimit=10)
 }
 
 control tasks() {
   header("Tasks") {
     button("Add", onclick={ addTask(); })
   }
-  group {
-    list(t in Task.all() order by date desc) {
-      taskItem(t)
-    }
-  }
+  masterDetail(Task.all() order by date desc, taskItem, taskDetail)
 }
 
 screen root() {
