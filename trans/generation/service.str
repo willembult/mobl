@@ -43,7 +43,10 @@ rules
              callback(null);
            },
            success: function(data) {
-              [<expression-to-js> mapper](data, callback);
+              var result = [<expression-to-js> mapper](data, callback);
+              if(result !== undefined) {
+                callback(result);
+              }
            }
         });
       }
