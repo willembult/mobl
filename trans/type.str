@@ -5,6 +5,7 @@ imports
   rename
   lookup
   desugar
+  style
 
 strategies
 
@@ -52,6 +53,9 @@ strategies
 
   eq-type-of :
     Brackets(e) -> <type-of> e
+
+  eq-type-of :
+    AsyncCall([e|_]) -> <type-of> e
 
   eq-type-of :
     AnonymousControl(_) -> SimpleType(QId("mobl", "Control"))

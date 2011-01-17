@@ -83,6 +83,9 @@ rules
     SyncFunction(_, qid, _, SimpleType(QId("mobl", "void")), body) -> (stm, $[Return statement should not return a value.])
     where [stm|_] := <collect(?Return(_))> body
 
+  constraint-error :
+    e@AsyncCall(_){} -> (e, $[async call is only allowed as a top-level call in variable declarations in controls and screens.])
+
 rules
 
   constraint-error :

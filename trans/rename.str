@@ -229,7 +229,7 @@ strategies
     where "action" := <RenameScope>
 
   rename :
-    VarDecl(name, t, e) -> VarDecl(<rename-ref-var> (name, t), t, <rename-all> e)
+    VarDecl(name, t, e) -> VarDecl(<rename-ref-var> (name, t), t, <rename-all; try(?AsyncCall(_); !<id>{"OK"})> e)
     where "control" := <RenameScope>
 
   rename :
@@ -237,7 +237,7 @@ strategies
     where "action" := <RenameScope>
 
   rename :
-    VarDeclInferred(name, e) -> VarDeclInferred(<rename-ref-var> (name, <type-of <+ !SimpleType(QId("mobl", "Dynamic"))> e), <rename-all> e)
+    VarDeclInferred(name, e) -> VarDeclInferred(<rename-ref-var> (name, <type-of <+ !SimpleType(QId("mobl", "Dynamic"))> e), <rename-all; try(?AsyncCall(_); !<id>{"OK"})> e)
     where "control" := <RenameScope>
 
   rename :
@@ -272,7 +272,12 @@ strategies
     where <is-string> x
     where rename-scope(
             e2 := <rename-all> e
-            ; GenericType(_, [t]) := <add-namespace-all; type-of> e2
+            ; e-t := <add-namespace-all; type-of> e2
+            ; (
+                GenericType(_, [t]) := e-t
+                <+ <type-compatible> (SimpleType(QId("mobl", "Dynamic")), e-t)
+                   ; t := SimpleType(QId("mobl", "Dynamic"))
+              )
             ; x2 := <rename-ref-var> (x, t)
             ; body2 := <rename-all> body
           )
@@ -310,7 +315,12 @@ strategies
     where <is-string> x
     where rename-scope(
             e2 := <rename-all> e
-            ; GenericType(_, [t]) := <add-namespace-all; type-of> e2
+            ; e-t := <add-namespace-all; type-of> e2
+            ; (
+                GenericType(_, [t]) := e-t
+                <+ <type-compatible> (SimpleType(QId("mobl", "Dynamic")), e-t)
+                   ; t := SimpleType(QId("mobl", "Dynamic"))
+              )
             ; x2 := <rename-var> (x, t)
             ; body2 := <rename-all> body
           )

@@ -11,6 +11,8 @@ imports
 strategies
 
   definition-to-js :
-    Javascript(mod) -> <emit> $[__ns = [<ModuleName; qid-to-js>];
-                                [s]]
+    Javascript(mod) -> <emit>
+    $[(function(__ns) {
+      [s]
+      }([<ModuleName; qid-to-js>]));]
     with s := <pp-mobl-string <+ debug(!"Could not pp: "); fail> mod

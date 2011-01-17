@@ -41,7 +41,7 @@ public class FileServer {
                     String misc = in.readLine();
                     if (misc == null || misc.length() == 0)
                         break;
-                    if(misc.startsWith("Host:")) {
+                    if (misc.startsWith("Host:")) {
                         continue;
                     }
                     request += misc + "\n";
@@ -61,8 +61,10 @@ public class FileServer {
                         // evil hacker trying to read non-wwwhome or secret file
                         errorReport(pout, connection, "403", "Forbidden",
                                 "You don't have permission to access the requested URL.");
-                    } else if(req.startsWith("/proxy.php")) {
+                    } else if (req.startsWith("/proxy.php")) {
                         proxy(in, pout, requestParts);
+                    } else if (req.startsWith("/_proxy/")) {
+                        proxy2(in, pout, requestParts);
                     } else {
                         String path = wwwhome + "/" + req;
                         File f = new File(path);
@@ -114,19 +116,35 @@ public class FileServer {
         }
     }
 
-    private static void proxy(BufferedReader in, PrintStream pout, String[] requestParts) throws UnknownHostException, IOException {
+    private static void proxy(BufferedReader in, PrintStream pout,
+            String[] requestParts) throws UnknownHostException, IOException {
         String[] parts = requestParts[1].split("\\?proxy_url=");
         URL proxyUrl = new URL(parts[1].split(" ")[0]);
+        doProxy(in, pout, requestParts, proxyUrl);
+    }
 
-        Socket sock = new Socket(proxyUrl.getHost(), proxyUrl.getPort() == -1 ? 80 : proxyUrl.getPort());
+    private static void proxy2(BufferedReader in, PrintStream pout,
+            String[] requestParts) throws UnknownHostException, IOException {
+        String[] parts = requestParts[1].split("_proxy/");
+        URL proxyUrl = new URL("http://" + parts[1].split(" ")[0]);
+        doProxy(in, pout, requestParts, proxyUrl);
+    }
+
+    private static void doProxy(BufferedReader in, PrintStream pout,
+            String[] requestParts, URL proxyUrl) throws UnknownHostException,
+            IOException {
+        Socket sock = new Socket(proxyUrl.getHost(),
+                proxyUrl.getPort() == -1 ? 80 : proxyUrl.getPort());
         PrintWriter sockOut = new PrintWriter(sock.getOutputStream(), true);
-        //StringWriter sockOut = new StringWriter();
+        // StringWriter sockOut = new StringWriter();
         InputStream sockIn = sock.getInputStream();
-        sockOut.write(requestParts[0] + " " + (proxyUrl.getPath().equals("") ? "/" : proxyUrl.getPath()) + " HTTP/1.1\n");
+        sockOut.write(requestParts[0] + " "
+                + (proxyUrl.getPath().equals("") ? "/" : proxyUrl.getPath()) + (proxyUrl.getQuery() == null ? "" : "?" + proxyUrl.getQuery())
+                + " HTTP/1.1\n");
         sockOut.write("Host: " + proxyUrl.getHost());
-        for(int i = 3; i < requestParts.length; i++) {
+        for (int i = 3; i < requestParts.length; i++) {
             sockOut.write(requestParts[i]);
-            if(i < requestParts.length - 1) {
+            if (i < requestParts.length - 1) {
                 sockOut.write(' ');
             }
         }
@@ -134,34 +152,19 @@ public class FileServer {
 
         char[] buf = new char[1024];
         int numRead;
-        while(in.ready()) {
+        while (in.ready()) {
             numRead = in.read(buf, 0, 1024);
             sockOut.write(buf, 0, numRead);
         }
-        //sockOut.close();
+        // sockOut.close();
         sockOut.flush();
 
         // Now read the result
         byte[] bbuf = new byte[1024];
-        while((numRead = sockIn.read(bbuf, 0, 1024)) > 0) {
+        while ((numRead = sockIn.read(bbuf, 0, 1024)) > 0) {
             pout.write(bbuf, 0, numRead);
         }
         sockIn.close();
-
-        /*
-        try {
-            // send file
-            InputStream file = new FileInputStream(f);
-            pout.print("HTTP/1.0 200 OK\r\n" + "Content-Type: "
-                    + guessContentType(path) + "\r\n" + "Date: " + new Date()
-                    + "\r\n" + "Server: FileServer 1.0\r\n\r\n");
-            sendFile(file, out); // send raw file
-            log(connection, "200 OK");
-        } catch (FileNotFoundException e) {
-            // file not found
-            errorReport(pout, connection, "404", "Not Found",
-                    "The requested URL was not found on this server.");
-        }*/
     }
 
     private static void log(Socket connection, String msg) {

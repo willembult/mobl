@@ -89,6 +89,8 @@ exports
 
     "(" Exp "," {Exp ","}* ")"   -> Exp {cons("Tuple")}
 
+    "async" "(" {Exp ","}* ")"   -> Exp {cons("AsyncCall"), prefer}
+
     "{" Statement* "}"             -> Exp {cons("Callback")}
     "control" "{" ScreenElem* "}" -> Exp {cons("AnonymousControl")}
 

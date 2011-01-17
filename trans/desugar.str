@@ -26,11 +26,21 @@ strategies
 
   desugar :
     ListInferred(lvalue, e, elem*) -> List(lvalue, t, e, elem*)
-    where GenericType(_, [t]) := <type-of> e
+    where e-t := <type-of> e
+        ; (
+            GenericType(_, [t]) := <type-of> e
+         <+ <type-compatible> (SimpleType(QId("mobl", "Dynamic")), e-t)
+            ; t := SimpleType(QId("mobl", "Dynamic"))
+          )
 
   desugar :
     ForInferred(lvalue, e, elem*) -> For(lvalue, t, e, elem*)
-    where GenericType(_, [t]) := <type-of> e
+    where e-t := <type-of> e
+        ; (
+            GenericType(_, [t]) := <type-of> e
+         <+ <type-compatible> (SimpleType(QId("mobl", "Dynamic")), e-t)
+            ; t := SimpleType(QId("mobl", "Dynamic"))
+          )
 
   desugar :
     DeriveDeclInferred(x, e) -> DeriveDecl(x, <type-of> e, e)
@@ -56,6 +66,39 @@ strategies
           )
         ; e2* := <resolve-fargs> (e*, <topdown(try(strip-annos))> farg*)
         ; not(<eq> (e*, e2*))
+
+  desugar :
+    mobl-elem|[ var x : t = async(e*) ]| -> mobl-elem*|[
+      var x : t = e_init
+      script {
+        async {
+          x = e;
+        }
+      }
+    ]|
+    where if <eq> (<length> e*, 2) then
+            [e, e_init] := e*
+          else
+            e := <Hd> e*
+            ; e_init := mobl-e|[ null ]|
+          end
+
+
+  desugar :
+    mobl-elem|[ var x  = async(e*) ]| -> mobl-elem*|[
+      var x = e_init
+      script {
+        async {
+          x = e;
+        }
+      }
+    ]|
+    where if <eq> (<length> e*, 2) then
+            [e, e_init] := e*
+          else
+            e := <Hd> e*
+            ; e_init := mobl-e|[ null ]|
+          end
 
 rules
 
