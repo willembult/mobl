@@ -35,6 +35,9 @@ strategies
         mobl.icon = "[<<path-to-string> icon <+ !"img/default-icon.png">]";
         $(function(){
           persistence.schemaSync(function(tx) {
+            if(persistence.loadFromLocalStorage) {
+              persistence.loadFromLocalStorage();
+            }
             mobl.call("[<qid-to-js> qid].root", $[$$]$, function() {});
           });
         });

@@ -16,6 +16,7 @@ exports
     "version" STRING                 -> Setting {cons("VersionSetting")}
     "stdlib" Path                    -> Setting {cons("StdLibSetting")}
     "lib" Path                       -> Setting {cons("LibSetting")}
+    "html" FILENAME                  -> Setting {cons("HtmlSetting")}
 
     "offline"                        -> Setting {cons("OfflineSetting")}
     "debug"                          -> Setting {cons("DebugSetting")}

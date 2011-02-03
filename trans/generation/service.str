@@ -56,17 +56,17 @@ rules
      ; <fetch(?PropVal("encoding", encoding)) <+ encoding := String("\"json\"")> prop*
      ; <fetch(?PropVal("mapper", mapper)) <+ mapper := Var(QId("mobl", "dummyMapper"))> prop*
      ; <fetch(?PropVal("method", method)) <+ method := String("\"GET\"")> prop*
-     ; data := <map(farg-to-js-key-val); separate-by(|", ")> farg*
-     ; url := <build-service-url> (uri, method, data)
+     ; <fetch(?PropVal("data", data-exp)) <+ data-exp := String("\"\"")> prop*
+     ; url := <build-service-url> (uri, method)
      ; if not(String("\"GET\"") := method) then
-         data-property := $[data: {[data]},]
+         data-property := $[data: [<expression-to-js> data-exp],]
        else
          data-property := ""
        end
 
 
   build-service-url :
-    (uri, _, data) -> $["" + (this.root ? this.root : "") + [<expression-to-js> uri]]
+    (uri, _) -> $["" + (this.root ? this.root : "") + [<expression-to-js> uri]]
 
   /*build-service-url :
     (uri, method, data) -> $[this.root ? mobl.proxyUrl(this.root + [<expression-to-js> uri]) : [<expression-to-js> uri]]

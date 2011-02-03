@@ -158,6 +158,11 @@ strategies
   cps-statements :
     [fn@SyncFunction(_, _, _, _, _)|stat*] -> <concat-strings> [<function-to-js> fn, <cps-statements> stat*]
 
+
+  cps-statements :
+    _ -> <fail>
+    where debug(!"FAIL about to happen: ")
+
 rules
 
   cps-expression(|stat*) =
@@ -222,5 +227,5 @@ $[function(result__) {
     with arg-js := <map(expression-to-js)> e*
     with args := <concat; separate-by(!", "); concat-strings> [arg-js, [
 $[function(result__) {
-    [<cps-statements> stat*]
+    [<cps-statements <+ debug(!"Fail: "); fail> stat*]
   }]]]

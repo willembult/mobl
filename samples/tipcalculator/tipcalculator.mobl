@@ -12,5 +12,4 @@ screen root() {
     item { numField(percentage, label="percentage") }
     item { "$" label(amount * (1 + percentage/100)) }
   }
-  button("A button", style=myButtonStyle, pushedStyle=myButtonPushedStyle)
 }

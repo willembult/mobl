@@ -142,6 +142,26 @@ strategies
 
   eq-type-of :
     BinMethodCall(e1, op, e2) -> <type-of> e1 // @TODO: Fix this
+    where not(<eq> (op, "=="))
+    where not(<eq> (op, "!="))
+
+  eq-type-of :
+    BinMethodCall(e1, "==", e2) -> SimpleType(QId("mobl", "Bool"))
+
+  eq-type-of :
+    BinMethodCall(e1, "!=", e2) -> SimpleType(QId("mobl", "Bool"))
+
+  eq-type-of :
+    BinMethodCall(e1, "<", e2) -> SimpleType(QId("mobl", "Bool"))
+
+  eq-type-of :
+    BinMethodCall(e1, "<=", e2) -> SimpleType(QId("mobl", "Bool"))
+
+  eq-type-of :
+    BinMethodCall(e1, ">", e2) -> SimpleType(QId("mobl", "Bool"))
+
+  eq-type-of :
+    BinMethodCall(e1, ">=", e2) -> SimpleType(QId("mobl", "Bool"))
 
   eq-type-of :
     SetComp(e, _) -> <type-of> e

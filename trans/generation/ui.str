@@ -171,24 +171,24 @@ rules
 
   elems-to-js(|root) :
     [tg@Html(tag, arg*, elems, _)|rest*] -> $[
-      var [node] = $("<[tag] [<escape> args]>");
-      [<filter(databind-tag-arg-to-js(|tg, node)); concat-strings> arg*]
+      var [node] = $("<[tag]>");
+      [<filter(tag-arg-to-js(|tg, node)); concat-strings> arg*]
       [body]
     ]
-    with args := <filter(tag-arg-to-html); separate-by(!" "); concat-strings> arg*
-       ; node := <newname> "node"
+    with //args := <filter(tag-arg-to-html); separate-by(!" "); concat-strings> arg*
+       node := <newname> "node"
        ; body := <elems-to-js(|node)> <concat> [elems, [
            $[[root].append([node]);
            [<elems-to-js(|root)> rest*]]]]
 
   elems-to-js(|root) :
     [tg@NamedHtml(x, tag, arg*, elems, _)|rest*] -> $[
-      var [x] = $("<[tag] [<escape> args]>");
-      [<filter(databind-tag-arg-to-js(|tg, x)); concat-strings> arg*]
+      var [x] = $("<[tag]>");
+      [<filter(tag-arg-to-js(|tg, x)); concat-strings> arg*]
       [body]
     ]
-    with args := <filter(tag-arg-to-html); separate-by(!" "); concat-strings> arg*
-       ; body := <elems-to-js(|x)> <concat> [elems, [
+    with //args := <filter(tag-arg-to-html); separate-by(!" "); concat-strings> arg*
+       body := <elems-to-js(|x)> <concat> [elems, [
            $[[root].append([x]);
            [<elems-to-js(|root)> rest*]]]]
 
@@ -212,10 +212,11 @@ rules
   elems-to-js(|root) :
     [] -> ""
 
-  tag-arg-to-html :
-    HtmlArg(name, String(s)) -> $[[name]=[s]]
+  tag-arg-to-js(|tg, node) :
+    HtmlArg(name, String(s)) -> $[[node].attr('[name]', [s]);
+                                  ]
 
-  databind-tag-arg-to-js(|tg, node) :
+  tag-arg-to-js(|tg, node) :
     HtmlArg(name, e) -> $[
       var [r] = [es];
       if([r].get() !== null) {
@@ -238,6 +239,8 @@ rules
        ; watch-expr* := <find-watchable-expressions> e
        ; subscriptions := <map(exp-to-html-watcher-js(|node, name, <expression-to-js> e)); concat-strings> watch-expr*
 
+
+
   exp-to-html-watcher-js(|node, attr, es) :
     e -> $[subs__.addSub([<ref-expression-to-js> e].addEventListener('change', function() {
              [node].attr('[attr]', [es]);
@@ -245,7 +248,7 @@ rules
 ]
 
 
-  databind-tag-arg-to-js(|tg, node) :
+  tag-arg-to-js(|tg, node) :
     HtmlArg(name, e) -> $[
       var [val] = [es];
       if([val] !== null) {
@@ -258,7 +261,7 @@ rules
     with es := <expression-to-js> e
        ; val  := <newname> "val"
 
-  databind-tag-arg-to-js(|tg, node) :
+  tag-arg-to-js(|tg, node) :
     HtmlArg("onclick", e) -> $[
       var [val] = [es];
       if([val] !== null) {
@@ -271,7 +274,7 @@ rules
        ; val  := <newname> "val"
 
 
-  databind-tag-arg-to-js(|tg, node) :
+  tag-arg-to-js(|tg, node) :
     HtmlDatabindArg(e) -> $[
       var [r] = [es];
       [node].[method]([r].get().toString());
@@ -324,7 +327,7 @@ rules
            });
 ]
 
-  databind-tag-arg-to-js(|tg, node) :
+  tag-arg-to-js(|tg, node) :
     HtmlDatabindArg(e) -> $[
       var [r] = [es];
       [node].attr('checked', !![r].get());

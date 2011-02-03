@@ -85,14 +85,14 @@ rules // lookup
 
   lookup-style =
       lookup-style-aux
-   <+ import-and-retry(lookup-style-aux|<id>)
+   //<+ import-and-retry(lookup-style-aux|<id>)
 
   lookup-style-aux :
     qid -> <GetStyle> qid
 
   lookup-style-mixin =
       lookup-style-mixin-aux
-   <+ import-and-retry(lookup-style-mixin-aux|<id>)
+   //<+ import-and-retry(lookup-style-mixin-aux|<id>)
 
   lookup-style-mixin-aux :
     qid -> <GetStyleMixin> qid

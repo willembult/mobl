@@ -11,17 +11,19 @@ imports
 
 strategies
 
+/*
   import-and-retry(s|qid2) =
     where(
       QId(qid, _) := qid2
       ; not(qid := <CompilingModule>)
       ; <lookup-import-module; alltd(declare)> Import(qid))
     ; s
+*/
 
   lookup-type =
        lookup-type-aux
-     <+ ?SimpleType(qid)
-        ; import-and-retry(lookup-type-aux|qid)
+     //<+ ?SimpleType(qid)
+        //; import-and-retry(lookup-type-aux|qid)
 
   lookup-type-aux :
     SimpleType(qid) -> <GetEntity> qid
@@ -70,7 +72,7 @@ strategies
 
   lookup-control =
       lookup-control-aux
-     <+ import-and-retry(lookup-control-aux|<id>)
+     //<+ import-and-retry(lookup-control-aux|<id>)
 
   lookup-control-aux :
     qid -> extern
@@ -83,7 +85,7 @@ strategies
 
   lookup-screen =
       lookup-screen-aux
-   <+ import-and-retry(lookup-screen-aux|<id>)
+   //<+ import-and-retry(lookup-screen-aux|<id>)
 
   lookup-screen-aux :
     qid -> extern
@@ -92,7 +94,7 @@ strategies
 
   lookup-function =
       lookup-function-aux
-   <+ import-and-retry(lookup-function-aux|<id>)
+   //<+ import-and-retry(lookup-function-aux|<id>)
 
   lookup-function-aux :
     qid -> extern
@@ -219,7 +221,7 @@ strategies
 
   lookup-global-var =
       lookup-global-var-aux
-   <+ import-and-retry(lookup-global-var-aux|<id>)
+   //<+ import-and-retry(lookup-global-var-aux|<id>)
 
   lookup-global-var-aux :
     qid -> extern

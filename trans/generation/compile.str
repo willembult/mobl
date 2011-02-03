@@ -23,6 +23,7 @@ imports
   include/MoBL
   lib/editor-common
   sync-analysis
+  style
 
 strategies
 
@@ -54,7 +55,11 @@ strategies
               ; js-filename   := <concat-strings; guarantee-extension(|"js")> [<OutputPath>, "/", path]
               ; css-filename   := <concat-strings; guarantee-extension(|"css")> [<OutputPath>, "/", path]
               ; <dirname; ensure-existing-dir> js-filename
-              ; index-html-filename   := <concat-strings; guarantee-extension(|"html")> [<OutputPath>, "/", path]
+              ; if <fetch-elem(?HtmlSetting(index-html-setting))> setting* then
+                  index-html-filename := <concat-strings> [<OutputPath>, "/", index-html-setting]
+                else
+                  index-html-filename := <concat-strings; guarantee-extension(|"html")> [<OutputPath>, "/", path]
+                end
               ; manifest-filename   := <concat-strings; guarantee-extension(|"manifest")> [<OutputPath>, "/", path]
               ; chrome-manifest-filename := <concat-strings> [<OutputPath>, "/manifest.json"])
       ; fp := <fopen> (js-filename, "w")
