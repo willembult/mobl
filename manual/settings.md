@@ -1,9 +1,14 @@
 Application Settings
 ====================
 
-After the `application yourappname` line, you can specify a couple of
-settings that influence the generated code of your application. All
-settings are optional. The settings are as follows:
+The projects `config.mobl` file can contain additional settings that
+influence the generated code of your application. Every `config.mobl`
+should start with the line:
+
+    configuration
+
+followed by zero or more configuration settings. All settings are
+optional. The settings are as follows:
 
     title "My Application"
 
@@ -42,13 +47,20 @@ add the icon as a resource.
 
 Specifies the version of your application.
 
+    lib /path/to/lib/dir
+
+Adds a directory to the search path for modules.
+
+    stdlib /path/to/lib/dir
+
+Uses a different path for the standard library (by default, the
+plug-ins standard library is used).
+
 A sample set of settings:
 
-    application myapp
+    configuration
 
     title "My Application"
     version "0.1"
     icon icon.png
     offline true
-
-    resource icon.png

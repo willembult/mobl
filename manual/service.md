@@ -36,7 +36,7 @@ In mobl you can declare these services as follows:
       }
 
       resource message(id : Num) : Message {
-        uri = "/message.json"
+        uri = "/message.json?id=" + id
         method = "GET"
         encoding = "json"
       }
@@ -65,10 +65,7 @@ Valid service properties are:
 
 * `root`, to specify the root of the service. For instance `root =
   "http://someotherserver.com/api"`. Note that browsers do not allow
-  cross-domain AJAX calls. Therefore, if you specify a full URL here, it
-  is assumes you have a special proxy-script running at `/proxy.php`
-  that takes a `proxy_url=....` argument and returns the contents of
-  that URL.
+  cross-domain AJAX calls. 
 
 Resources
 ---------

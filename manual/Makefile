@@ -19,6 +19,9 @@ HTML = $(MD:.md=.html)
 MD = introduction.md \
 		 setup.md \
 		 tutorial.md \
+		 tutorial2.md \
+		 tutorial3.md \
+		 tutorial4.md \
 		 data.md \
 		 types.md \
 		 customtypes.md \

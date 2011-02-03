@@ -100,21 +100,18 @@ the collection that contain all the instances of a particular entity:
 But you can also create collections that, for instance, only contain
 all completed tasks:
 
-    var completedTasks = Task.all()
-                         .filter("done", "=", true);
+    var completedTasks = Task.all() where done == true;
 
 Or, all completed tasks ordered by date, in descending order:
 
     var completedByDate = Task.all()
-                          .filter("done", "=", true)
-                          .order("date", ascending=false);
+                          where done == true
+                          order by date desc;
 
 As could be seen in the entity definition of `Category`, its `tasks`
 property is a `Collection` as well that has the same features:
 
-    var completedInCat = category
-                         .tasks
-                         .filter("done", "=", true);
+    var completedInCat = category.tasks where done == true
 
 It is important to realize that collections are in fact virtual and only
 retrieved from the database (using an efficient query) when iterated
@@ -122,7 +119,7 @@ over, e.g. using a `for`-loop. For instance in this `screen` definition:
 
     screen showCompletedTasks() {
       group {
-        list(t in Task.all().filter("done", "=", true)) {
+        list(t in Task.all() where done == true) {
           item { label(t.name) }
         }
       }

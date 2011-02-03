@@ -92,7 +92,7 @@ Modify the generated `firstapp.mobl` file to say the following:
 
     application firstapp
 
-    import mobl::ui
+    import mobl::ui::generic
 
     screen root() {
       header("Hello world")

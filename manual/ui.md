@@ -33,8 +33,6 @@ world" application:
 
     application hello
 
-    import mobl
-
     screen root() {
       "Hello world!"
     }
@@ -43,9 +41,11 @@ When executed in the iPhone simulator, it will render the following screen:
 
 <img src="img/ui-hello.png" width="150"/>
 
-Not very exciting, let's use a control that is part of the imported
-`mobl` module. This control is called `header` and renders, well, a
-header:
+Not very exciting, let's use a control from one of the control
+libraries that come with mobl: `mobl::ui::generic`. The control we'll
+use is called `header` and renders, well, a header:
+
+    import mobl::ui::generic
 
     screen root() {
       header("Hello world")
@@ -192,7 +192,7 @@ Which will look as follows:
 
 <img src="img/ui-list.png" width="150"/>
 
-Cond
+When
 ----
 
     screen root() {
@@ -201,7 +201,7 @@ Cond
       group {
         item { checkbox(b, label="Check me!") }
       }
-      cond(b) {
+      when(b) {
         "The checkbox is checked!"
       }
     }
