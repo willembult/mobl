@@ -1,6 +1,6 @@
 application todo
 
-import ui
+import mobl::ui::generic
 import model
 
 control taskItem(t : Task) {
@@ -66,6 +66,18 @@ control tasks() {
     button("Add", onclick={ addTask(); })
   }
   masterDetail(Task.all() order by date desc, taskItem, taskDetail)
+}
+
+screen promptScreen(q : String) : String {
+  var answer = ""
+  header(q) {
+    button("OK", onclick={
+      screen return answer;
+    })
+  }
+  group {
+    item { textField(answer) }
+  }
 }
 
 screen root() {

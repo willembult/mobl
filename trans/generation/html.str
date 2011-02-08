@@ -24,7 +24,12 @@ strategies
         <script src="js/persistence.search.js" type="application/x-javascript" charset="utf-8"></script>
         <script type="application/x-javascript" charset="utf-8">
         if (window && window.google && google.gears || window.openDatabase) {
-          persistence.store.websql.config(persistence, '[<!<un-double-quote> dbname <+ <qid-to-js> qid>]', 'mobl database', 5 * 1024 * 1024, '1.0');
+          try {
+            persistence.store.websql.config(persistence, '[<!<un-double-quote> dbname <+ <qid-to-js> qid>]', 'mobl database', 1024 * 1024, '1.0');
+          } catch(e) {
+            alert("Could not connect to the database, sometimes a refresh helps.");
+          }
+
           persistence.search.config(persistence, persistence.store.websql.sqliteDialect);
         } else {
           persistence.store.memory.config(persistence);

@@ -1,15 +1,17 @@
 application tipcalculator
 
-import ui
+import mobl::ui::generic
 
 screen root() {
   var amount     =  20
   var percentage =  10
 
-  header("Tip calculator")
+  header("Tip calculator") {
+    button("Up", onclick={ amount = amount + 10;})
+  }
   group {
     item { numField(amount, label="amount") }
     item { numField(percentage, label="percentage") }
-    item { "$" label(amount * (1 + percentage/100)) }
+    item { "$" label(Math.round(amount * (1 + percentage/100))) }
   }
 }
