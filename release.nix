@@ -113,14 +113,14 @@ let
       draw               = moblc { name = "draw"; app = "draw.mobl"; } ;
       geo                = moblc { name = "geo"; app = "maptest.mobl"; } ;
       helloserver_client = moblc { name = "helloserver"; app = "client.mobl"; } ;
-      helloserver_server = moblc { name = "helloserver"; app = "server.mobl"; stdlib = "${mobl}/stdlib-server-override"; } ;
-      irc_client         = moblc { name = "irc"; app = "irc.mobl"; } ;
-      irc_server         = moblc { name = "irc"; app = "server.mobl"; stdlib = "${mobl}/stdlib-server-override"; } ;
+      #helloserver_server = moblc { name = "helloserver"; app = "server.mobl"; stdlib = "${mobl}/stdlib-server-override"; } ;
+      #irc_client         = moblc { name = "irc"; app = "irc.mobl"; } ;
+      #irc_server         = moblc { name = "irc"; app = "server.mobl"; stdlib = "${mobl}/stdlib-server-override"; } ;
       shopping           = moblc { name = "shopping"; app = "shopping.mobl"; } ;
       tipcalculator      = moblc { name = "tipcalculator"; app = "tipcalculator.mobl"; } ;
       todo               = moblc { name = "todo"; app = "todo.mobl"; } ;
-      znake_client       = moblc { name = "znake"; app = "znake.mobl"; } ;
-      znake_server       = moblc { name = "znake"; app = "server.mobl"; } ;
+      #znake_client       = moblc { name = "znake"; app = "znake.mobl"; } ;
+      #znake_server       = moblc { name = "znake"; app = "server.mobl"; } ;
     };      
 
     updatesite = import "${hydraConfig}/spoofax-fun.nix" {
