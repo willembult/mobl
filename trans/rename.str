@@ -24,7 +24,7 @@ strategies
   rename-local-function :
    Function(mannos, name, farg*, rt, body) -> name2
    where RenameScope
-   with name2 := <rename-var> (name, SimpleType(QId("mobl", "Callback")))
+   with name2 := <rename-var> (name, <fargs-to-function-type> farg*)
       ; rules(
            RenameFunction : name -> name2
         )
@@ -37,7 +37,7 @@ strategies
   rename-local-function :
    SyncFunction(mannos, name, farg*, rt, body) -> name2
    where "control" := <RenameScope>
-   with name2 := <rename-var> (name, SimpleType(QId("mobl", "Callback")))
+   with name2 := <rename-var> (name, <fargs-to-function-type> farg*)
       ; rules(
            RenameFunction : name -> name2
         )
@@ -74,10 +74,6 @@ strategies
 
   rename :
     Call(x, e*) -> Call(<RenameId> x, <rename-all> e*)
-
-  /*rename :
-    c#([Var(qid)|rest]) -> c#([Var(<RenameControl> qid)|<rename-all> rest])
-    where <string-starts-with(|"ControlCall")> c*/
 
   rename-scope(s) =
     {| RenameId, RenameFunction, RenameThis

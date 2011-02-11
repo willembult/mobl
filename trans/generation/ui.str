@@ -277,11 +277,11 @@ rules
   tag-arg-to-js(|tg, node) :
     HtmlDatabindArg(e) -> $[
       var [r] = [es];
-      [node].[method]([r].get().toString());
+      [node].[method](""+[r].get());
       var [ignore] = false;
       subs__.addSub([r].addEventListener('change', function(_, ref, val) {
         if([ignore]) return;
-        [node].[method](val.toString());
+        [node].[method](""+val);
       }));
       subs__.addSub([r].rebind());
       [subs][subscriptions]

@@ -210,6 +210,18 @@ $[function(result__) {
     [<cps-statements> stat*]
   }]]]; separate-by(!", "); concat-strings> e*
 
+  // variable/arg function
+  cps-exp(|stat*) :
+    Call(qid{_}, e*) -> <concat-strings> [fundef, "var result__ = ", <qid-to-js> qid, "(", args, ");",
+                                          $[if(result__ !== undefined) [after](result__);]]
+    with after := <newname> "after"
+    with fundef := $[function [after](result__) {
+                       [<cps-statements> stat*]
+                     }
+                     ]
+    with args := <arguments-to-js; <concat> [<id>, [after]]; separate-by(!", "); concat-strings> e*
+
+
   cps-exp(|stat*) :
     Call(qid, e*) -> <concat-strings> ["mobl.call('", <qid-to-js> qid, "', [", args, "], ", $[function(result__) {
     [<cps-statements> stat*]

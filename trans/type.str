@@ -105,8 +105,8 @@ strategies
 
   eq-type-of :
     Var(qid) -> <fargs-to-function-type> [farg*, FArg("returnType", rt)]
-    where ExternalFunction(_, _, farg*, rt) := <lookup-function> qid
-       <+ ExternalSyncFunction(_, _, farg*, rt) := <lookup-function> qid
+    where ExternalFunction(_, _, farg*, rt) := <lookup-function> qid; sync := False()
+       <+ ExternalSyncFunction(_, _, farg*, rt) := <lookup-function> qid; sync := True()
 
   eq-type-of :
     Var(qid) -> t

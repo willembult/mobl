@@ -262,7 +262,6 @@ strategies
     ; (
          ExternalSyncFunction(_, _, _, _) := <lookup-function> qid
       <+ <lookup-type> SimpleType(qid)
-      <+ _{_} := qid
       )
     ; <map(is-sync)> e*
 

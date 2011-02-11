@@ -152,6 +152,9 @@ rules // Statements
     with es := <expression-to-js> e
 
   stat-to-js :
+    Return() -> $[return null;]
+
+  stat-to-js :
     ScreenReturn(e) -> $[screenCallback([es]);
                          return;]
     with es := <expression-to-js> e
@@ -371,9 +374,9 @@ rules // Expressions
     Choice(e, e-true, e-false) -> $[[<expression-to-js> e] ? [<expression-to-js> e-true] : [<expression-to-js> e-false]]
 
   exp-to-js :
-    Callback(stat*) -> $[function(event) {
+    Callback(stat*) -> $[function(event, callback) {
                            if(event && event.stopPropagation) event.stopPropagation();
-                           [<cps-lift-expressions; cps-statements> stat*]
+                           [<cps-lift-expressions; <concat> [<id>, [$[if(callback && callback.apply) callback(); return;]]]; cps-statements <+ debug(!"Could not translate to stats: "); fail> stat*]
                          }]
 
 

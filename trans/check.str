@@ -121,6 +121,26 @@ rules
         ; not(<resolve-fargs> (e*, <topdown(try(strip-annos))> farg*))
 
   constraint-error :
+    c@Call(qid, e*) -> (c, $[Not a function variable.])
+    where _{_} := qid
+    where <type-of> Var(qid)
+        ; not(?GenericType(QId("mobl", <id>), t*); string-starts-with(|"Function")
+              <+ ?SimpleType(QId("mobl", "Callback")))
+
+  constraint-error :
+    c@Call(qid, e*) -> (c, $[Invalid set of arguments, expected: [<map(pp-mobl-type); separate-by(|", ")> t*]])
+    where _{_} := qid
+    where <type-of> Var(qid)
+        ; ?GenericType(QId("mobl", <id>), t*); string-starts-with(|"Function")
+        ; not(<zip(type-compatible)> (t*, <map(type-of)> e*))
+
+  constraint-error :
+    c@Call(qid, e*) -> (c, $[Invalid set of arguments, expected: mobl::Object])
+    where _{_} := qid
+    where SimpleType(QId("mobl", "Callback")) := <type-of> Var(qid)
+        ; not([_] := e*)
+
+  constraint-error :
     Call(qid, e*) -> <fargs-type-not-compatible> (farg*, e*)
     where def := <lookup-function> qid
         ; (ExternalFunction(_, _, farg*, _) := def <+ ExternalSyncFunction(_, _, farg*, _) := def)
