@@ -212,7 +212,7 @@ $[function(result__) {
 
   // variable/arg function
   cps-exp(|stat*) :
-    Call(qid{_}, e*) -> <concat-strings> [fundef, "var result__ = ", <qid-to-js> qid, "(", args, ");",
+    Call(qid{_}, e*) -> <concat-strings> [fundef, "var result__ = ", <expression-to-js> Var(qid), "(", args, ");",
                                           $[if(result__ !== undefined) [after](result__);]]
     with after := <newname> "after"
     with fundef := $[function [after](result__) {
