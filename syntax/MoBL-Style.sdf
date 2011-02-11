@@ -45,7 +45,7 @@ exports
     STYLEPROPID "(" {StyleExps ","}* ")" -> StyleExp {cons("StyleCall")}
 
     StyleExp+               -> StyleExps {cons("StyleExps"), prefer}
-    {StyleExp ","}+         -> StyleExpsTL {cons("StyleExpsCS")}
+    {StyleExp ","}+         -> StyleExpsTL {cons("StyleExpsCS"), prefer}
     StyleExps               -> StyleExpsTL
 
     "px" -> Unit {cons("PxUnit")}

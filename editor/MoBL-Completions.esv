@@ -151,4 +151,7 @@ completions
     "icon " <path> (blank)
 
   completion template : Setting =
+    "html " <index.html> (blank)
+
+  completion template : Setting =
     "database " <"mydb"> (blank)
