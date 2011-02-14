@@ -103,15 +103,6 @@ strategies
         end
       ; <refresh-workspace-file> js-filename
 
-  get-configuration :
-    filename -> setting*
-    where file-exists
-    with Configuration(setting*) := <parse-file <+ !Configuration([])> filename
-
-  get-configuration :
-    filename -> []
-    where not(file-exists)
-
   get-all-resources :
     qid -> [res*, import*, style*, $[[<qid-to-path> qid].js]]
     where not(ResourceProcessed)

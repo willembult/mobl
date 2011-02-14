@@ -16,22 +16,10 @@ imports
   editor/hover
   generation/compile
   generation/action
+  util
 
 rules
 
-  setup-paths =
-    setting* := <get-configuration> $[[<ProjectPath; string-replace(|"\\", "/")>]/config.mobl]
-    ; if <fetch-elem(?StdLibSetting(stdlib-p))> setting* then
-         stdlib-path := <path-to-string; resolve-file> stdlib-p
-      else
-        stdlib-path := <concat-strings> [<plugin-path>, "/stdlib"]
-      end
-    ; path* := <filter(\ LibSetting(p) -> <path-to-string; resolve-file> p \)> setting*
-    ; rules(
-        IncludePaths    := [<ProjectPath>, stdlib-path, path*]
-        OutputPath  := <concat-strings> [<ProjectPath>, "/www"]
-        ServerOutputPath  := <concat-strings> [<ProjectPath>, "/server"]
-      )
 
   // Analyzes the current program, returning a tuple with errors, warnings, and notes;
   // each a list of (term, message) tuples or simply (message) terms.

@@ -1,6 +1,11 @@
 module util
 
-imports include/MoBL
+imports
+	include/MoBL
+	libstratego-lib
+  lib/editor-common
+  generation/action
+  mobl
 
 rules
 
@@ -16,4 +21,27 @@ rules
 
   cut-off-last-element :
     [a|k] -> [a|<cut-off-last-element> k]
+
+  setup-paths =
+    setting* := <get-configuration> $[[<ProjectPath; string-replace(|"\\", "/")>]/config.mobl]
+    ; if <fetch-elem(?StdLibSetting(stdlib-p))> setting* then
+         stdlib-path := <path-to-string; resolve-file> stdlib-p
+      else
+        stdlib-path := <concat-strings> [<plugin-path>, "/stdlib"]
+      end
+    ; path* := <filter(\ LibSetting(p) -> <path-to-string; resolve-file> p \)> setting*
+    ; rules(
+        IncludePaths    := [<ProjectPath>, stdlib-path, path*]
+        OutputPath  := <concat-strings> [<ProjectPath>, "/www"]
+        ServerOutputPath  := <concat-strings> [<ProjectPath>, "/server"]
+      )
+
+  get-configuration :
+    filename -> setting*
+    where file-exists
+    with Configuration(setting*) := <parse-file <+ !Configuration([])> filename
+
+  get-configuration :
+    filename -> []
+    where not(file-exists)
 

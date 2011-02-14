@@ -7,11 +7,13 @@ imports
 
 imports
   generation/compile
+  generation/action
   editor-common
   include/MoBL
   analyze
   check
   style
+  util
 
 strategies
 
@@ -30,17 +32,22 @@ strategies
     ; rules ( Standalone := 1 )
     ; ast := <parse-file> filename
     ; output-path := $[[<getcwd>]/[<OutputPath <+ !"www">]]
-    ; include-params := <get-config>"-I"
-    ; if [] then
-        include-path := [$[[<getcwd>]/stdlib] ]
-      else
-        include-path := include-params
-      end
+    ; include-param* := <get-config>"-I"
     ; cwd := <getcwd>
-    ; rules ( ProjectPath     := cwd
-              CachedParseAst  : filename -> ast
-              OutputPath      := output-path
-              IncludePaths    := ["."| include-path])
+    ; setting* := <get-configuration> $[[cwd]/config.mobl]
+    ; if <fetch-elem(?StdLibSetting(stdlib-p))> setting* then
+         stdlib-path := <path-to-string> stdlib-p
+      else
+        stdlib-path := <concat-strings> ["./stdlib"]
+      end
+    ; path* := <filter(\ LibSetting(p) -> <path-to-string> p \)> setting*
+    ; rules(
+      	ProjectPath       := cwd 
+        IncludePaths      := [cwd, stdlib-path, include-param*, path*]
+        ServerOutputPath  := <concat-strings> [<ProjectPath>, "/server"]
+        CachedParseAst    : filename -> ast
+        CompilingFilename := filename
+        OutputPath        := output-path)
     ; (Module(mod-name, _)  := ast <+ Application(mod-name, _) := ast <+ ServerApplication(mod-name, _, _) := ast)
     ; rules ( CompilingModule := mod-name )
     ; ast2 := <analyze> ast

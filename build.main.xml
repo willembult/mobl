@@ -69,6 +69,19 @@
     <copy todir="${compiler-build}/trans">
         <fileset dir="${compiler-src-gen}/trans" excludes="**/*.java"/>
     </copy>
-    <jar basedir="${compiler-build}" includes="trans/**" destfile="${strmodule}c.jar"/>
+    <jar basedir="${compiler-build}" includes="trans/**" destfile="${strmodule}c-small.jar"/>
+  </target>
+
+  <target name="moblc-release">
+    <unzip src="utils/strategoxt.jar" dest="${compiler-build}" overwrite="no">
+      <patternset>
+        <include name="**/*.class"/>
+      </patternset>
+    </unzip>
+    <jar basedir="${compiler-build}" includes="**" destfile="${strmodule}c.jar">
+      <manifest>
+        <attribute name="Main-Class" value="trans.Main"/>
+      </manifest>
+    </jar>      
   </target>
 </project>
