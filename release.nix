@@ -93,6 +93,7 @@ let
 
       #jarWrappers = [ { name = "moblc"; jar = "moblc.jar"; classPath = "$out/lib/java/strategoxt.jar"; mainClass = "trans.Main"; } ];
       jarWrappers = [ { name = "moblc"; jar = "moblc.jar"; mainClass = "trans.Main"; } ];
+      jars = ["./moblc.jar"];
 
       LOCALCLASSPATH = "utils/aster.jar:utils/make_permissive.jar:utils/sdf2imp.jar:utils/strategoxt.jar";
 

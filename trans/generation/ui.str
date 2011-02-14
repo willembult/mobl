@@ -296,7 +296,7 @@ rules
        ; if "input" := tag <+ "textarea" := tag then
            method := "val"
            ; subs := $[
-               subs__.addSub(mobl.domBind([node], 'keyup', function() {
+               subs__.addSub(mobl.domBind([node], 'keyup change', function() {
                  [ignore] = true;
                  [es].set([typeconverter]([node].[method]()));
                  [ignore] = false;
