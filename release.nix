@@ -86,7 +86,7 @@ let
       src = mobl;
       buildfile = "build.main.xml";      
 
-      antTargets = ["moblc", "moblc-release"];
+      antTargets = ["moblc-release"];
       antProperties = [ { name = "eclipse.spoofaximp.jars"; value = "utils/"; }];
 
       buildInputs = [pkgs.strategoPackages.sdf];

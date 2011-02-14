@@ -72,7 +72,7 @@
     <jar basedir="${compiler-build}" includes="trans/**" destfile="${strmodule}c-small.jar"/>
   </target>
 
-  <target name="moblc-release">
+  <target name="moblc-release" depends="moblc">
     <unzip src="utils/strategoxt.jar" dest="${compiler-build}" overwrite="no">
       <patternset>
         <include name="**/*.class"/>
