@@ -73,6 +73,12 @@ strategies
     VarDeclInferred(x, e) -> VarDeclInferred(QId(<ModuleName>, x), e)
     where <is-string> x
 
+  add-tl-namespace :
+    Call(_, _) -> <id>
+
+  add-tl-namespace :
+    MethodCall(_, _, _) -> <id>
+
 rules
 
   add-namespace-all =
