@@ -128,7 +128,7 @@ let
     updatesite = import "${hydraConfig}/spoofax-fun.nix" {
       inherit pkgs;
       name = "mobl";
-      version = "0.3.9";
+      version = "0.3.999";
       src = moblPlugin;
       buildInputs = [pkgs.strategoPackages.sdf];
       preConfigure = ''
