@@ -2,7 +2,7 @@
 , mobl ? { outPath = ./.; rev = 1234; }
 , moblPlugin ? { outPath = ../plugin ; rev = 1234; }
 , hydraConfig ? { outPath = ../../../src/hydra-config ; rev = 1234; }
-}:
+}: 
 
 let
   pkgs = import nixpkgs { system = "x86_64-linux" ; };
