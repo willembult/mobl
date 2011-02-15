@@ -140,27 +140,27 @@ strategies
     FieldAccess(e, x) -> t
     where Property(_, _, t, _) := <lookup-property> (<type-of> e, x)
 
-  eq-type-of :
+  eq-type-of  = eq-type-of-binop <+ eq-type-of-binop-generic
+  
+  eq-type-of-binop-generic :
     BinMethodCall(e1, op, e2) -> <type-of> e1 // @TODO: Fix this
-    where not(<eq> (op, "=="))
-    where not(<eq> (op, "!="))
 
-  eq-type-of :
+  eq-type-of-binop :
     BinMethodCall(e1, "==", e2) -> SimpleType(QId("mobl", "Bool"))
 
-  eq-type-of :
+  eq-type-of-binop :
     BinMethodCall(e1, "!=", e2) -> SimpleType(QId("mobl", "Bool"))
 
-  eq-type-of :
+  eq-type-of-binop :
     BinMethodCall(e1, "<", e2) -> SimpleType(QId("mobl", "Bool"))
 
-  eq-type-of :
+  eq-type-of-binop :
     BinMethodCall(e1, "<=", e2) -> SimpleType(QId("mobl", "Bool"))
 
-  eq-type-of :
+  eq-type-of-binop :
     BinMethodCall(e1, ">", e2) -> SimpleType(QId("mobl", "Bool"))
 
-  eq-type-of :
+  eq-type-of-binop :
     BinMethodCall(e1, ">=", e2) -> SimpleType(QId("mobl", "Bool"))
 
   eq-type-of :
