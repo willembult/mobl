@@ -51,6 +51,7 @@ exports
     "px" -> Unit {cons("PxUnit")}
     "em" -> Unit {cons("EmUnit")}
     "pt" -> Unit {cons("PtUnit")}
+    "s"  -> Unit {cons("SUnit")}
     "%"  -> Unit {cons("PercentageUnit")}
 
   context-free priorities
