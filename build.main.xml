@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
-<project name="MoBL" default="all-java">
+<project name="MoBL" default="all">
 
   <!-- Key input modules -->
   <property name="sdfmodule" value="MoBL" />
@@ -44,8 +44,8 @@
   <import file="build.generated.xml" />
 
   <!-- Main target -->
-  <target name="all" depends="meta-sdf2table,sdf2table,ppgen,pppack,stratego.aster,stratego.ctree,sdf2imp,refresh" />
-  <target name="all-java" depends="meta-sdf2table,sdf2table,ppgen,pppack,stratego.aster,stratego.jar,sdf2imp,refresh" />
+  <target name="all-interpreter" depends="meta-sdf2table,sdf2table,ppgen,pppack,stratego.aster,stratego.ctree,sdf2imp,refresh" />
+  <target name="all" depends="meta-sdf2table,sdf2table,ppgen,pppack,stratego.aster,stratego.jar,sdf2imp,refresh" />
 
   <!-- Stratego to Java compiler -->
   <target name="moblc" depends="meta-sdf2table,sdf2table,ppgen,pppack,sdf2imp,rtg2sig">
