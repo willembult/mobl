@@ -26,7 +26,6 @@ To clone the repository:
 
 To use plug-in
 --------------
-
 You can easily install the plug-in from the
 `http://mobl-lang.org/update` update site. But to keep up-to-date with
 the latest developments you will have to build it yourself.
