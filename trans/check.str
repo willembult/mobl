@@ -155,6 +155,7 @@ rules
     t@Call(qid, e*) -> (arg, $[No such property defined for [<pp-mobl-qid> qid]: [arg]])
     where ExternalEntity(_, _, _, prop*) := <lookup-type> SimpleType(qid)
        <+ ExternalType(_, _, _, prop*) := <lookup-type> SimpleType(qid)
+    where not(QId("mobl", "Dynamic") := qid)
     where args := <map(?NamedExp(<id>, _))> e*
         ; arg := <fetch-elem(\ a -> a where [] := <filter(?Property(_, a, _, _))> prop* \)> args
 
@@ -215,7 +216,7 @@ rules
 
   constraint-error :
     MethodCall(e, x, e*) -> (x, $[Wrong set  of arguments for method [x]. Expected arguments are: [<filter(?FArg(<id>, _)); separate-by(!", "); concat-strings> farg*]])
-    where not(SimpleType(QId("mobl", "Dynamic")) := <type-of> e)
+    where not(<type-compatible> (SimpleType(QId("mobl", "Dynamic")), <type-of> e))
     where def := <lookup-method> (<type-of> e, x)
         ; (ExternalMethod(_, _, farg*, _) := def <+ ExternalSyncMethod(_, _, farg*, _) := def)
         ; not(<resolve-fargs> (e*, <topdown(try(strip-annos))> farg*))

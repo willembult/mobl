@@ -24,6 +24,7 @@ imports
   lib/editor-common
   sync-analysis
   style
+  util
 
 strategies
 
@@ -108,7 +109,7 @@ strategies
     where not(ResourceProcessed)
     with rules ( ResourceProcessed : qid )
        ; def* := <get-module-defs> qid
-       ; res* := <filter((?Resource(<id>) <+ ?Load(<id>)); path-to-string)> def*
+       ; res* := <filter(?Load(<id>); path-to-string)> def*
        ; import* := <filter((?Import(<id>) <+ ?DynamicImport(<id>)); get-all-resources); concat> def*
        ; if [] := <filter(?ExternalStyle(_, _))> def* then
             style* := []
