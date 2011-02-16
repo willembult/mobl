@@ -1,67 +1,47 @@
 application draw
 
 import mobl::canvas
-import mobl::socket
 import mobl::ui::generic
 
-type Update {
-  color : String
-  penSize : Num
-  path : [(Num, Num)]
+function drawPoint(g : Graphics, color : String, penSize : Num, x : Num, y : Num) {
+  g.fillStyle = color;
+  g.beginPath();
+  g.arc(x, y, penSize, 0, 3.1415 * 2, false);
+  g.closePath();
+  g.fill();
 }
+
+function clear(g : Graphics) {
+  g.fillStyle = "#f0f0f0";
+  g.fillRect(0, 0, window.innerWidth, window.innerHeight);
+}
+
+control colorSquare(newcolor : String, color : String) {
+ <div style="display: inline-block; background-color: " + newcolor + "; width: 30px; height: 30px; border: 1px solid #000;" onclick={
+   color = newcolor;
+ }/>
+}
+
+var colorPalet = ["black", "white", "blue", "yellow", "GoldenRod", "deepskyblue", "green", "red", "purple", "#f0f0f0"];
 
 screen root() {
   var g : Graphics = null
-  var buffer : [(Num, Num)] = []
   var color = "black"
   var penSize = 10
 
-  function drawPoint(color : String, penSize : Num, x : Num, y : Num) {
-    g.fillStyle = color;
-    g.beginPath();
-    g.arc(x, y, penSize, 0, 3.1415 * 2, false);
-    g.closePath();
-    g.fill();
+  header("mobl draw") {
+    button("Clear", onclick={ clear(g); })
   }
-
-  function clear() {
-    g.fillStyle = "white";
-    g.fillRect(0, 0, 640, 640);
-  }
-
-  function receivePath(update : Update) {
-    foreach((x, y) in update.path) {
-      drawPoint(update.color, update.penSize, x, y);
+  block {
+    list(c in colorPalet) {
+      colorSquare(c, color)
     }
   }
-
-  var socket : Socket = Socket.create(receivePath)
-
-  header("mobl draw")
-  block {
-    <span style="background-color: " + color + "; width=60px; height=60px;">"Color"</span>
-    button("Black", onclick={ color="black"; })
-    button("Red", onclick={ color="red"; })
-    button("Blue", onclick={ color="blue"; })
-    button("Eraser", onclick={ color="#f0f0f0"; })
-    "Pen size: " label(penSize)
-    button("+", onclick={ penSize = penSize + 5; })
-    button("-", onclick={ penSize = penSize - 5; })
-  }
-
-  canvas(g, 640, 640, ontouchstart={
-    buffer.push((event.x, event.y));
-    drawPoint(color, penSize, event.x, event.y);
+  canvas(g, window.innerWidth, window.innerHeight, ontouchstart={
+    event.preventDefault();
+    drawPoint(g, color, penSize, event.x, event.y);
   }, ontouchmove={
-    buffer.push((event.x, event.y));
-    drawPoint(color, penSize, event.x, event.y);
+    event.preventDefault();
+    drawPoint(g, color, penSize, event.x, event.y);
   })
-  script {
-    repeat(500, {
-      if(buffer.length > 0) {
-        socket.send(Update(color=color, penSize=penSize, path=buffer));
-        buffer = [];
-      }
-    });
-  }
 }
