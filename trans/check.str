@@ -225,7 +225,8 @@ rules
 
   constraint-error :
     MethodCall(e, x, e*) -> (x, $[Wrong set of arguments for method [x]. Expected arguments are: [<filter(?FArg(<id>, _)); separate-by(!", "); concat-strings> farg*]])
-    where not(<eq <+ is-super-type> (<type-of> e, SimpleType(QId("mobl", "Dynamic"))))
+    where not(<type-of> e
+              ; (?SimpleType(QId("mobl", "Dynamic")) <+ ?SimpleType(QId("mobl", "JQuery"))))
     where def := <lookup-method> (<type-of> e, x)
         ; (ExternalMethod(_, _, farg*, _) := def <+ ExternalSyncMethod(_, _, farg*, _) := def)
         ; not(<resolve-fargs> (e*, <topdown(try(strip-annos))> farg*))
