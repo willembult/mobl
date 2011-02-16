@@ -10,13 +10,16 @@ imports
 
 strategies
 
+  //rename-all = alltd({?x; origin-track-forced(rename); with(origin-equal(|x))})
   rename-all = alltd(rename)
 
   rename-var :
    (x, t) -> y
-   with y := x{<newname> x}//; <debug(!"New name: ")> Var(y)
+   with x_anno := <newname> x
+      ; y := x{x_anno}
       ; rules(
-           RenameId : x -> y
+           //RenameId : x -> x{x_anno}
+           RenameAnno : x -> x_anno
            TypeOf   : y -> t
            VarLookup : y -> x
         )
@@ -64,19 +67,19 @@ strategies
     QId(_, _) -> <GetGlobalVar>
 
   rename :
-    Var(x) -> Var(<RenameId> x)
+    Var(x) -> Var(x{<RenameAnno> x})
 
   rename :
-    Assignment(x, e) -> Assignment(<RenameId> x, <rename-all> e)
+    Assignment(x, e) -> Assignment(x{<RenameAnno> x}, <rename-all> e)
 
   rename :
     Call(x, e*) -> Call(<RenameFunction> x, <rename-all> e*)
 
   rename :
-    Call(x, e*) -> Call(<RenameId> x, <rename-all> e*)
+    Call(x, e*) -> Call(x{<RenameAnno> x}, <rename-all> e*)
 
   rename-scope(s) =
-    {| RenameId, RenameFunction, RenameThis
+    {| RenameAnno, RenameFunction, RenameThis
      : s
      |}
 
@@ -103,7 +106,7 @@ strategies
 
   rename :
     COMPLETION(_) -> <id>
-    where vars := <concat> [<all-keys-RenameId>, <all-keys-RenameFunction>]
+    where vars := <concat> [<all-keys-RenameAnno>, <all-keys-RenameFunction>]
         ; rules ( CompletionVars := vars )
 
   rename :
