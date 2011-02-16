@@ -184,11 +184,17 @@ strategies
     ?(GenericType(x, t1*), GenericType(x, t2*))
     ; <zip(type-compatible)> (t1*, t2*)
 
-  type-compatible =
+  type-compatible = 
     ?(t1, t2)
     ; ExternalType(_, _, super-t, _) := <lookup-type> t2
     ; <not(eq)> (super-t, t2)
     ; <type-compatible> (t1, super-t)
+
+  is-super-type =
+    ?(t1, t2)
+    ; ExternalType(_, _, super-t, _) := <lookup-type> t2
+    ; <not(eq)> (super-t, t2)
+    ; <eq <+ is-super-type> (t1, super-t)
 
   type-compatible =
     ?(t1, t2)

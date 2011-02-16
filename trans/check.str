@@ -224,8 +224,8 @@ rules
     where not(<is-sync> e)
 
   constraint-error :
-    MethodCall(e, x, e*) -> (x, $[Wrong set  of arguments for method [x]. Expected arguments are: [<filter(?FArg(<id>, _)); separate-by(!", "); concat-strings> farg*]])
-    where not(<type-compatible> (SimpleType(QId("mobl", "Dynamic")), <type-of> e))
+    MethodCall(e, x, e*) -> (x, $[Wrong set of arguments for method [x]. Expected arguments are: [<filter(?FArg(<id>, _)); separate-by(!", "); concat-strings> farg*]])
+    where not(<eq <+ is-super-type> (<type-of> e, SimpleType(QId("mobl", "Dynamic"))))
     where def := <lookup-method> (<type-of> e, x)
         ; (ExternalMethod(_, _, farg*, _) := def <+ ExternalSyncMethod(_, _, farg*, _) := def)
         ; not(<resolve-fargs> (e*, <topdown(try(strip-annos))> farg*))
@@ -237,7 +237,10 @@ rules
 
   constraint-error :
     t@MethodCall(e, x, e*) -> <fargs-type-not-compatible> (farg*, e*)
-    where ExternalMethod(_, _, farg*, _) := <lookup-function> (<type-of> e, x)
+    where not(<eq <+ is-super-type> (<type-of> e, SimpleType(QId("mobl", "Dynamic"))))
+    where fn := <lookup-method> (<type-of> e, x)
+        ; (?ExternalMethod(_, _, farg*, _)
+        <+ ?ExternalSyncMethod(_, _, farg*, _))
 
   constraint-error :
     Assignment(lhs, e) -> (lhs, $[No such variable '[lhs]' defined])
