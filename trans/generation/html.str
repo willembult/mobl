@@ -52,7 +52,7 @@ strategies
           persistence.loadFromLocalStorage();
         }
         $("#mobl-loading").remove();
-        mobl.call("[<qid-to-js> qid].root", $[$$]$, function() {});
+        mobl.call("[<qid-to-js> qid].root", $[$mobl.ref(false), mobl.ref("none")$]$, function() {});
       });
     });
     </script>

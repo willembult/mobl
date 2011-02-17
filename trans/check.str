@@ -121,6 +121,11 @@ rules
         ; not(<resolve-fargs> (e*, <topdown(try(strip-annos))> farg*))
 
   constraint-error :
+    c@Call(qid, e*) -> (c, $[Wrong set of arguments for screen '[<pp-mobl-qid> qid]'. Expected arguments are: [<filter(?FArg(<id>, _)); separate-by(!", "); concat-strings> farg*]])
+    where ExternalScreen(_, _, farg*, _) := <lookup-screen> qid
+        ; not(<resolve-fargs> (e*, <topdown(try(strip-annos))> farg*))
+
+  constraint-error :
     c@Call(qid, e*) -> (c, $[Not a function variable: [<pp-mobl-qid> qid]])
     where _{_} := qid
     where <type-of> Var(qid)
@@ -134,14 +139,14 @@ rules
         ; ?GenericType(QId("mobl", <id>), t*); string-starts-with(|"Function")
         ; not(<zip(type-compatible)> (<drop-last> t*, <map(type-of)> e*))
 
-	drop-last :
-		[] -> []
+  drop-last :
+    [] -> []
 
-	drop-last :
-		[_] -> []
+  drop-last :
+    [_] -> []
 
-	drop-last :
-		[a,b|k] -> [a|<drop-last> [b|k]]
+  drop-last :
+    [a,b|k] -> [a|<drop-last> [b|k]]
 
   constraint-error :
     c@Call(qid, e*) -> (c, $[Invalid set of arguments for function [<pp-mobl-qid> qid], expected: mobl::Object])
@@ -238,7 +243,8 @@ rules
 
   constraint-error :
     t@MethodCall(e, x, e*) -> <fargs-type-not-compatible> (farg*, e*)
-    where not(<eq <+ is-super-type> (<type-of> e, SimpleType(QId("mobl", "Dynamic"))))
+    where not(<type-of> e
+              ; (?SimpleType(QId("mobl", "Dynamic")) <+ ?SimpleType(QId("mobl", "JQuery"))))
     where fn := <lookup-method> (<type-of> e, x)
         ; (?ExternalMethod(_, _, farg*, _)
         <+ ?ExternalSyncMethod(_, _, farg*, _))

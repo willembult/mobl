@@ -55,6 +55,7 @@ strategies
     Call(qid, e*) -> Call(qid, e2*)
     where (ExternalFunction(_, _, farg*, _) := <lookup-function> qid
         <+ ExternalSyncFunction(_, _, farg*, _) := <lookup-function> qid
+        <+ ExternalScreen(_, _, farg*, _) := <lookup-screen> qid
           )
         ; e2* := <resolve-fargs> (e*, <topdown(try(strip-annos))> farg*)
         ; not(<eq> (e*, e2*))

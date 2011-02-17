@@ -14,7 +14,7 @@ entity Person {
     return this.name;
   }
 }
-  
+
 screen root() {
   header("A header")
   group {

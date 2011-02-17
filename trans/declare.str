@@ -156,7 +156,9 @@ strategies // convert to externals
     Control(manno*, qid, farg*, elem*) -> ExternalControl(manno*, qid, farg*)
 
   definition-to-external :
-    Screen(manno*, qid, farg*, rt, _) -> ExternalScreen(manno*, qid, farg*, rt)
+    Screen(manno*, qid, farg*, rt, _) -> ExternalScreen(manno*, qid, [farg*, extrafarg*], rt)
+    where extrafarg* := [FArgOptional("replace", SimpleType(QId("mobl", "Bool")), False()),
+    										 FArgOptional("animate", SimpleType(QId("mobl", "String")), String("\"slide\""))]
 
   definition-to-external :
     Service(manno*, qid, selem*) -> ExternalType(manno*, qid, SimpleType(QId("mobl", "Object")), <filter(service-elem-to-external)> selem*)
