@@ -154,4 +154,7 @@ completions
     "html " <index.html> (blank)
 
   completion template : Setting =
+    "output " <"www"> (blank)
+
+  completion template : Setting =
     "database " <"mydb"> (blank)

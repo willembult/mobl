@@ -42,7 +42,7 @@ strategies
       end
     ; path* := <filter(\ LibSetting(p) -> <path-to-string> p \)> setting*
     ; rules(
-      	ProjectPath       := cwd 
+        ProjectPath       := cwd
         IncludePaths      := [cwd, stdlib-path, include-param*, path*]
         ServerOutputPath  := <concat-strings> [<ProjectPath>, "/server"]
         CachedParseAst    : filename -> ast

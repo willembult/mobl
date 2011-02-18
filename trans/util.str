@@ -1,8 +1,8 @@
 module util
 
 imports
-	include/MoBL
-	libstratego-lib
+  include/MoBL
+  libstratego-lib
   lib/editor-common
   generation/action
   mobl
@@ -30,9 +30,12 @@ rules
         stdlib-path := <concat-strings> [<plugin-path>, "/stdlib"]
       end
     ; path* := <filter(\ LibSetting(p) -> <path-to-string; resolve-file> p \)> setting*
+    ; if not(<fetch-elem(?OutputSetting(output-path))> setting*) then
+        output-path := $["www"]
+      end
     ; rules(
-        IncludePaths    := [<ProjectPath>, stdlib-path, path*]
-        OutputPath  := <concat-strings> [<ProjectPath>, "/www"]
+        IncludePaths      := [<ProjectPath>, stdlib-path, path*]
+        OutputPath        := $[[<ProjectPath>]/[<un-double-quote> output-path]]
         ServerOutputPath  := <concat-strings> [<ProjectPath>, "/server"]
       )
 
