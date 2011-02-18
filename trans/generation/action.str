@@ -47,12 +47,14 @@ strategies
     with path-str := <path-to-string> path
        ; <cut-off-last-element; separate-by(|"/"); <concat-strings> [<OutputPath>, "/"|<id>]; ensure-existing-dir> part*
        ; <copy-file> (<resolve-file> path-str, $[[<OutputPath>]/[path-str]])
+       ; <refresh-workspace-file> $[[<OutputPath>]/[path-str]]
 
   definition-to-js :
     Resource(path@Path(part*)) -> <id>
     with path-str := <path-to-string> path
        ; <cut-off-last-element; separate-by(|"/"); <concat-strings> [<OutputPath>, "/"|<id>]; ensure-existing-dir> part*
        ; <copy-file> (<resolve-file> path-str, $[[<OutputPath>]/[path-str]])
+       ; <refresh-workspace-file> $[[<OutputPath>]/[path-str]]
 
   path-to-string :
     Path(s*) -> <separate-by(|"/"); concat-strings> s*
