@@ -121,6 +121,7 @@ let
       shopping           = moblc { name = "shopping"; app = "shopping.mobl"; } ;
       tipcalculator      = moblc { name = "tipcalculator"; app = "tipcalculator.mobl"; } ;
       todo               = moblc { name = "todo"; app = "todo.mobl"; } ;
+      i18n                = moblc { name = "i18n"; app = "demo.mobl"; } ;
       #znake_client       = moblc { name = "znake"; app = "znake.mobl"; } ;
       #znake_server       = moblc { name = "znake"; app = "server.mobl"; } ;
     };      
