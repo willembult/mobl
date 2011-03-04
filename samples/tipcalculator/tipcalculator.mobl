@@ -1,5 +1,7 @@
 application tipcalculator
+
 import mobl::ui::generic
+
 screen root() {
   var amount     =  20
   var percentage =  10

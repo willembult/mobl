@@ -89,6 +89,12 @@ rules
 rules
 
   constraint-error :
+    p@Property(_, x, GenericType(QId("mobl", "Collection"), _), anno*) -> (p, $[A collection entity property has to define an inverse relationship: (inverse: ...)])
+    where not(<fetch-elem(?InverseAnno(_))> anno*)
+
+rules
+
+  constraint-error :
     t@SimpleType(_) -> (t, $[Type is not defined: [<pp-mobl-type> t]])
     where not(<lookup-type> t) // no entity for this type
         ; not(_{"ControlType"} := t)
