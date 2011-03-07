@@ -19,7 +19,6 @@ strategies
            : <filter(capture-def)> def*
            ; <mark-uses> QId(qid, "root")
            ; def2* := <filter(used-def)> def*
-           ; <debug> <all-keys-Used>
            |}
 
   capture-def :
