@@ -49,7 +49,7 @@
   <target name="all" depends="check-classpath,init,meta-sdf2table,sdf2table,ppgen,pppack,stratego.aster,stratego.jar,java.jar,sdf2imp,refresh" />
 
   <!-- Stratego to Java compiler -->
-  <target name="moblc" depends="meta-sdf2table,sdf2table,ppgen,pppack,sdf2imp,rtg2sig">
+  <target name="moblc" depends="check-classpath,init,meta-sdf2table,sdf2table,ppgen,pppack,sdf2imp,java.jar,rtg2sig">
     <mkdir dir="${compiler-src-gen}/trans"/>
     <java classname="org.strategoxt.strj.Main" classpath="utils/strategoxt.jar" failonerror="true">
         <arg value="-i"/>
