@@ -66,11 +66,12 @@ strategies
       ; fp := <fopen> (js-filename, "w")
       ; <fputs> ($[mobl.provides('[<qid-to-js> qid]');
 ], fp)
+      ; <fputs> (<collect(gen-provides); concat-strings> def*, fp)
       ; if !app then
           <fputs> (<<not(fetch(?DebugSetting())); !"persistence.debug = false;"> setting* <+ !"">, fp)
         end
       ; <fputs> (<get-all>, fp)
-      ; <fputs> (<get-all-tl-statements; (cps-lift-expressions; cps-statements <+ debug(!"Could not cps tl statements: "); fail)>, fp)
+      ; <fputs> (<get-all-tl-statements; (cps-list-all-expressions; cps-statements <+ debug(!"Could not cps tl statements: "); fail)>, fp)
       ; <fclose> fp
       // CSS
       ; all-css := <get-all-css>
@@ -84,7 +85,7 @@ strategies
         with(
           fp2 := <fopen <+ debug(!"Could not open file: "); fail> (index-html-filename, "w")
           ; {| ResourceProcessed
-             : <fputs> (<generate-index-html(|<get-all-resources-no-dynamic> qid, setting*) <+ debug(!"Could not generate index.html")> app, fp2)
+             : <fputs> (<generate-index-html(|<get-all-resources-no-dynamic(|qid)> def*, setting*) <+ debug(!"Could not generate index.html")> app, fp2)
              |}
           ; <fclose> fp2
           ; <refresh-workspace-file> index-html-filename
@@ -97,12 +98,16 @@ strategies
               ; <refresh-workspace-file> manifest-filename
             end
          ; fp4 := <fopen <+ debug(!"Could not open file: "); fail> (chrome-manifest-filename, "w")
-          ; <fputs> (<generate-chrome-manifest(|<get-all-resources-no-dynamic> qid, setting*)> app, fp4)
+          ; <fputs> (<generate-chrome-manifest(|<get-all-resources-no-dynamic(|qid)> def*, setting*)> app, fp4)
           ; <fclose> fp4
           ; <refresh-workspace-file> chrome-manifest-filename
         )
         end
       ; <refresh-workspace-file> js-filename
+
+  gen-provides :
+    QId(qid, _) -> $[mobl.provides('[<qid-to-js> qid]');
+]
 
   get-all-resources :
     qid -> [res*, import*, style*, $[[<qid-to-path> qid].js]]
@@ -117,22 +122,21 @@ strategies
             style* := [$[[<qid-to-path> qid].css]]
          end
 
-  get-all-resources-no-dynamic :
-    qid -> [res*, import*, style*, $[[<qid-to-path> qid].js]]
+  get-all-resources-no-dynamic(|qid) :
+    def* -> [res*, import*, style*, $[[<qid-to-path> qid].js]]
     where not(ResourceProcessed)
     with rules ( ResourceProcessed : qid )
-       ; def* := <get-module-defs> qid
-       ; res* := <filter((?Resource(<id>) <+ ?Load(<id>)); path-to-string)> def*
+       ; res* := <filter(?Load(<id>); path-to-string)> def*
        ; import* := <filter(?Import(<id>); get-all-resources); concat> def*
-       ; if [] := <filter(?ExternalStyle(_, _))> def* then
+       ; if [] := <filter(?Style(_, _, _))> def* then
             style* := []
          else
             style* := [$[[<qid-to-path> qid].css]]
          end
 
-  get-all-resources-no-dynamic :
-    qid -> []
-    where ResourceProcessed
+  get-all-resources-no-dynamic(|qid) :
+    def* -> []
+    where <ResourceProcessed> qid
 
   get-all-resources :
     qid -> []

@@ -27,6 +27,7 @@ imports
   rename
   editor/editor
   util
+  optimize/optimize
 
 strategies
 

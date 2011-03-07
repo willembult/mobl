@@ -31,8 +31,8 @@ strategies
     ; rest := <filter(not(?Entity(_, _, _, _) <+ ?Import(_)))> def*
     ; to-import := <concat; make-set> [<filter(not(?Import(_))); collect-om(?QId(<id>, _)); filter(not(?qid))> def*, <filter(?Import(<id>))> def*]
     ; <map(import-to-js)> to-import
-    ; <entities-to-js> entities
     ; <filter(definition-to-js <+ where(?<id>#(_); not(string-starts-with(|"External"))); not(?MiddlewareUse(_) <+ ?DynamicImport(_) <+ ?Load(_) <+ ?Mixin(_) <+ ?StyleVarDecl(_, _) <+ ?StyleMixin(_, _, _, _) <+ ?Style(_, _, _)); emit-tl-statement)> rest
+    ; <entities-to-js> entities
 
 strategies
 
@@ -133,7 +133,7 @@ strategies
     where not(ServerContext)
     with qids := <qid-to-js> qid
        ; args := <filter(farg-to-js); <concat> [<id>, ["callback"]]; separate-by(!", "); concat-strings> farg*
-       ; stats2 := <cps-lift-expressions; <concat> [<id>, [$[if(callback && callback.apply) callback(); return;]]]; cps-statements <+ debug(!"Could not translate to stats: "); fail> stats
+       ; stats2 := <cps-list-all-expressions; <concat> [<id>, [$[if(callback && callback.apply) callback(); return;]]]; cps-statements <+ debug(!"Could not translate to stats: "); fail> stats
 
 rules // Statements
 
@@ -378,7 +378,7 @@ rules // Expressions
   exp-to-js :
     Callback(stat*) -> $[function(event, callback) {
                            if(event && event.stopPropagation) event.stopPropagation();
-                           [<cps-lift-expressions; <concat> [<id>, [$[if(callback && callback.apply) callback(); return;]]]; cps-statements <+ debug(!"Could not translate to stats: "); fail> stat*]
+                           [<cps-list-all-expressions; <concat> [<id>, [$[if(callback && callback.apply) callback(); return;]]]; cps-statements <+ debug(!"Could not translate to stats: "); fail> stat*]
                          }]
 
 

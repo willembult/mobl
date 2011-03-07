@@ -44,8 +44,9 @@
   <import file="build.generated.xml" />
 
   <!-- Main target -->
-  <target name="all-interpreter" depends="meta-sdf2table,sdf2table,ppgen,pppack,stratego.aster,stratego.ctree,sdf2imp,refresh" />
-  <target name="all" depends="meta-sdf2table,sdf2table,ppgen,pppack,stratego.aster,stratego.jar,sdf2imp,refresh" />
+  <!--<target name="all-interpreter" depends="meta-sdf2table,sdf2table,ppgen,pppack,stratego.aster,stratego.ctree,sdf2imp,refresh" />-->
+  <target name="all-interpreter" depends="check-classpath,init,meta-sdf2table,sdf2table,ppgen,pppack,stratego.aster,stratego.ctree,java.jar,sdf2imp,refresh" />
+  <target name="all" depends="check-classpath,init,meta-sdf2table,sdf2table,ppgen,pppack,stratego.aster,stratego.jar,java.jar,sdf2imp,refresh" />
 
   <!-- Stratego to Java compiler -->
   <target name="moblc" depends="meta-sdf2table,sdf2table,ppgen,pppack,sdf2imp,rtg2sig">
@@ -82,6 +83,6 @@
       <manifest>
         <attribute name="Main-Class" value="trans.Main"/>
       </manifest>
-    </jar>      
+    </jar>
   </target>
 </project>

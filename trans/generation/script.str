@@ -11,8 +11,15 @@ imports
 strategies
 
   definition-to-js :
-    Javascript(mod) -> <emit>
+    ModuleJavascript(qid, mod) -> <emit>
     $[(function(__ns) {
       [s]
-      }([<ModuleName; qid-to-js>]));]
+      }([<qid-to-js> qid]));]
+    with s := <pp-mobl-string <+ debug(!"Could not pp: "); fail> mod
+
+  definition-to-js :
+    ModuleJavascriptFor(qid, _, mod) -> <emit>
+    $[(function(__ns) {
+      [s]
+      }([<qid-to-js> qid]));]
     with s := <pp-mobl-string <+ debug(!"Could not pp: "); fail> mod

@@ -9,6 +9,12 @@ imports
 
 strategies
 
+  add-tl-namespaces :
+    Application(qid, def*) -> Application(qid, <map(try(add-tl-namespace))> def*)
+
+  add-tl-namespaces :
+    Module(qid, def*) -> Module(qid, <map(try(add-tl-namespace))> def*)
+
   add-tl-namespace :
     Screen(manno*, x, farg*, rt, elem*) -> Screen(manno*, QId(<ModuleName>, x), farg*, rt, elem*)
     where <is-string> x
@@ -78,6 +84,13 @@ strategies
 
   add-tl-namespace :
     MethodCall(_, _, _) -> <id>
+
+  add-tl-namespace :
+    Javascript(js) -> ModuleJavascript(<ModuleName>, js)
+
+  add-tl-namespace :
+    JavascriptFor(x, js) -> ModuleJavascriptFor(<ModuleName>, QId(<ModuleName>, x), js)
+    where <is-string> x
 
 rules
 

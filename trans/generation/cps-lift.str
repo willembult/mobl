@@ -9,10 +9,15 @@ imports
 
 strategies
 
+  cps-list-all-expressions =
+    cps-lift-expressions
+    ; action-scope(rename-all)
+
   cps-lift-expressions =
        cps-lift-exprs
     <+ ?[a|k]
        ; ![a|<cps-lift-expressions> k]
+
 
   cps-lift-expressions :
     [] -> []
@@ -288,6 +293,7 @@ strategies
 
   is-sync =
     ?MethodCall(e, x, e*)
+    ; <is-sync> e
     ; where(<map(is-sync)> e*)
     ; <lookup-method> (<type-of> e, x)
     ; ?ExternalSyncMethod(_, _, _, _)

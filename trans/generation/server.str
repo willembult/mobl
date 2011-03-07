@@ -80,7 +80,7 @@ _session.schemaSync(function() {
              <fputs> ($[exports.[<qid-to-js-server> qid] = [<qid-to-js-server> qid];
 ], fp)
            end
-         ; <fputs> (<get-all-tl-statements; (cps-lift-expressions; cps-statements <+ debug(!"Could not cps tl statements: "); fail)>, fp)
+         ; <fputs> (<get-all-tl-statements; (cps-list-all-expressions; cps-statements <+ debug(!"Could not cps tl statements: "); fail)>, fp)
          ; if !app then
              <fputs> ($[module.exports = global.app;
 ], fp)
@@ -227,7 +227,7 @@ strategies
     where ServerContext
     with qids := <qid-to-js> qid
        ; args := <filter(farg-to-js); <concat> [<id>, ["callback", "_ctx"]]; separate-by(!", "); concat-strings> farg*
-       ; stats2 := <cps-lift-expressions; <concat> [<id>, [$[if(callback && callback.apply) callback(); return;]]]; cps-statements <+ debug(!"Could not translate to stats: "); fail> stats
+       ; stats2 := <cps-list-all-expressions; <concat> [<id>, [$[if(callback && callback.apply) callback(); return;]]]; cps-statements <+ debug(!"Could not translate to stats: "); fail> stats
 
   spec-exp-to-js :
     Call(qid, e*) -> $[[<qid-to-js> qid]([args])]

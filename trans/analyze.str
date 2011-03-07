@@ -27,7 +27,7 @@ rules
        ; ensure-mobl-import
        ; import-all
        //; alltd(origin-track-forced(add-tl-namespace))
-       ; alltd(add-tl-namespace)
+       ; add-tl-namespaces
        //; alltd({?Function(_, qid, _, _, _)
        //         ; where(debug(!"Whatever: "); try(<origin-term; debug(!"origin-term: ")> qid))})
        ; declare-all
@@ -53,7 +53,7 @@ rules
 
   ensure-mobl-import :
     Application(qid, def*) -> Application(qid, def2*)
-    where if <"mobl" := qid <+ fetch(?Import("mobl"))> def* then
+    where if "mobl" := qid <+ <fetch(?Import("mobl"))> def* <+ <fetch(?ExternalType(_, QId("mobl", "void"), _, _))> def* then
             def2* := def*
           else
             def2* := [Import("mobl")|def*]
