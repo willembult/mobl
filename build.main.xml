@@ -65,7 +65,7 @@
         <arg line="-I &quot;${lib}&quot; -I &quot;${include}&quot;  --cache-dir &quot;${basedir}/.cache&quot;"/>
     </java>
     <mkdir dir="${compiler-build}"/>
-    <javac classpath="utils/strategoxt.jar:java-src${externaljarimport}" srcdir="${compiler-src-gen}" includes="trans/**" destdir="${compiler-build}" source="1.5" target="1.5" debug="on"/>
+    <javac classpath="utils/strategoxt.jar:java-src:include/mobl-java.jar${externaljarimport}" srcdir="${compiler-src-gen}" includes="trans/**" destdir="${compiler-build}" source="1.5" target="1.5" debug="on"/>
     <!-- copy imported terms -->
     <copy todir="${compiler-build}/trans">
         <fileset dir="${compiler-src-gen}/trans" excludes="**/*.java"/>
@@ -75,6 +75,11 @@
 
   <target name="moblc-release" depends="moblc">
     <unzip src="utils/strategoxt.jar" dest="${compiler-build}" overwrite="no">
+      <patternset>
+        <include name="**/*.class"/>
+      </patternset>
+    </unzip>
+    <unzip src="include/mobl-java.jar" dest="${compiler-build}" overwrite="no">
       <patternset>
         <include name="**/*.class"/>
       </patternset>
