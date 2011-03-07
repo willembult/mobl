@@ -96,6 +96,8 @@ exports
 
     ID "=" Exp                  -> PropVal {cons("PropVal")}
 
+    "$data" "(" Path ")"           -> Exp {cons("ImportData")}
+
   context-free syntax %% Filters
     %%Exp                                      -> NonSetExp
     %%SetCompExp                               -> NonSetExp {reject}

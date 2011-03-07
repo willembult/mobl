@@ -73,6 +73,9 @@ strategies
     CollectionCons(qid, t*, e*) -> GenericType(qid, t*)
 
   eq-type-of :
+    ImportData(_) -> SimpleType(QId("mobl", "String"))
+
+  eq-type-of :
     Call(qid, e*) -> rt
     where c#([_, _, _, rt]) := <lookup-function> qid
 
@@ -141,7 +144,7 @@ strategies
     where Property(_, _, t, _) := <lookup-property> (<type-of> e, x)
 
   eq-type-of  = eq-type-of-binop <+ eq-type-of-binop-generic
-  
+
   eq-type-of-binop-generic :
     BinMethodCall(e1, op, e2) -> <type-of> e1 // @TODO: Fix this
 
@@ -184,7 +187,7 @@ strategies
     ?(GenericType(x, t1*), GenericType(x, t2*))
     ; <zip(type-compatible)> (t1*, t2*)
 
-  type-compatible = 
+  type-compatible =
     ?(t1, t2)
     ; ExternalType(_, _, super-t, _) := <lookup-type> t2
     ; <not(eq)> (super-t, t2)

@@ -37,6 +37,8 @@ exports
     StyleExp "~" StyleExp   -> StyleExp {cons("StyleSub"), left}
     StyleExp "*" StyleExp   -> StyleExp {cons("StyleMul"), left}
     StyleVar "." ID         -> StyleExp {cons("StyleFieldAccess")}
+    "$data" "(" Path ")"    -> StyleExp {cons("ImportData")}
+
 
     %%"(" StyleExp ")"        -> StyleExp {bracket}
 

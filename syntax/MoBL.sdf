@@ -104,4 +104,5 @@ exports
     "when" -> ID {reject}
     "this" -> ID {reject}
     "javascript" -> ID {reject}
+    "$data" -> ID {reject}
 
