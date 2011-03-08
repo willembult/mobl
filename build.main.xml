@@ -51,7 +51,7 @@
   <!-- Stratego to Java compiler -->
   <target name="moblc" depends="check-classpath,meta-sdf2table,sdf2table,ppgen,pppack,sdf2imp,java.jar,rtg2sig">
     <mkdir dir="${compiler-src-gen}/trans"/>
-    <java classname="org.strategoxt.strj.Main" classpath="utils/strategoxt.jar" failonerror="true">
+    <java classname="org.strategoxt.strj.Main" classpath="utils/strategoxt.jar" failonerror="true" maxmemory="1024m" fork="true">
         <arg value="-i"/>
         <arg value="${trans}/${strmodule}c.str"/>
         <arg value="-o"/>
@@ -67,7 +67,7 @@
         <arg line="-I &quot;${lib}&quot; -I &quot;${include}&quot;  --cache-dir &quot;${basedir}/.cache&quot;"/>
     </java>
     <mkdir dir="${compiler-build}"/>
-    <javac classpath="utils/strategoxt.jar:java-src:${externaljarimport}${java.jar.classpath}" srcdir="${compiler-src-gen}" includes="trans/**" destdir="${compiler-build}" source="1.5" target="1.5" debug="on"/>
+    <javac classpath="utils/strategoxt.jar:java-src:${externaljarimport}${java.jar.classpath}" srcdir="${compiler-src-gen}" includes="trans/**" destdir="${compiler-build}" source="1.5" target="1.5" debug="on"  fork="true" memorymaximumsize="1024m"/>
     <!-- copy imported terms -->
     <copy todir="${compiler-build}/trans">
         <fileset dir="${compiler-src-gen}/trans" excludes="**/*.java"/>
