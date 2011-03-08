@@ -69,7 +69,7 @@ rules
               ; fp2 := <fopen> (index-html-filename, "w")
               ; <fputs> (<generate-optimized-index-html(|[$[[<qid-to-path> mod-name].js], $[[<qid-to-path> mod-name].css], script-tag-js*, style-tag-css*], setting*)> ast, fp2)
               ; <fclose> fp2
-              ; <map(<concat-strings> [<OutputPath>, "/", <id>]; remove-file <+ debug(!"Could not remove file: "); fail)> [special-js*, inlinable-css*, inlinable-js*]
+              ; <map(<concat-strings> [<OutputPath>, "/", <id>]; remove-file <+ debug(!"Could not remove file: "))> [special-js*, inlinable-css*, inlinable-js*]
               ; <map(refresh-workspace-file)> [js-filename, css-filename, html-filename]
             )
           |}
