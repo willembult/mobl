@@ -81,18 +81,24 @@ let
     };
 
     moblc = with jars; pkgs.releaseTools.antBuild {
-      name = "moblc-r${mobl.rev}";
+      name = "moblc-r${toString mobl.rev}";
       src = mobl;
       buildfile = "build.main.xml";      
 
       antTargets = ["moblc-release"];
-      antProperties = [ { name = "eclipse.spoofaximp.jars"; value = "utils/"; }];
+      antProperties = [ 
+        { name = "eclipse.spoofaximp.jars"; value = "utils/"; }
+        { name = "build.compiler"; value = "org.eclipse.jdt.core.JDTCompilerAdapter"; }
+        { name = "java.jar.enabled"; value = "true"; }
+      ];
 
       buildInputs = [pkgs.strategoPackages.sdf];
 
-      #jarWrappers = [ { name = "moblc"; jar = "moblc.jar"; classPath = "$out/lib/java/strategoxt.jar"; mainClass = "trans.Main"; } ];
       jarWrappers = [ { name = "moblc"; jar = "moblc.jar"; mainClass = "trans.Main"; } ];
       jars = ["./moblc.jar"];
+
+      # add ecj to classpath of ant
+      ANT_ARGS="-lib ${pkgs.ecj}/lib/java";
 
       LOCALCLASSPATH = "utils/aster.jar:utils/make_permissive.jar:utils/sdf2imp.jar:utils/strategoxt.jar";
 
