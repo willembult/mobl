@@ -43,7 +43,9 @@ rules
               ; all-js* := <filter(string-ends-with(|".js"))> loaded-resources
               ; inlinable-js* := <filter(not(string-starts-with(|"http://")))> all-js*
               ; script-tag-js* := <filter(string-starts-with(|"http://"))> all-js*
-              ; loaded-css* := <filter(string-ends-with(|".css"))> loaded-resources
+              ; all-css* := <filter(string-ends-with(|".css"))> loaded-resources
+              ; inlinable-css* := <filter(not(string-starts-with(|"http://")))> loaded-resources
+              ; style-tag-css* := <filter(string-starts-with(|"http://"))> loaded-resources
             )
           ; compile
           ; where(
@@ -52,7 +54,7 @@ rules
               ; all-js2 := <read-files-and-concat> [inlinable-js*, js-filename]
               ; setting* := <get-configuration> $[[<ProjectPath; string-replace(|"\\", "/")>]/config.mobl]
               ; all-js := <uglify> (<StdLibPath>, <concat-strings> [all-js1, <generate-db-init-code(|setting*)> ast, all-js2])
-              ; all-css := <read-files-and-concat> [loaded-css*, css-filename]
+              ; all-css := <read-files-and-concat> [inlinable-css*, css-filename]
               ; fp := <fopen> (js-filename, "w")
               ; <fputs> (all-js, fp)
               ; <fclose> fp
@@ -65,9 +67,9 @@ rules
                   index-html-filename := html-filename
                 end
               ; fp2 := <fopen> (index-html-filename, "w")
-              ; <fputs> (<generate-optimized-index-html(|[$[[<qid-to-path> mod-name].js], $[[<qid-to-path> mod-name].css], script-tag-js*], setting*)> ast, fp2)
+              ; <fputs> (<generate-optimized-index-html(|[$[[<qid-to-path> mod-name].js], $[[<qid-to-path> mod-name].css], script-tag-js*, style-tag-css*], setting*)> ast, fp2)
               ; <fclose> fp2
-              ; <map(<concat-strings> [<OutputPath>, "/", <id>]; remove-file <+ debug(!"Could not remove file: "); fail)> [special-js*, loaded-css*, inlinable-js*]
+              ; <map(<concat-strings> [<OutputPath>, "/", <id>]; remove-file <+ debug(!"Could not remove file: "); fail)> [special-js*, inlinable-css*, inlinable-js*]
               ; <map(refresh-workspace-file)> [js-filename, css-filename, html-filename]
             )
           |}
