@@ -54,7 +54,11 @@ rules
               ; all-js2 := <read-files-and-concat> [inlinable-js*, js-filename]
               ; setting* := <get-configuration> $[[<ProjectPath; string-replace(|"\\", "/")>]/config.mobl]
               ; all-js := <uglify> (<StdLibPath>, <concat-strings> [all-js1, <generate-db-init-code(|setting*)> ast, all-js2])
-              ; all-css := <read-files-and-concat> [inlinable-css*, css-filename]
+              ; if <file-exists> css-filename then
+                  all-css := <read-files-and-concat> [inlinable-css*, css-filename]
+                else
+                  all-css := <read-files-and-concat> inlinable-css*
+                end
               ; fp := <fopen> (js-filename, "w")
               ; <fputs> (all-js, fp)
               ; <fclose> fp
