@@ -31,6 +31,7 @@ public class uglify_0_0 extends Strategy {
         String code = getStringFromTerm(current.getSubterm(1));
         ITermFactory factory = context.getFactory();
         org.mozilla.javascript.Context cx = org.mozilla.javascript.Context.enter();
+        //cx.setOptimizationLevel(9);
         Scriptable scope = cx.initStandardObjects();
         try {
             scope.put("code", scope, code);
