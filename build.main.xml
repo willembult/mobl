@@ -69,7 +69,7 @@
         <jvmarg value="-Xss16m"/>
     </java>
     <mkdir dir="${compiler-build}"/>
-    <javac classpath="utils/strategoxt.jar:java-src:${externaljarimport}${java.jar.classpath}" srcdir="${compiler-src-gen}" includes="trans/**" destdir="${compiler-build}" source="1.5" target="1.5" debug="on"  fork="true" memorymaximumsize="1024m"/>
+    <javac classpath="utils/strategoxt.jar:java-src:${externaljarimport}${java.jar.classpath}" srcdir="${compiler-src-gen}" includes="trans/**" destdir="${compiler-build}" source="1.5" target="1.5" debug="on"  fork="true" memorymaximumsize="2048m"/>
     <!-- copy imported terms -->
     <copy todir="${compiler-build}/trans">
         <fileset dir="${compiler-src-gen}/trans" excludes="**/*.java"/>
