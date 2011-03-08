@@ -45,7 +45,7 @@ let
         ulimit -s unlimited
         cd $out/
         cp -Rv ${mobl}/samples/${app.name}/* .
-        moblc -i ${app.app} -d www -I ${mobl}/stdlib ${if app ? stdlib then "-I ${app.stdlib}" else ""}
+        moblc -i ${app.app} -d www -O -I ${mobl}/stdlib ${if app ? stdlib then "-I ${app.stdlib}" else ""}
         ln -s $out/www/`basename ${app.app} .mobl`.html $out/www/index.html
         echo "doc www $out/www" >> $out/nix-support/hydra-build-products
       '';

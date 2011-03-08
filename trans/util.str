@@ -36,6 +36,7 @@ rules
     ; rules(
         IncludePaths      := [<ProjectPath>, stdlib-path, path*]
         OutputPath        := $[[<ProjectPath>]/[<un-double-quote> output-path]]
+        StdLibPath        := stdlib-path
         ServerOutputPath  := <concat-strings> [<ProjectPath>, "/server"]
       )
 

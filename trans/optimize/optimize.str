@@ -25,8 +25,13 @@ rules
       ; (Module(mod-name, _)  := ast <+ Application(mod-name, _) := ast <+ ServerApplication(mod-name, _, _) := ast)
       ; rules ( CompilingModule := mod-name
                 OutputPath := $[[<project-path>]/www.release])
-    with {| Inlined
+      ; <optimized-compile(|mod-name)> ast
+
+  optimized-compile(|mod-name) :
+    ast -> ast
+    with {| Inlined, OptimizedMode
           : <analyze> ast
+          ; rules ( OptimizedMode := True() )
           ; topdown(try(inline-import))
           ; topdown(try(flatten-list))
           ; eliminate-dead-code
@@ -44,7 +49,7 @@ rules
               ; all-js1 := <read-files-and-concat> special-js*
               ; all-js2 := <read-files-and-concat> [loaded-js*, js-filename]
               ; setting* := <get-configuration> $[[<ProjectPath; string-replace(|"\\", "/")>]/config.mobl]
-              ; all-js := <uglify> (<plugin-path>, <concat-strings> [all-js1, <generate-db-init-code(|setting*)> ast, all-js2])
+              ; all-js := <uglify> (<StdLibPath>, <concat-strings> [all-js1, <generate-db-init-code(|setting*)> ast, all-js2])
               ; all-css := <read-files-and-concat> [loaded-css*, css-filename]
               ; fp := <fopen> (js-filename, "w")
               ; <fputs> (all-js, fp)

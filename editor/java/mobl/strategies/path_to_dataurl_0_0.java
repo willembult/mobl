@@ -1,17 +1,13 @@
 package mobl.strategies;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.StringTokenizer;
 
-import org.mozilla.javascript.Scriptable;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.ITermFactory;
 import org.strategoxt.lang.Context;
 import org.strategoxt.lang.Strategy;
-import org.strategoxt.lang.terms.StrategoString;
 
 public class path_to_dataurl_0_0 extends Strategy {
 
@@ -19,7 +15,7 @@ public class path_to_dataurl_0_0 extends Strategy {
 
     @Override
     public IStrategoTerm invoke(Context context, IStrategoTerm current) {
-        String path = ((StrategoString)current).stringValue();
+        String path = uglify_0_0.getStringFromTerm(current);
         ITermFactory factory = context.getFactory();
         try {
             return factory.makeString(pathToDataUrl(context, path));

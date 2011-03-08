@@ -14,6 +14,7 @@ imports
   check
   style
   util
+  optimize/optimize
 
 strategies
 
@@ -46,6 +47,7 @@ strategies
         IncludePaths      := [cwd, stdlib-path, include-param*, path*]
         ServerOutputPath  := <concat-strings> [<ProjectPath>, "/server"]
         CachedParseAst    : filename -> ast
+        StdLibPath        := stdlib-path
         CompilingFilename := filename
         OutputPath        := output-path)
     ; (Module(mod-name, _)  := ast <+ Application(mod-name, _) := ast <+ ServerApplication(mod-name, _, _) := ast)
@@ -55,11 +57,16 @@ strategies
     ; warnings := <collect-all(constraint-warning, conc); map(?(_, <id>); <concat-strings> ["Warning: ", <id>])> ast2
     ; notes    := <collect-all(constraint-note, conc); map(?(_, <id>); <concat-strings> ["Note: ", <id>])> ast2
     ; <concat; map(debug)> [errors, warnings, notes]
-    ; if [] := errors then
+    ; if [] := errors; not(OptimizationLevel) then
         <compile> ast
         ; <exit> 0
       else
-        <exit> 1
+        if OptimizationLevel then
+          <optimized-compile(|mod-name)> ast
+        ; <exit> 0
+        else
+          <exit> 1
+        end
       end
 
   init-moblc-options =
@@ -69,6 +76,12 @@ strategies
     ArgOption("-d"
     , ?path; rules( OutputPath := path )
     , !HelpString("-d path", "Relative path to desired output directory")
+    )
+
+  moblc-options =
+    Option("-O"
+    , rules( OptimizationLevel := 1 )
+    , !HelpString("-O", "Enable optimization mode")
     )
 
   moblc-options =
