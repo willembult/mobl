@@ -40,14 +40,16 @@ rules
               ; js-filename := <concat-strings> [<OutputPath>, "/", <qid-to-path> mod-name, ".js"]
               ; css-filename := <concat-strings> [<OutputPath>, "/", <qid-to-path> mod-name, ".css"]
               ; html-filename := <concat-strings> [<OutputPath>, "/", <qid-to-path> mod-name, ".html"]
-              ; loaded-js* := <filter(string-ends-with(|".js"))> loaded-resources
+              ; all-js* := <filter(string-ends-with(|".js"))> loaded-resources
+              ; inlinable-js* := <filter(not(string-starts-with(|"http://")))> all-js*
+              ; script-tag-js* := <filter(string-starts-with(|"http://"))> all-js*
               ; loaded-css* := <filter(string-ends-with(|".css"))> loaded-resources
             )
           ; compile
           ; where(
               special-js* := ["js/jquery-1.4.min.js", "js/persistence.js", "js/persistence.store.sql.js", "js/persistence.store.websql.js", "js/persistence.store.memory.js", "js/persistence.search.js"]
               ; all-js1 := <read-files-and-concat> special-js*
-              ; all-js2 := <read-files-and-concat> [loaded-js*, js-filename]
+              ; all-js2 := <read-files-and-concat> [inlinable-js*, js-filename]
               ; setting* := <get-configuration> $[[<ProjectPath; string-replace(|"\\", "/")>]/config.mobl]
               ; all-js := <uglify> (<StdLibPath>, <concat-strings> [all-js1, <generate-db-init-code(|setting*)> ast, all-js2])
               ; all-css := <read-files-and-concat> [loaded-css*, css-filename]
@@ -63,9 +65,9 @@ rules
                   index-html-filename := html-filename
                 end
               ; fp2 := <fopen> (index-html-filename, "w")
-              ; <fputs> (<generate-optimized-index-html(|[$[[<qid-to-path> mod-name].js], $[[<qid-to-path> mod-name].css]], setting*)> ast, fp2)
+              ; <fputs> (<generate-optimized-index-html(|[$[[<qid-to-path> mod-name].js], $[[<qid-to-path> mod-name].css], script-tag-js*], setting*)> ast, fp2)
               ; <fclose> fp2
-              ; <map(<concat-strings> [<OutputPath>, "/", <id>]; remove-file <+ debug(!"Could not remove file: "); fail)> [special-js*, loaded-css*, loaded-js*]
+              ; <map(<concat-strings> [<OutputPath>, "/", <id>]; remove-file <+ debug(!"Could not remove file: "); fail)> [special-js*, loaded-css*, inlinable-js*]
               ; <map(refresh-workspace-file)> [js-filename, css-filename, html-filename]
             )
           |}
@@ -76,7 +78,6 @@ rules
   inline-import :
     Import(qid) -> defs
     where not(<Inlined> qid)
-    where debug(!"Inlining: ")
     where rules( Inlined : qid)
     where _#([_, defs|_]) := <qid-to-path; <concat-strings> [<id>, ".mobl"]; resolve-file; parse-file; analyze> qid
 
