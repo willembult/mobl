@@ -39,7 +39,7 @@ strategies
     ; if <fetch-elem(?StdLibSetting(stdlib-p))> setting* then
          stdlib-path := <path-to-string> stdlib-p
       else
-        stdlib-path := <concat-strings> ["./stdlib"]
+        stdlib-path := <<Hd> include-param* <+ !"./stdlib">
       end
     ; path* := <filter(\ LibSetting(p) -> <path-to-string> p \)> setting*
     ; rules(
