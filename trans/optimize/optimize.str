@@ -44,8 +44,8 @@ rules
               ; inlinable-js* := <filter(not(string-starts-with(|"http://")))> all-js*
               ; script-tag-js* := <filter(string-starts-with(|"http://"))> all-js*
               ; all-css* := <filter(string-ends-with(|".css"))> loaded-resources
-              ; inlinable-css* := <filter(not(string-starts-with(|"http://")))> loaded-resources
-              ; style-tag-css* := <filter(string-starts-with(|"http://"))> loaded-resources
+              ; inlinable-css* := <filter(not(string-starts-with(|"http://")))> all-css*
+              ; style-tag-css* := <filter(string-starts-with(|"http://"))> all-css*
             )
           ; compile
           ; where(
