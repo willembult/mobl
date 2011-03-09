@@ -21,7 +21,9 @@ builders
   builder  : "Show ATerm"  = generate-aterm (openeditor) (realtime) (meta)
   //builder  : "Format code" = format-code (openeditor) (realtime)
   builder  : "Desugar"     = editor-desugar (openeditor) (realtime) (meta)
-  builder  : "Optimized Build" = editor-optimize
+  builder  : "Optimized build" = editor-optimize
+  builder  : "Clean project" = editor-clean-project
+  builder  : "Rebuild project" = editor-rebuild-project
 
   //builder		: "Make Data Model Snapshot"	= editor-mobl-make-snapshot
   //builder		: "Derive M3"					= editor-mobl2m3 (openeditor) (realtime) (meta)

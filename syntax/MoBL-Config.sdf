@@ -18,6 +18,7 @@ exports
     "lib" Path                       -> Setting {cons("LibSetting")}
     "html" FILENAME                  -> Setting {cons("HtmlSetting")}
     "output" STRING                  -> Setting {cons("OutputSetting")}
+    "release" "output" STRING        -> Setting {cons("ReleaseOutputSetting")}
 
     "offline"                        -> Setting {cons("OfflineSetting")}
     "debug"                          -> Setting {cons("DebugSetting")}

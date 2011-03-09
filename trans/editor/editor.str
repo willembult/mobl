@@ -16,6 +16,7 @@ imports
   editor/hover
   generation/compile
   generation/action
+  optimize/optimize
   util
 
 rules
@@ -69,3 +70,99 @@ rules
     (selected, position, ast, path, project-path) -> (filename, <pp-mobl> selected)
     with
       filename := <guarantee-extension(|"mobl")> "formatted"
+
+rules
+
+  external deltree(|)
+
+  generate-artifacts:
+    (selected, position, ast, path, project-path) -> None() //(filename-html, result-html)
+    where not(HasErrors)
+    where not(Configuration(_) := ast)
+    with
+      // Ensure all dynamic rules are properly scoped
+      try(dr-scope-all-end)
+      ; dr-scope-all-start
+    with
+      rules ( ProjectPath     := project-path
+              CachedParseAst  : path -> ast )
+      ; setup-paths
+      ; (Module(mod-name, _)  := ast <+ Application(mod-name, _) := ast <+ ServerApplication(mod-name, _, _) := ast)
+      ; rules ( CompilingModule := mod-name )
+      ; <compile> ast
+
+  generate-artifacts:
+    (selected, position, Configuration(_), path, project-path) -> None()
+    with
+      // Ensure all dynamic rules are properly scoped
+      try(dr-scope-all-end)
+      ; dr-scope-all-start
+    with
+      rules ( ProjectPath     := project-path )
+      ; setup-paths
+    where <readdir> project-path
+        ; list-loop(
+            if has-extension(|"mobl") then
+              where({ast:
+                ast := <parse-file> $[[project-path]/[<id>]]
+                ; if Application(_, _) := ast then
+                    <compile> ast
+                  end
+              })
+            end
+          )
+  generate-artifacts:
+    _ -> None() //(filename-html, result-html)
+    where HasErrors
+
+  editor-optimize :
+    (selected, position, ast, path, project-path) -> None()
+    with
+      rules ( ProjectPath     := project-path
+              CachedParseAst  : path -> ast )
+      ; setup-paths
+      ; (Module(mod-name, _)  := ast <+ Application(mod-name, _) := ast <+ ServerApplication(mod-name, _, _) := ast)
+      ; rules ( CompilingModule := mod-name
+                OutputPath := <ReleaseOutputPath>)
+      ; if <file-exists> <ReleaseOutputPath> then
+          <deltree> <ReleaseOutputPath>
+        end
+      ; <optimized-compile(|mod-name)> ast
+
+  editor-clean-project :
+    (selected, position, ast, path, project-path) -> None()
+    with
+      rules ( ProjectPath := project-path )
+      ; setup-paths
+      ; if <file-exists> <OutputPath> then
+          <deltree> <OutputPath>
+        end
+      ; if <file-exists> <ReleaseOutputPath> then
+          <deltree> <ReleaseOutputPath>
+        end
+      ; <refresh-workspace-file> <ProjectPath>
+
+  editor-rebuild-project :
+    (selected, position, ast, path, project-path) -> None()
+    with
+      // Ensure all dynamic rules are properly scoped
+      try(dr-scope-all-end)
+      ; dr-scope-all-start
+    with
+      rules ( ProjectPath     := project-path
+              CachedParseAst  : path -> ast )
+      ; setup-paths
+      ; if <file-exists> <OutputPath> then
+          <deltree> <OutputPath>
+        end
+    where <readdir> project-path
+        ; list-loop(
+            if has-extension(|"mobl") then
+              where({ast:
+                ast := <parse-file> $[[project-path]/[<id>]]
+                ; if Application(_, _) := ast then
+                    <compile> ast
+                  end
+              })
+            end
+          )

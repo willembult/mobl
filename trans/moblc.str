@@ -35,7 +35,8 @@ strategies
     ; output-path := $[[<getcwd>]/[<OutputPath <+ !"www">]]
     ; include-param* := <get-config>"-I"
     ; cwd := <getcwd>
-    ; setting* := <get-configuration> $[[cwd]/config.mobl]
+    ; rules ( ProjectPath       := cwd )
+    ; setting* := <get-configuration>
     ; if <fetch-elem(?StdLibSetting(stdlib-p))> setting* then
          stdlib-path := <path-to-string> stdlib-p
       else
@@ -43,7 +44,6 @@ strategies
       end
     ; path* := <filter(\ LibSetting(p) -> <path-to-string> p \)> setting*
     ; rules(
-        ProjectPath       := cwd
         IncludePaths      := [cwd, stdlib-path, include-param*, path*]
         ServerOutputPath  := <concat-strings> [<ProjectPath>, "/server"]
         CachedParseAst    : filename -> ast

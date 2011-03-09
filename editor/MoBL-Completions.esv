@@ -132,6 +132,14 @@ completions
 
 completions
 
+  completion template : Exp =
+    "$data" "(" <path/to/image.png> ")"
+
+  completion template : StyleExp =
+    "$data" "(" <path/to/image.png> ")"
+
+completions
+
   completion template : Setting =
     "debug" (blank)
 

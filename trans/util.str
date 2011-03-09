@@ -23,7 +23,7 @@ rules
     [a|k] -> [a|<cut-off-last-element> k]
 
   setup-paths =
-    setting* := <get-configuration> $[[<ProjectPath; string-replace(|"\\", "/")>]/config.mobl]
+    setting* := <get-configuration>
     ; if <fetch-elem(?StdLibSetting(stdlib-p))> setting* then
          stdlib-path := <path-to-string; resolve-file> stdlib-p
       else
@@ -33,19 +33,25 @@ rules
     ; if not(<fetch-elem(?OutputSetting(output-path))> setting*) then
         output-path := $["www"]
       end
+    ; if not(<fetch-elem(?ReleaseOutputSetting(release-output-path))> setting*) then
+        release-output-path := $["www.release"]
+      end
     ; rules(
         IncludePaths      := [<ProjectPath>, stdlib-path, path*]
         OutputPath        := $[[<ProjectPath>]/[<un-double-quote> output-path]]
+        ReleaseOutputPath := $[[<ProjectPath>]/[<un-double-quote> release-output-path]]
         StdLibPath        := stdlib-path
         ServerOutputPath  := <concat-strings> [<ProjectPath>, "/server"]
       )
 
   get-configuration :
-    filename -> setting*
-    where file-exists
+    _ -> setting*
+    where filename := $[[<ProjectPath; string-replace(|"\\", "/")>]/config.mobl]
+    where <file-exists> filename
     with Configuration(setting*) := <parse-file <+ !Configuration([])> filename
 
   get-configuration :
-    filename -> []
-    where not(file-exists)
+    _ -> []
+    where filename := $[[<ProjectPath; string-replace(|"\\", "/")>]/config.mobl]
+    where not(<file-exists> filename)
 

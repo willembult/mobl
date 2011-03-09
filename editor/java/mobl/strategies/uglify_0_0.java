@@ -1,13 +1,11 @@
 package mobl.strategies;
 import java.io.FileReader;
-import java.lang.reflect.InvocationTargetException;
 
 import org.mozilla.javascript.Scriptable;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.ITermFactory;
 import org.strategoxt.lang.Context;
 import org.strategoxt.lang.Strategy;
-import org.strategoxt.lang.terms.StrategoString;
 
 /**
  * Example Java strategy implementation.

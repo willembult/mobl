@@ -50,7 +50,7 @@ strategies
          ; module-to-js
          |}
       ; if !app then
-          setting* := <get-configuration> $[[<ProjectPath; string-replace(|"\\", "/")>]/config.mobl]
+          setting* := <get-configuration>
         end
       ; where(path := <qid-to-path> qid
               ; js-filename   := <concat-strings; guarantee-extension(|"js")> [<OutputPath>, "/", path]
