@@ -107,6 +107,7 @@ screen forms() {
   group {
     item { textField("", placeholder="Textfield placeholder") }
     item { textField("", label="with label") }
+    item { selectField("en", [("en", "English"), ("nl", "Dutch")]) }
     item { numField(7) }
     item { datePicker(now()) }
     item { checkBox(true, label="A label")}

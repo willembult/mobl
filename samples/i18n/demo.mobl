@@ -1,6 +1,5 @@
 application demo
 
-import mobl::i18n
 import mobl::ui::generic
 
 resource lang/dutch.json
