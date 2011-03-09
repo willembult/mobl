@@ -21,7 +21,7 @@ builders
   builder  : "Show ATerm"  = generate-aterm (openeditor) (realtime) (meta)
   //builder  : "Format code" = format-code (openeditor) (realtime)
   builder  : "Desugar"     = editor-desugar (openeditor) (realtime) (meta)
-  builder  : "Optimized build" = editor-optimize
+  builder  : "Release build" = editor-optimize
   builder  : "Clean project" = editor-clean-project
   builder  : "Rebuild project" = editor-rebuild-project
 

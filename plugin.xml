@@ -14,7 +14,7 @@
         <primaryWizard id="mobl.EditorWizard"/>
         <wizard
          class="mobl.MoblEditorWizard"
-         icon="icons/mobl.gif"
+         icon="icons/mobl.png"
          id="mobl.EditorWizard"
          name="mobl project"
          project="true">

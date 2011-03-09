@@ -11,5 +11,4 @@ screen root() {
     item { numField(percentage, label="percentage") }
     item { "$" label(Math.round(amount * (1 + percentage/100))) }
   }
-
 }

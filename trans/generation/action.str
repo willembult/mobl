@@ -32,28 +32,29 @@ strategies
     ; rest := <filter(not(?Entity(_, _, _, _) <+ ?Import(_)))> def*
     ; to-import := <concat; make-set> [<filter(not(?Import(_))); collect-om(?QId(<id>, _)); filter(not(?qid))> def*, <filter(?Import(<id>))> def*]
     ; <map(import-to-js)> to-import
-    ; <filter(definition-to-js <+ where(?<id>#(_); not(string-starts-with(|"External"))); not(?MiddlewareUse(_) <+ ?DynamicImport(_) <+ ?Load(_) <+ ?Mixin(_) <+ ?StyleVarDecl(_, _) <+ ?StyleMixin(_, _, _, _) <+ ?Style(_, _, _)); emit-tl-statement)> rest
+    ; <filter(definition-to-js <+ where(?<id>#(_); not(string-starts-with(|"External"))); not(?MiddlewareUse(_) <+ ?DynamicImport(_) <+ ?Load(_) <+ ?Resource(_) <+ ?Mixin(_) <+ ?StyleVarDecl(_, _) <+ ?StyleMixin(_, _, _, _) <+ ?Style(_, _, _)); emit-tl-statement)> rest
     ; <entities-to-js> entities
 
 strategies
 
   import-to-js :
-    qid -> <id> //<emit> $[mobl.load('[<qid-to-path> qid].js');
-//]
+    qid -> <id>
   where not(ServerContext)
 
   definition-to-js :
-    Load(path@Path(part*)) -> <id> //<emit> $[mobl.load('[<path-to-string> path]');]
+    Load(path@Path(part*)) -> <id>
     where not(ServerContext)
     with path-str := <path-to-string> path
-       ; <cut-off-last-element; separate-by(|"/"); <concat-strings> [<OutputPath>, "/"|<id>]; ensure-existing-dir> part*
+    where not(OptimizedMode; <string-ends-with(|".js") <+ string-ends-with(|".css")> path-str; not(<string-starts-with(|"http://")> path-str))
+    with <cut-off-last-element; separate-by(|"/"); <concat-strings> [<OutputPath>, "/"|<id>]; ensure-existing-dir> part*
        ; <copy-file> (<resolve-file> path-str, $[[<OutputPath>]/[path-str]])
        ; <refresh-workspace-file> $[[<OutputPath>]/[path-str]]
 
   definition-to-js :
     Resource(path@Path(part*)) -> <id>
     with path-str := <path-to-string> path
-       ; <cut-off-last-element; separate-by(|"/"); <concat-strings> [<OutputPath>, "/"|<id>]; ensure-existing-dir> part*
+    where not(OptimizedMode; <string-ends-with(|".js")> path-str; not(<string-starts-with(|"http://")> path-str))
+    with <cut-off-last-element; separate-by(|"/"); <concat-strings> [<OutputPath>, "/"|<id>]; ensure-existing-dir> part*
        ; <copy-file> (<resolve-file> path-str, $[[<OutputPath>]/[path-str]])
        ; <refresh-workspace-file> $[[<OutputPath>]/[path-str]]
 

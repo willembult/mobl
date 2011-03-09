@@ -62,7 +62,8 @@ strategies
                   index-html-filename := <concat-strings; guarantee-extension(|"html")> [<OutputPath>, "/", path]
                 end
               ; manifest-filename   := <concat-strings; guarantee-extension(|"manifest")> [<OutputPath>, "/", path]
-              ; chrome-manifest-filename := <concat-strings> [<OutputPath>, "/manifest.json"])
+              //; chrome-manifest-filename := <concat-strings> [<OutputPath>, "/manifest.json"]
+             )
       ; fp := <fopen> (js-filename, "w")
       ; <fputs> ($[mobl.provides('[<qid-to-js> qid]');
 ], fp)
@@ -97,10 +98,10 @@ strategies
               ; <fclose> fp3
               ; <refresh-workspace-file> manifest-filename
             end
-         ; fp4 := <fopen <+ debug(!"Could not open file: "); fail> (chrome-manifest-filename, "w")
+          /*; fp4 := <fopen <+ debug(!"Could not open file: "); fail> (chrome-manifest-filename, "w")
           ; <fputs> (<generate-chrome-manifest(|<get-all-resources-no-dynamic(|qid)> def*, setting*)> app, fp4)
           ; <fclose> fp4
-          ; <refresh-workspace-file> chrome-manifest-filename
+          ; <refresh-workspace-file> chrome-manifest-filename*/
         )
         end
       ; <refresh-workspace-file> js-filename
@@ -150,3 +151,8 @@ strategies
   qid-to-path :
     QId(qid, x) -> $[[qids]/[x]]
     with qids := <qid-to-path> qid
+
+strategies // hack
+
+  ignoreme = rules ( ProjectPath := "" )
+

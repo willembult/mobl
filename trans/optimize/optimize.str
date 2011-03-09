@@ -61,7 +61,7 @@ rules
           ; fp2 := <fopen> (index-html-filename, "w")
           ; <fputs> (<generate-optimized-index-html(|[$[[<qid-to-path> mod-name].js], $[[<qid-to-path> mod-name].css], script-tag-js*, style-tag-css*], setting*)> ast, fp2)
           ; <fclose> fp2
-          ; <map(<concat-strings> [<OutputPath>, "/", <id>]; remove-file <+ debug(!"Could not remove file: "))> [special-js*, inlinable-css*, inlinable-js*]
+          //; <map(<concat-strings> [<OutputPath>, "/", <id>]; remove-file <+ debug(!"Could not remove file: "))> [special-js*, inlinable-css*, inlinable-js*]
           ; <map(refresh-workspace-file)> [js-filename, css-filename, html-filename]
           |}
 
@@ -106,7 +106,7 @@ rules
     </head>
     <body>
     <div id="mobl-loading">
-      Loading... <img src="img/loading.gif"/>
+      Loading... <img src="data:image/gif;base64,R0lGODlhCgAKAJEDAMzMzP9mZv8AAP///yH/C05FVFNDQVBFMi4wAwEAAAAh+QQFAAADACwAAAAACgAKAAACF5wncgaAGgJzJ647cWua4sOBFEd62VEAACH5BAUAAAMALAEAAAAIAAMAAAIKnBM2IoMDAFMQFAAh+QQFAAADACwAAAAABgAGAAACDJwHMBGofKIRItJYAAAh+QQFAAADACwAAAEAAwAIAAACChxgOBPBvpYQYxYAIfkEBQAAAwAsAAAEAAYABgAAAgoEhmPJHOGgEGwWACH5BAUAAAMALAEABwAIAAMAAAIKBIYjYhOhRHqpAAAh+QQFAAADACwEAAQABgAGAAACDJwncqi7EQYAA0p6CgAh+QQJAAADACwHAAEAAwAIAAACCpRmoxoxvQAYchQAOw==" width="10" height="10">
       <p>(If this message still shows after a few seconds, probably something went wrong. Does your browser support Javascript?)</p>
     </div>
     [<filter(res-to-script-html)> res*]

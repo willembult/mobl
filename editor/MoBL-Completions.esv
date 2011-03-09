@@ -165,4 +165,7 @@ completions
     "output " <"www"> (blank)
 
   completion template : Setting =
+    "release" "output " <"www"> (blank)
+
+  completion template : Setting =
     "database " <"mydb"> (blank)
