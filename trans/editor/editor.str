@@ -74,6 +74,7 @@ rules
 rules
 
   external deltree(|)
+  external confirm-dialog(|)
 
   generate-artifacts:
     (selected, position, ast, path, project-path) -> None() //(filename-html, result-html)
@@ -134,13 +135,16 @@ rules
     with
       rules ( ProjectPath := project-path )
       ; setup-paths
-      ; if <file-exists> <OutputPath> then
-          <deltree> <OutputPath>
-        end
-      ; if <file-exists> <ReleaseOutputPath> then
-          <deltree> <ReleaseOutputPath>
-        end
-      ; <refresh-workspace-file> <ProjectPath>
+      ; try(
+          //<confirm-dialog> "Are you sure you want to clean the project, this will remove the output directories."
+          if <file-exists> <OutputPath> then
+              <deltree> <OutputPath>
+            end
+          ; if <file-exists> <ReleaseOutputPath> then
+              <deltree> <ReleaseOutputPath>
+            end
+          ; <refresh-workspace-file> <ProjectPath>
+       )
 
   editor-rebuild-project :
     (selected, position, ast, path, project-path) -> None()
