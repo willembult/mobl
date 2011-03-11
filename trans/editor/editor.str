@@ -125,9 +125,6 @@ rules
       ; (Module(mod-name, _)  := ast <+ Application(mod-name, _) := ast <+ ServerApplication(mod-name, _, _) := ast)
       ; rules ( CompilingModule := mod-name
                 OutputPath := <ReleaseOutputPath>)
-      ; if <file-exists> <ReleaseOutputPath> then
-          <deltree> <ReleaseOutputPath>
-        end
       ; <optimized-compile(|mod-name)> ast
 
   editor-clean-project :

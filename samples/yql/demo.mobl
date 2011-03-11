@@ -16,6 +16,7 @@ screen root() {
     item(onclick={ showFeed("http://mobl-lang.org/feed"); }) { "Feed reader" }
     item(onclick={ pictureSearch(); }) { "Picture search" }
     item(onclick={ queryInspector(); }) { "Query inspector" }
+    item(onclick={ urlFetcher(); }) { "URL Fetcher" }
   }
   link("http://developer.yahoo.com/yql/") { "Learn about YQL" }
 }
@@ -49,22 +50,39 @@ screen showEntry(e : JSON) {
 
 screen pictureSearch() {
   var phrase = "elephant"
-  var result = async(YQL.query("select thumbnail_url from search.images where query=\"" + phrase + "\" and mimetype like \"%jpeg%\"").result)
+  var result = async(YQL.query("select thumbnail_url from search.images where query=\"" + phrase + "\" and mimetype like \"%jpeg%\""))
   header("Picture search") {
     backButton()
   }
   searchBox(phrase, onsearch={
-    result = YQL.query("select thumbnail_url from search.images where query=\"" + phrase + "\" and mimetype like \"%jpeg%\"").result;
+    result = YQL.query("select thumbnail_url from search.images where query=\"" + phrase + "\" and mimetype like \"%jpeg%\"");
   })
   whenLoaded(result) {
     group {
-      list(entry in result) {
+      list(entry in result.result) {
         image(entry.thumbnail_url)
       }
     }
   }
 }
 
+screen urlFetcher() {
+  var url = "http://zef.me"
+  header("URL Fetcher") {
+    backButton()
+  }
+  group {
+    item { textField(url, label="URL:") }
+  }
+  button("Fetch as JSON", onclick={
+    var result = YQL.fetchXMLAsJSON(url);
+    inspectJSON("result", result);
+  })
+  button("Fetch plain", onclick={
+    var result = YQL.fetchURL(url);
+    inspectJSON("result", result);
+  })
+}
 
 screen queryInspector() {
   var query = "select * from feednormalizer where url='http://rss.news.yahoo.com/rss/topstories' and output='atom_1.0'"
