@@ -30,6 +30,10 @@ strategies
     where <last; alltd(?QId(_, _); ?qid)> qid*
     where rules ( LookupDef : qid -> def )
 
+  capture-def :
+    def@VarDecl(qid, _, _) -> <id>
+    where rules ( LookupDef : qid -> def )
+
   mark-uses =
     ?qid
     ; rules ( Used : qid )
@@ -50,7 +54,12 @@ strategies
     where <Used> qid
 
   used-def :
+    VarDecl(qid, _, _) -> <id>
+    where <Used> qid
+
+  used-def :
     t -> <id>
     where not(?_#([_, QId(_, _)|_]))
         ; not(?ModuleJavascriptFor(_, _, _))
         ; not(?Style(_, _, _))
+        ; not(?VarDecl(_, _, _))

@@ -119,6 +119,10 @@ rules
   editor-optimize :
     (selected, position, ast, path, project-path) -> None()
     with
+      // Ensure all dynamic rules are properly scoped
+      try(dr-scope-all-end)
+      ; dr-scope-all-start
+    with
       rules ( ProjectPath     := project-path
               CachedParseAst  : path -> ast )
       ; setup-paths

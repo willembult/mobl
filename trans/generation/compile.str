@@ -61,7 +61,6 @@ strategies
                 else
                   index-html-filename := <concat-strings; guarantee-extension(|"html")> [<OutputPath>, "/", path]
                 end
-              ; manifest-filename   := <concat-strings; guarantee-extension(|"manifest")> [<OutputPath>, "/", path]
               //; chrome-manifest-filename := <concat-strings> [<OutputPath>, "/manifest.json"]
              )
       ; fp := <fopen> (js-filename, "w")
@@ -90,14 +89,6 @@ strategies
              |}
           ; <fclose> fp2
           ; <refresh-workspace-file> index-html-filename
-          ; if <fetch(?OfflineSetting())> setting* then
-              fp3 := <fopen <+ debug(!"Could not open file: "); fail> (manifest-filename, "w")
-              ; {| ResourceProcessed
-                 : <fputs> (<generate-manifest <+ debug(!"Could not generate index.html")> [<get-all-resources> qid], fp3)
-                 |}
-              ; <fclose> fp3
-              ; <refresh-workspace-file> manifest-filename
-            end
           /*; fp4 := <fopen <+ debug(!"Could not open file: "); fail> (chrome-manifest-filename, "w")
           ; <fputs> (<generate-chrome-manifest(|<get-all-resources-no-dynamic(|qid)> def*, setting*)> app, fp4)
           ; <fclose> fp4

@@ -102,4 +102,8 @@ strategies
   generate-manifest :
     res* -> $[CACHE MANIFEST
               # Something random: [<newname> "random"]
-              [<flatten-list; separate-by(|"\n")> res*]]
+              [<flatten-list; separate-by(|"\n")> res*]
+
+              NETWORK:
+              *
+              ]
