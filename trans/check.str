@@ -86,6 +86,9 @@ rules
   constraint-error :
     e@AsyncCall(_){} -> (e, $[async call is only allowed as a top-level call in variable declarations in controls and screens.])
 
+  constraint-error :
+    VarDeclInferred(v, Null()) -> (v, $[When initializing a variable with null, you have to specify a type, e.g.: var [v] : String = null])
+
 rules
 
   constraint-error :
