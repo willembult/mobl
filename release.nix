@@ -126,6 +126,7 @@ let
       #irc_server         = moblc { name = "irc"; app = "server.mobl"; stdlib = "${mobl}/stdlib-server-override"; } ;
       shopping           = moblc { name = "shopping"; app = "shopping.mobl"; } ;
       tipcalculator      = moblc { name = "tipcalculator"; app = "tipcalculator.mobl"; } ;
+      twittertrends      = moblc { name = "twittertrends"; app = "twittertrends.mobl"; } ;
       yql                = moblc { name = "yql"; app = "demo.mobl"; } ;
       todo               = moblc { name = "todo"; app = "todo.mobl"; } ;
       i18n                = moblc { name = "i18n"; app = "demo.mobl"; } ;
