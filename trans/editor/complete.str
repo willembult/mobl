@@ -62,9 +62,12 @@ rules
   function-to-proposal :
     f@ExternalFunction(_, qid@QId(_, x), args, _) -> [
       (<concat> [[x, "("], fargs, [")"]], <get-doc> f),
-      (<concat> [[<pp-mobl-qid> qid, "("], fargs, [")"]], <get-doc> f)
+      (<concat> [[x, "("], fargs2, [")"]], <get-doc> f),
+      (<concat> [[<pp-mobl-qid> qid, "("], fargs, [")"]], <get-doc> f),
+      (<concat> [[<pp-mobl-qid> qid, "("], fargs2, [")"]], <get-doc> f)
     ]
-    with fargs := <map(farg-to-proposal); separate-by(!", ")> args
+    with fargs := <filter(?FArg(_, _); farg-to-proposal); separate-by(!", ")> args
+    with fargs2 := <map(farg-to-proposal); separate-by(!", ")> args
 
   function-to-proposal :
     f@ExternalSyncFunction(manno*, qid, args, rt) -> <function-to-proposal> ExternalFunction(manno*, qid, args, rt)
@@ -125,9 +128,12 @@ rules
   control-to-proposal :
     tpl@ExternalControl(_, qid@QId(_, x), args) -> [
       (<concat> [[x, "("], fargs, [")"]], <get-doc> tpl),
-      (<concat> [[<pp-mobl-qid> qid, "("], fargs, [")"]], <get-doc> tpl)
+      (<concat> [[x, "("], fargs2, [")"]], <get-doc> tpl),
+      (<concat> [[<pp-mobl-qid> qid, "("], fargs, [")"]], <get-doc> tpl),
+      (<concat> [[<pp-mobl-qid> qid, "("], fargs2, [")"]], <get-doc> tpl)
     ]
-    with fargs := <map(farg-to-proposal); separate-by(!", ")> args
+    with fargs := <filter(?FArg(_, _); farg-to-proposal); separate-by(!", ")> args
+    with fargs2 := <map(farg-to-proposal); separate-by(!", ")> args
 
   control-to-proposal :
     tpl@ExternalControl(_, x, args) -> [
