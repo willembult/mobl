@@ -14,6 +14,11 @@ exports
     MetaAnno* "sync" "function" QId "(" {FArg ","}* ")" ":" Type "{" Statement* "}" -> FunctionDef {cons("SyncFunction")}
     MetaAnno* "sync" "function" QId "(" {FArg ","}* ")" "{" Statement* "}" -> FunctionDef {cons("SyncFunctionNoReturnType")}
 
+    MetaAnno* "static" "function" QId "(" {FArg ","}* ")" ":" Type "{" Statement* "}" -> FunctionDef {cons("StaticFunction")}
+    MetaAnno* "static" "function" QId "(" {FArg ","}* ")" "{" Statement* "}" -> FunctionDef {cons("StaticFunctionNoReturnType")}
+    MetaAnno* "static" "sync" "function" QId "(" {FArg ","}* ")" ":" Type "{" Statement* "}" -> FunctionDef {cons("StaticSyncFunction")}
+    MetaAnno* "static" "sync" "function" QId "(" {FArg ","}* ")" "{" Statement* "}" -> FunctionDef {cons("StaticSyncFunctionNoReturnType")}
+
     %%FunctionDef -> Definition
 
     %%"var" ID ":" Type "=" Exp ";"              -> Definition {cons("VarDecl")}

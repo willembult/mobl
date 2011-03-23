@@ -137,6 +137,27 @@ strategies
        ; args := <filter(farg-to-js); <concat> [<id>, ["callback"]]; separate-by(!", "); concat-strings> farg*
        ; stats2 := <cps-list-all-expressions; <concat> [<id>, [$[if(callback && callback.apply) callback(); return;]]]; cps-statements <+ debug(!"Could not translate to stats: "); fail> stats
 
+
+  function-to-js-exp :
+    StaticSyncFunction(_, qid, farg*, rt, stat*) ->
+     $[function([args]) {
+         [stats]
+       }]
+    where not(ServerContext)
+    with qids := <qid-to-js> qid
+       ; args := <fargs-to-js> farg*
+       ; stats := <statements-to-js> stat*
+
+  function-to-js-exp :
+    StaticFunction(_, qid, farg*, rt, stats) ->
+    $[function([args]) {
+        [stats2]
+      }]
+    where not(ServerContext)
+    with qids := <qid-to-js> qid
+       ; args := <filter(farg-to-js); <concat> [<id>, ["callback"]]; separate-by(!", "); concat-strings> farg*
+       ; stats2 := <cps-list-all-expressions; <concat> [<id>, [$[if(callback && callback.apply) callback(); return;]]]; cps-statements <+ debug(!"Could not translate to stats: "); fail> stats
+
 rules // Statements
 
   statements-to-js =
@@ -312,12 +333,6 @@ rules // Expressions
 
   exp-to-js :
     Call(qid, named-e*) -> $[new [<qid-to-js> qid]({[propvals]})]
-    where ExternalEntity(_, _, _, _) := <lookup-type> SimpleType(qid)
-    with propvals := <map(\ NamedExp(x, e) -> $['[x]': [<expression-to-js> e]] \); separate-by(!", "); concat-strings> named-e*
-
-  exp-to-js :
-    Call(qid, named-e*) -> $[mobl.instantiate([<qid-to-js> qid], {[propvals]})]
-    where ExternalType(_, _, _, _) := <lookup-type> SimpleType(qid)
     with propvals := <map(\ NamedExp(x, e) -> $['[x]': [<expression-to-js> e]] \); separate-by(!", "); concat-strings> named-e*
 
   exp-to-js :

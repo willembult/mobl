@@ -199,6 +199,22 @@ rules
          //; qid2 := <rename-local-function> f
 
   rename :
+    f@StaticFunction(manno*, qid, farg*, rt, body) -> StaticFunction(manno*, qid, farg2*, rt, body2)
+    with action-scope(
+           farg2* := <map(rename-farg)> farg*
+           ; body2 := <prename-functions; rename-all> body
+         )
+         //; qid2 := <rename-local-function> f
+
+  rename :
+    f@StaticSyncFunction(manno*, qid, farg*, rt, body) -> StaticSyncFunction(manno*, qid, farg2*, rt, body2)
+    with action-scope(
+           farg2* := <map(rename-farg)> farg*
+           ; body2 := <prename-functions; rename-all> body
+         )
+         //; qid2 := <rename-local-function> f
+
+  rename :
     Resource(manno*, x, farg*, rt, body) -> Resource(manno*, x, farg2*, rt, body2)
     with action-scope(
            farg2* := <map(rename-farg)> farg*

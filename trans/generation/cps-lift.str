@@ -108,10 +108,21 @@ strategies
 
 rules
 
+  cps-lift-args :
+    e* -> (exps, <concat> stats)
+    where (exps, stats) := <map(cps-lift-expression-capture-exps); debug; unzip> e*
+
+  cps-lift-expression-capture-exps :
+    e -> (exp, stats)
+    where	stats := <cps-lift-expression> e
+        ; exp := <Exp>
+
+rules
+
   cps-lift-expression :
     e -> []
     where is-sync
-    with rules ( Exp :+= e)
+    with rules ( Exp := e)
 
   cps-lift-expression :
     NamedExp(x, e) -> stats
@@ -126,19 +137,19 @@ rules
     e@Call(qid, e*) -> <concat> [stats, [VarDeclInferred(v, Call(qid, e2*))]]
     with v := <newname> "tmp"
        ; {| Exp
-          : stats := <map(cps-lift-expression); concat> e*
-          ; e2* := <bagof-Exp; reverse> // taking advantage of Exp ordering here, risky
+          : (e2*, stats) := <cps-lift-args> e*
           |}
-       ; rules ( Exp :+= Var(v) )
+       ; rules ( Exp := Var(v) )
 
   cps-lift-expression :
     e@EntityCons(qid, propval*) -> <concat> [stats, [VarDeclInferred(v, EntityCons(qid, propval2*))]]
     with v := <newname> "tmp"
        ; {| Exp
-          : stats := <map(?PropVal(_, <id>); cps-lift-expression); concat> propval*
-          ; propval2* := <bagof-Exp; reverse; <zip(\ (prop, val) -> PropVal(prop, val) \)> (<map(?PropVal(<id>, _))> propval*, <id>)> // taking advantage of Exp ordering here, risky
+          //: stats := <map(?PropVal(_, <id>); cps-lift-expression); concat> propval*
+          : (e2*, stats) := <map(?PropVal(_, <id>)); cps-lift-args> propval*
+          ; propval2* := <zip(\ (prop, val) -> PropVal(prop, val) \)> (<map(?PropVal(<id>, _))> propval*, e2*)
           |}
-       ; rules ( Exp :+= Var(v) )
+       ; rules ( Exp := Var(v) )
 
   cps-lift-expression :
     MethodCall(e, x, e*) -> <concat> [stats2, stats, [VarDeclInferred(v, MethodCall(e2, x, e2*))]]
@@ -148,10 +159,9 @@ rules
           ; e2 := <Exp>
           |}
        ; {| Exp
-          : stats := <map(cps-lift-expression); concat> e*
-          ; e2* := <bagof-Exp; reverse> // taking advantage of Exp ordering here, risky
+          : (e2*, stats) := <cps-lift-args> e*
           |}
-       ; rules ( Exp :+= Var(v) )
+       ; rules ( Exp := Var(v) )
 
   cps-lift-expression :
     Tuple(e, e*) -> <concat> [stats2, stats, [VarDeclInferred(v, Tuple(e2, e2*))]]
@@ -161,29 +171,26 @@ rules
           ; e2 := <Exp>
           |}
        ; {| Exp
-          : stats := <map(cps-lift-expression); concat> e*
-          ; e2* := <bagof-Exp; reverse> // taking advantage of Exp ordering here, risky
+          : (e2*, stats) := <cps-lift-args> e*
           |}
-       ; rules ( Exp :+= Var(v) )
+       ; rules ( Exp := Var(v) )
 
   cps-lift-expression :
     List(e*) -> <concat> [stats, [VarDeclInferred(v, List(e2*))]]
     with v := <newname> "tmp"
        ; {| Exp
-          : stats := <map(cps-lift-expression); concat> e*
-          ; e2* := <bagof-Exp; reverse> // taking advantage of Exp ordering here, risky
+          : (e2*, stats) := <cps-lift-args> e*
           |}
-       ; rules ( Exp :+= Var(v) )
+       ; rules ( Exp := Var(v) )
 
   cps-lift-expression :
     e@CollectionCons(gt, t, e*) -> <concat> [stats, [VarDeclInferred(v, CollectionCons(gt, t, e2*))]]
     where not(is-sync)
     with v := <newname> "tmp"
        ; {| Exp
-          : stats := <map(cps-lift-expression); concat> e*
-          ; e2* := <bagof-Exp; reverse> // taking advantage of Exp ordering here, risky
+          : (e2*, stats) := <cps-lift-args> e*
           |}
-       ; rules ( Exp :+= Var(v) )
+       ; rules ( Exp := Var(v) )
 
   cps-lift-expression :
     BinMethodCall(e1, op, e2) -> <concat> [stats1, stats2, [VarDeclInferred(v, BinMethodCall(e3, op, e4))]]
@@ -196,7 +203,7 @@ rules
           : stats2 := <cps-lift-expression> e2
           ; e4 := <Exp>
          |}
-       ; rules ( Exp :+= Var(v) )
+       ; rules ( Exp := Var(v) )
 
   cps-lift-expression :
     Choice(e1, e-true1, e-false1) -> <concat> [stats1, stats2, stats3, [VarDeclInferred(v, Choice(e2, e-true2, e-false2))]]
@@ -213,7 +220,7 @@ rules
           : stats3 := <cps-lift-expression> e-false1
           ; e-false2 := <Exp>
          |}
-       ; rules ( Exp :+= Var(v) )
+       ; rules ( Exp := Var(v) )
 
   cps-lift-expression :
     FieldAccess(e1, x) -> <concat> [stats1, [VarDeclInferred(v, FieldAccess(e2, x))]]
@@ -222,7 +229,7 @@ rules
           : stats1 := <cps-lift-expression> e1
           ; e2 := <Exp>
          |}
-       ; rules ( Exp :+= Var(v) )
+       ; rules ( Exp := Var(v) )
 
   cps-lift-expression :
     Not(e1) -> <concat> [stats1, [VarDeclInferred(v, Not(e2))]]
@@ -231,7 +238,7 @@ rules
           : stats1 := <cps-lift-expression> e1
           ; e2 := <Exp>
          |}
-       ; rules ( Exp :+= Var(v) )
+       ; rules ( Exp := Var(v) )
 
 strategies
 

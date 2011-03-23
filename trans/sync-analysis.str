@@ -16,6 +16,9 @@ strategies
   mark-all-sync :
     Function(anno*, qid, arg*, rt, stat*) -> SyncFunction(anno*, qid, arg*, rt, stat*)
 
+  mark-all-sync :
+    StaticFunction(anno*, qid, arg*, rt, stat*) -> StaticSyncFunction(anno*, qid, arg*, rt, stat*)
+
   analyze-sync-code =
     ?t-before
     ; alltd(analyze-sync-function)
@@ -28,6 +31,16 @@ strategies
 
   analyze-sync-function :
     Function(anno*, qid, arg*, rt, stat*) -> <try(declare)> SyncFunction(anno*, qid, arg*, rt, stat*)
+    where [] := <collect(async-exp)> stat*
+        //; <debug(!"Marking as sync: ")> qid
+
+  analyze-sync-function :
+    StaticSyncFunction(anno*, qid, arg*, rt, stat*) -> <try(declare)> StaticFunction(anno*, qid, arg*, rt, stat*)
+    where not([] := <collect(async-exp)> stat*)
+        //; <debug(!"Marking as async: ")> qid
+
+  analyze-sync-function :
+    StaticFunction(anno*, qid, arg*, rt, stat*) -> <try(declare)> StaticSyncFunction(anno*, qid, arg*, rt, stat*)
     where [] := <collect(async-exp)> stat*
         //; <debug(!"Marking as sync: ")> qid
 
