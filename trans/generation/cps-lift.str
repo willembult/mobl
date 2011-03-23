@@ -110,7 +110,7 @@ rules
 
   cps-lift-args :
     e* -> (exps, <concat> stats)
-    where (exps, stats) := <map(cps-lift-expression-capture-exps); debug; unzip> e*
+    where (exps, stats) := <map(cps-lift-expression-capture-exps); unzip> e*
 
   cps-lift-expression-capture-exps :
     e -> (exp, stats)
