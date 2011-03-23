@@ -26,10 +26,7 @@ rules
        ; normalize-all
        ; ensure-mobl-import
        ; import-all
-       //; alltd(origin-track-forced(add-tl-namespace))
        ; add-tl-namespaces
-       //; alltd({?Function(_, qid, _, _, _)
-       //         ; where(debug(!"Whatever: "); try(<origin-term; debug(!"origin-term: ")> qid))})
        ; declare-all
        ; rename-all
        ; add-namespace-all

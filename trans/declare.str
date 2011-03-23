@@ -100,8 +100,17 @@ strategies
 
   declare:
     extern@ExternalScreen(manno*, qid, farg*, rt) -> <fail>
+    where [_, _] := <filter(?FArgOptional("animate", _, _) <+ ?FArgOptional("replace", _, _))> farg*
     with rules (
            GetScreen : qid -> extern
+         )
+
+  declare:
+    ExternalScreen(manno*, qid, farg*, rt) -> <fail>
+    where not([_, _] := <filter(?FArgOptional("animate", _, _) <+ ?FArgOptional("replace", _, _))> farg*)
+    with rules (
+           GetScreen : qid -> ExternalScreen(manno*, qid, [farg*, FArgOptional("replace", SimpleType(QId("mobl", "Bool")), False()),
+                                                                   FArgOptional("animate", SimpleType(QId("mobl", "String")), String("\"slide\""))], rt)
          )
 
   declare :

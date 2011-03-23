@@ -38,11 +38,12 @@ strategies
     ; separate-by(|"/"); concat-strings
 
   compile =
-      (?Module(qid, def*) <+ ?app@Application(qid, def*))
+      (?Module(qid, _) <+ ?app@Application(qid, _))
       ; where(not(ServerContext))
       ; where(<pp-mobl-qid; debug(!"Now compiling: ")> qid
               ; rules ( Compiled : qid ))
       ; analyze
+      ; (?Module(_, def*) <+ ?Application(_, def*))
       ; where(alltd(compile-import-module))
       ; {| ModuleName, StyleVar
          : rules ( ModuleName := qid )
