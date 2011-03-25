@@ -122,8 +122,40 @@ rules
 rules
 
   constraint-error :
+    Entity(_, qid, _, body) -> <collect(constraint-error-entity(|qid)); Hd> body
+
+  constraint-error :
+    Type(_, qid, _, body) -> <collect(constraint-error-type(|qid)); Hd> body
+
+  constraint-error :
+    t@SimpleAnno(n) -> (t, $[Not a valid annotion: [n]])
+    where not(<eq> (n, "searchable"))
+
+  constraint-error-entity(|qid) :
     p@Property(_, x, GenericType(QId("mobl", "Collection"), _), anno*) -> (p, $[A collection entity property has to define an inverse relationship: (inverse: ...)])
     where not(<fetch-elem(?InverseAnno(_))> anno*)
+
+  constraint-error-entity(|qid) :
+    Property(_, x, t@SimpleType(qid2), [ann@InverseAnno(inv-prop)]) -> (ann, $[The inverse property '[inv-prop]' does not exist])
+    where not(<lookup-property> (t, inv-prop))
+
+  constraint-error-entity(|qid) :
+    Property(_, x, t@SimpleType(qid2), [ann@InverseAnno(inv-prop)]) -> (ann, $[The inverse property '[inv-prop]' is not of type [<pp-mobl-qid> qid] or Collection<[<pp-mobl-qid> qid]>])
+    where Property(_, _, t2, _) := <lookup-property> (t, inv-prop)
+        ; not(<eq> (t2, SimpleType(qid)) <+ <eq> (t2, GenericType(QId("mobl", "Collection"), [SimpleType(qid)])))
+
+  constraint-error-entity(|qid) :
+    Property(_, x, GenericType(_, [t]), [ann@InverseAnno(inv-prop)]) -> (ann, $[The inverse property '[inv-prop]' does not exist])
+    where not(<lookup-property> (t, inv-prop))
+
+  constraint-error-entity(|qid) :
+    Property(_, x, GenericType(_, [t]), [ann@InverseAnno(inv-prop)]) -> (ann, $[The inverse property '[inv-prop]' is not of type [<pp-mobl-qid> qid] or Collection<[<pp-mobl-qid> qid]>])
+    where Property(_, _, t2, _) := <lookup-property> (t, inv-prop)
+        ; not(<eq> (t2, SimpleType(qid)) <+ <eq> (t2, GenericType(QId("mobl", "Collection"), [SimpleType(qid)])))
+
+  constraint-error-type(|qid) :
+    p@Property(_, x, _, anno*) -> (anno*, $[Annotations are not supported for types, only for entities.])
+    where not([] := anno*)
 
 rules
 
