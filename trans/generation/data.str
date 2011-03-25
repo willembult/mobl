@@ -64,6 +64,12 @@ strategies
   method-to-js(|ent) :
     fn@Function(_, x, _, _, _) -> $[[<qid-to-js> ent].prototype.[x] = [<function-to-js-exp> fn];]
 
+  method-to-js(|ent) :
+    fn@StaticSyncFunction(_, x, _, _, _) -> $[[<qid-to-js> ent].[x] = [<function-to-js-exp> fn];]
+
+  method-to-js(|ent) :
+    fn@StaticFunction(_, x, _, _, _) -> $[[<qid-to-js> ent].[x] = [<function-to-js-exp> fn];]
+
   one-to-many-to-js :
     (SimpleType(from), field, SimpleType(to), invField) -> <emit> $[[<qid-to-js> from].hasMany('[field]', [<qid-to-js> to], '[invField]');
 ]

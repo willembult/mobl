@@ -1,13 +1,11 @@
 package mobl.strategies;
 import java.io.FileReader;
-import java.util.StringTokenizer;
 
 import org.mozilla.javascript.Scriptable;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.ITermFactory;
 import org.strategoxt.lang.Context;
 import org.strategoxt.lang.Strategy;
-import org.strategoxt.lang.terms.StrategoString;
 
 /**
  * Example Java strategy implementation.
@@ -27,17 +25,17 @@ public class uglify_0_0 extends Strategy {
 
     @Override
     public IStrategoTerm invoke(Context context, IStrategoTerm current) {
-        String pluginPath = ((StrategoString)current.getSubterm(0)).stringValue();
-        String code = ((StrategoString)current.getSubterm(1)).stringValue();
-        //context.getIOAgent().printError("Input for java-strategy: " + current.getClass());
+        String stdlibPath = getStringFromTerm(current.getSubterm(0));
+        String code = getStringFromTerm(current.getSubterm(1));
         ITermFactory factory = context.getFactory();
         org.mozilla.javascript.Context cx = org.mozilla.javascript.Context.enter();
+        //cx.setOptimizationLevel(9);
         Scriptable scope = cx.initStandardObjects();
         try {
             scope.put("code", scope, code);
-            FileReader reader = new FileReader(pluginPath + "/utils/parse-js.js");
+            FileReader reader = new FileReader(stdlibPath + "/js-minify/parse-js.js");
             cx.evaluateReader(scope, reader, "parse-js.js", 1, null);
-            reader = new FileReader(pluginPath + "/utils/process.js");
+            reader = new FileReader(stdlibPath + "/js-minify/process.js");
             cx.evaluateReader(scope, reader, "process.js", 1, null);
             cx.evaluateString(scope, "var ast = jsp.parse(code);", "<cmd>", 1, null);
             cx.evaluateString(scope, "ast = exports.ast_mangle(ast);", "<cmd>", 1, null);
@@ -50,6 +48,16 @@ public class uglify_0_0 extends Strategy {
             return null;
         } finally {
             org.mozilla.javascript.Context.exit();
+        }
+    }
+
+    public static String getStringFromTerm(IStrategoTerm current) {
+        Class<?> cls = current.getClass();
+        try {
+            return (String) cls.getMethod("stringValue").invoke(current);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
         }
     }
 

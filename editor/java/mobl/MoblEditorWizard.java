@@ -6,10 +6,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
@@ -20,7 +17,6 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -66,7 +62,8 @@ public class MoblEditorWizard extends Wizard implements INewWizard {
         System.out.println(appName + projectName);
 
         IRunnableWithProgress op = new IRunnableWithProgress() {
-            public void run(IProgressMonitor monitor) throws InvocationTargetException {
+            public void run(IProgressMonitor monitor)
+                    throws InvocationTargetException {
                 try {
                     doFinish(appName, projectName, monitor);
                 } catch (Exception e) {
@@ -84,8 +81,10 @@ public class MoblEditorWizard extends Wizard implements INewWizard {
             return false;
         } catch (InvocationTargetException e) {
             Throwable realException = e.getTargetException();
-            Environment.logException("Exception while creating new project", realException);
-            MessageDialog.openError(getShell(), "Error: " + realException.getClass().getName(), realException
+            Environment.logException("Exception while creating new project",
+                    realException);
+            MessageDialog.openError(getShell(), "Error: "
+                    + realException.getClass().getName(), realException
                     .getMessage());
             rollback();
             return false;
@@ -103,21 +102,20 @@ public class MoblEditorWizard extends Wizard implements INewWizard {
         }
     }
 
-    private void doFinish(String appName, String projectName, IProgressMonitor monitor) throws IOException,
-            CoreException {
+    private void doFinish(String appName, String projectName,
+            IProgressMonitor monitor) throws IOException, CoreException {
         final int TASK_COUNT = 3;
         lastProject = null;
         monitor.beginTask("Creating " + appName + " application", TASK_COUNT);
 
         monitor.setTaskName("Creating Eclipse project");
         IWorkspace workspace = ResourcesPlugin.getWorkspace();
-        IProject project = lastProject = workspace.getRoot().getProject(projectName);
+        IProject project = lastProject = workspace.getRoot().getProject(
+                projectName);
         project.create(null);
         project.open(null);
         monitor.worked(1);
-
         try {
-
             monitor.setTaskName("Generating default app");
             StringBuilder sb = new StringBuilder();
             sb.append("application " + appName + "\n");
@@ -128,7 +126,22 @@ public class MoblEditorWizard extends Wizard implements INewWizard {
             sb.append("\theader(\"" + appName + "\")\n");
             sb.append("}\n");
             monitor.worked(1);
-            writeStringToFile(sb.toString(), project.getLocation().toString()+"/"+appName + ".mobl");
+            writeStringToFile(sb.toString(), project.getLocation().toString()
+                    + "/" + appName + ".mobl");
+        } catch (IOException e) {
+            Environment.logException(e);
+            throw e;
+        }
+
+        try {
+            monitor.setTaskName("Generating configuration file");
+            StringBuilder sb = new StringBuilder();
+            sb.append("configuration\n");
+            sb.append("\n");
+            sb.append("title \"" + appName + "\"\n");
+            monitor.worked(1);
+            writeStringToFile(sb.toString(), project.getLocation().toString()
+                    + "/config.mobl");
         } catch (IOException e) {
             Environment.logException(e);
             throw e;
@@ -140,17 +153,20 @@ public class MoblEditorWizard extends Wizard implements INewWizard {
         monitor.setTaskName("Opening editor tab");
 
         Display display = getShell().getDisplay();
-        EditorState.asyncOpenEditor(display, project.getFile(appName + ".mobl"), true);
+        EditorState.asyncOpenEditor(display,
+                project.getFile(appName + ".mobl"), true);
         monitor.worked(1);
     }
 
-    public static void writeStringToFile(String s, String file) throws IOException {
+    public static void writeStringToFile(String s, String file)
+            throws IOException {
         FileOutputStream in = null;
         try {
             File buildxml = new File(file);
             in = new FileOutputStream(buildxml);
             FileChannel fchan = in.getChannel();
-            BufferedWriter bf = new BufferedWriter(Channels.newWriter(fchan, "UTF-8"));
+            BufferedWriter bf = new BufferedWriter(Channels.newWriter(fchan,
+                    "UTF-8"));
             bf.write(s);
             bf.close();
         } finally {
@@ -164,7 +180,8 @@ public class MoblEditorWizard extends Wizard implements INewWizard {
         new File(dirs).mkdirs();
     }
 
-    public static void copyFile(String ssource, String sdest) throws IOException {
+    public static void copyFile(String ssource, String sdest)
+            throws IOException {
         System.out.println("Copying " + ssource + " to " + sdest);
         File dest = new File(sdest);
         File source = new File(ssource);
@@ -186,9 +203,10 @@ public class MoblEditorWizard extends Wizard implements INewWizard {
             }
         }
     }
-
+/*
     // If targetLocation does not exist, it will be created.
-    public void copyDirectory(File sourceLocation, File targetLocation) throws IOException {
+    public void copyDirectory(File sourceLocation, File targetLocation)
+            throws IOException {
 
         if (sourceLocation.isDirectory()) {
             if (!targetLocation.exists()) {
@@ -197,7 +215,8 @@ public class MoblEditorWizard extends Wizard implements INewWizard {
 
             String[] children = sourceLocation.list();
             for (int i = 0; i < children.length; i++) {
-                copyDirectory(new File(sourceLocation, children[i]), new File(targetLocation, children[i]));
+                copyDirectory(new File(sourceLocation, children[i]), new File(
+                        targetLocation, children[i]));
             }
         } else {
 
@@ -213,7 +232,7 @@ public class MoblEditorWizard extends Wizard implements INewWizard {
             in.close();
             out.close();
         }
-    }
+    }*/
 
     private void refreshProject(final IProject project) {
         try {

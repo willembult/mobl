@@ -28,6 +28,12 @@ rules
     SyncFunctionNoReturnType(manno*, name, farg*, stat*) -> SyncFunction(manno*, name, farg*, SimpleType(QId("mobl", "void")), stat*)
 
   normalize :
+    StaticFunctionNoReturnType(manno*, name, farg*, stat*) -> StaticFunction(manno*, name, farg*, SimpleType(QId("mobl", "void")), stat*)
+
+  normalize :
+    StaticSyncFunctionNoReturnType(manno*, name, farg*, stat*) -> StaticSyncFunction(manno*, name, farg*, SimpleType(QId("mobl", "void")), stat*)
+
+  normalize :
     IfNoElse(e, block) -> If(e, block, Block([]))
 
   normalize :

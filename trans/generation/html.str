@@ -21,7 +21,7 @@ strategies
     </head>
     <body>
     <div id="mobl-loading">
-      Loading... <img src="mobl/loading.gif"/>
+      Loading... <img src="data:image/gif;base64,R0lGODlhCgAKAJEDAMzMzP9mZv8AAP///yH/C05FVFNDQVBFMi4wAwEAAAAh+QQFAAADACwAAAAACgAKAAACF5wncgaAGgJzJ647cWua4sOBFEd62VEAACH5BAUAAAMALAEAAAAIAAMAAAIKnBM2IoMDAFMQFAAh+QQFAAADACwAAAAABgAGAAACDJwHMBGofKIRItJYAAAh+QQFAAADACwAAAEAAwAIAAACChxgOBPBvpYQYxYAIfkEBQAAAwAsAAAEAAYABgAAAgoEhmPJHOGgEGwWACH5BAUAAAMALAEABwAIAAMAAAIKBIYjYhOhRHqpAAAh+QQFAAADACwEAAQABgAGAAACDJwncqi7EQYAA0p6CgAh+QQJAAADACwHAAEAAwAIAAACCpRmoxoxvQAYchQAOw==" width="10" height="10">
       <p>(If this message still shows after a few seconds, probably something went wrong. Does your browser support Javascript?)</p>
     </div>
     <script src="js/jquery-1.4.min.js" type="application/x-javascript" charset="utf-8"></script>
@@ -102,4 +102,8 @@ strategies
   generate-manifest :
     res* -> $[CACHE MANIFEST
               # Something random: [<newname> "random"]
-              [<flatten-list; separate-by(|"\n")> res*]]
+              [<flatten-list; separate-by(|"\n")> res*]
+
+              NETWORK:
+              *
+              ]

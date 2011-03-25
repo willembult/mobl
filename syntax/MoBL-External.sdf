@@ -18,7 +18,7 @@ exports
     EntityBodyDecl                                                     -> ExternalMemberDecl
 
     MetaAnno* "external" "control" QId "(" {FArg ","}* ")"                                -> Definition {cons("ExternalControl")}
-    MetaAnno* "external" "screen" QId ":" Type "(" {FArg ","}* ")"                        -> Definition {cons("ExternalScreen")}
+    MetaAnno* "external" "screen" QId "(" {FArg ","}* ")" ":" Type                        -> Definition {cons("ExternalScreen")}
     MetaAnno* "external" "entity" QId ":" Type "{" EntityBodyDecl* "}"                    -> Definition {cons("ExternalEntity")}
     MetaAnno* "external" "function" QId "(" {FArg ","}* ")" ":" Type                      -> Definition {cons("ExternalFunction")}
     MetaAnno* "external" "sync" "function" QId "(" {FArg ","}* ")" ":" Type               -> Definition {cons("ExternalSyncFunction")}

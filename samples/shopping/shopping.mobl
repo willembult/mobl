@@ -23,6 +23,7 @@ screen editItem(it : Item) {
 
 function clean() {
   var b = true;
+  
   foreach(it : Item in Item.all().filter("checked", "=", true)) {
     if(it.favorite) {
       it.checked = false;

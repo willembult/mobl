@@ -213,8 +213,15 @@ rules
     [] -> ""
 
   tag-arg-to-js(|tg, node) :
+    HtmlArg(name, True()) -> $[[node].attr('[name]', true);
+]
+  tag-arg-to-js(|tg, node) :
+    HtmlArg(name, False()) -> $[[node].attr('[name]', false);
+]
+
+  tag-arg-to-js(|tg, node) :
     HtmlArg(name, String(s)) -> $[[node].attr('[name]', [s]);
-                                  ]
+]
 
   tag-arg-to-js(|tg, node) :
     HtmlArg(name, e) -> $[
@@ -222,17 +229,13 @@ rules
       if([r].get() !== null) {
         [node].attr('[name]', [r].get());
         subs__.addSub([r].addEventListener('change', function(_, ref, val) {
-          if(ref === [r]) {
-            [node].attr('[name]', val);
-          } else {
-            console.log("Garbage!");
-          }
+          [node].attr('[name]', val);
         }));
         [subscriptions]
       }
       subs__.addSub([r].rebind());
     ]
-    where not(String(_) := e)
+    where not(String(_) := e <+ True() := e <+ False() := e)
         ; not(SimpleType(QId("mobl", "Callback")) := <type-of> e <+ GenericType(QId("mobl", "Function0"), _) := <type-of> e)
     with es := <ref-expression-to-js> e
        ; r  := <newname> "ref"

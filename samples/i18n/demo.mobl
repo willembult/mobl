@@ -1,10 +1,10 @@
 application demo
 
-import mobl::i18n
 import mobl::ui::generic
 
 resource lang/dutch.json
 resource lang/english.json
+resource lang/chinese.json
 
 type Preferences {
   language : String
@@ -47,7 +47,7 @@ screen preferences() {
   group {
     item {
       label(_("language"), style=textFieldLabelStyle)
-      selectField(prefs.language, [("english", "English"), ("dutch", "Nederlands")])
+      selectField(prefs.language, [("english", "English"), ("dutch", "Nederlands"), ("chinese", "Chinese")])
     }
   }
 }

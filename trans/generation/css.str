@@ -72,6 +72,9 @@ rules
     PxUnit() -> "px"
 
   unit-to-css :
+    PtUnit() -> "pt"
+
+  unit-to-css :
     SUnit() -> "s"
 
   unit-to-css :

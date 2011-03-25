@@ -25,13 +25,15 @@ exports
     "mobl-stat*" "|[" Statement* "]|"  -> Term [[StrategoHost]] {cons("ToMetaExpr")}
     "mobl-elem*" "|[" ScreenElem* "]|" -> Term [[StrategoHost]] {cons("ToMetaExpr")}
     "mobl-elem"  "|[" ScreenElem "]|"  -> Term [[StrategoHost]] {cons("ToMetaExpr")}
+    "mobl-def"   "|[" Definition "]|"  -> Term [[StrategoHost]] {cons("ToMetaExpr")}
 
   variables
     [xyz]      MetaVarSuffix              -> ID                  {prefer}
     [xyz]      MetaVarSuffix "*"          -> {ID ","}*           {prefer}
+    "qid"      MetaVarSuffix              -> QId                 {prefer}
     "lval"     MetaVarSuffix              -> LVal                {prefer}
     "e"        MetaVarSuffix              -> Exp                 {prefer}
     "e"        MetaVarSuffix "*"          -> {Exp ","}*          {prefer}
     "t"        MetaVarSuffix              -> Type                {prefer}
-    "stat"     MetaVarSuffix              -> Statement                {prefer}
-    "stat"     MetaVarSuffix "*"          -> Statement*               {prefer}
+    "stat"     MetaVarSuffix              -> Statement           {prefer}
+    "stat"     MetaVarSuffix "*"          -> Statement*          {prefer}

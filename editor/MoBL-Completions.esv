@@ -113,7 +113,7 @@ completions
   completion template : ScreenElem =
     "when" "(" <e> ") {\n\t\n} else {\n\t\n}" (blank)
 
-completions
+/*completions
 
   completion template : Definition =
     "@service GET /" "\nfunction " <myService> "(req : Request, res : Response) {\n\t\n}" (blank)
@@ -129,6 +129,14 @@ completions
 
   completion template : Definition =
     "database host " <"localhost"> " name \"dbname\" username \"user\" password \"pass\"" (blank)
+*/
+completions
+
+  completion template : Exp =
+    "$data" "(" <path/to/image.png> ")"
+
+  completion template : StyleExp =
+    "$data" "(" <path/to/image.png> ")"
 
 completions
 
@@ -155,6 +163,9 @@ completions
 
   completion template : Setting =
     "output " <"www"> (blank)
+
+  completion template : Setting =
+    "release" "output " <"www"> (blank)
 
   completion template : Setting =
     "database " <"mydb"> (blank)

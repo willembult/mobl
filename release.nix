@@ -45,7 +45,8 @@ let
         ulimit -s unlimited
         cd $out/
         cp -Rv ${mobl}/samples/${app.name}/* .
-        moblc -i ${app.app} -d www -I ${mobl}/stdlib ${if app ? stdlib then "-I ${app.stdlib}" else ""}
+        echo moblc -i ${app.app} -d www -O -I ${mobl}/stdlib ${if app ? stdlib then "-I ${app.stdlib}" else ""}
+        moblc -i ${app.app} -d www -O -I ${mobl}/stdlib ${if app ? stdlib then "-I ${app.stdlib}" else ""}
         ln -s $out/www/`basename ${app.app} .mobl`.html $out/www/index.html
         echo "doc www $out/www" >> $out/nix-support/hydra-build-products
       '';
@@ -125,6 +126,8 @@ let
       #irc_server         = moblc { name = "irc"; app = "server.mobl"; stdlib = "${mobl}/stdlib-server-override"; } ;
       shopping           = moblc { name = "shopping"; app = "shopping.mobl"; } ;
       tipcalculator      = moblc { name = "tipcalculator"; app = "tipcalculator.mobl"; } ;
+      twittertrends      = moblc { name = "twittertrends"; app = "twittertrends.mobl"; } ;
+      yql                = moblc { name = "yql"; app = "demo.mobl"; } ;
       todo               = moblc { name = "todo"; app = "todo.mobl"; } ;
       i18n                = moblc { name = "i18n"; app = "demo.mobl"; } ;
       #znake_client       = moblc { name = "znake"; app = "znake.mobl"; } ;

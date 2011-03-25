@@ -1,4 +1,3 @@
 configuration
 
-debug
-database"mydb"
+title "Tip calculator"

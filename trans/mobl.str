@@ -31,11 +31,6 @@ imports
 
 strategies
 
-  // this is overwritten in Java code (the weird code is just to avoid inlining)
-  //get-plugin-path = debug(!"<still didn't work>"); editor-analyze; fail; resolve-file
-
-  //upload-files(|appid) = debug(!"<still didn't work>"); editor-analyze; fail; resolve-file
-
   resolve-file :
     filename -> filename
     where <file-exists> filename
@@ -45,31 +40,6 @@ strategies
     where not(<file-exists> filename)
         ; [path|_] := <filter(\ p -> <concat-strings> [p, "/", filename] \; file-exists)> <IncludePaths>
 
-rules // Main editor interface (defined by editor/MoBL-Builders and -References.esv)
-
-
-  generate-artifacts:
-    (selected, position, ast, path, project-path) -> None() //(filename-html, result-html)
-    where not(HasErrors)
-    where not(Configuration(_) := ast)
-    with
-      // Ensure all dynamic rules are properly scoped
-      try(dr-scope-all-end)
-      ; dr-scope-all-start
-    with
-      rules ( ProjectPath     := project-path
-              CachedParseAst  : path -> ast )
-      ; setup-paths
-      ; (Module(mod-name, _)  := ast <+ Application(mod-name, _) := ast <+ ServerApplication(mod-name, _, _) := ast)
-      ; rules ( CompilingModule := mod-name )
-      ; <compile> ast
-
-  generate-artifacts:
-    (selected, position, Configuration(_), path, project-path) -> None()
-
-  generate-artifacts:
-    _ -> None() //(filename-html, result-html)
-    where HasErrors
 
 strategies
 

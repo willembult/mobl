@@ -60,7 +60,6 @@
         <arg value="-p"/>
         <arg value="trans"/>
         <arg value="--clean"/>
-        <arg line="${build.stratego.args}"/>
         <arg line="${java.jar.import}"/>
         <arg line="${build.moblc.args}"/>
         <arg line="${externaljarflags}"/>

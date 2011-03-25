@@ -32,6 +32,7 @@ colorer
   _.Num            : darkgreen
 
   environment _.Javascript : darkgreen
+  environment _.JavascriptFor : darkgreen
 
 
   action = _ 224 224 224

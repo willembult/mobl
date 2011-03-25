@@ -1,5 +1,7 @@
 package mobl;
 
+import java.util.regex.Pattern;
+
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.imp.preferences.fields.RadioGroupFieldEditor;
@@ -104,6 +106,7 @@ public class MoblEditorWizardPage extends WizardPage {
     private void onChange() {
         if (!ignoreEvents) {
             setErrorMessage(null);
+            setErrorStatus(null);
 
             if (getInputProjectName().length() == 0) {
                 setErrorStatus("Project name must be specified");
@@ -118,8 +121,8 @@ public class MoblEditorWizardPage extends WizardPage {
                 setErrorStatus("Project name must be valid");
                 return;
             }
-            if (!toLanguageName(getInputAppName()).equalsIgnoreCase(getInputAppName())) {
-                setErrorStatus("Application name must be valid");
+            if (!getInputAppName().matches("^[a-zA-Z0-9]+$")) {
+                setErrorStatus("Application name may only contain alphanumeric characters.");
                 return;
             }
 
@@ -127,12 +130,6 @@ public class MoblEditorWizardPage extends WizardPage {
             if (workspace.getRoot().getProject(getInputProjectName()).exists()) {
                 setErrorStatus("A project with this name already exists");
                 return;
-            }
-
-            if (getInputProjectName().indexOf(' ') != -1) {
-                setWarningStatus("Project names with spaces may not be supported depending on your configuration");
-            } else {
-                setErrorStatus(null);
             }
         }
     }

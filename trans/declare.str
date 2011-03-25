@@ -100,8 +100,17 @@ strategies
 
   declare:
     extern@ExternalScreen(manno*, qid, farg*, rt) -> <fail>
+    where [_, _] := <filter(?FArgOptional("animate", _, _) <+ ?FArgOptional("replace", _, _))> farg*
     with rules (
            GetScreen : qid -> extern
+         )
+
+  declare:
+    ExternalScreen(manno*, qid, farg*, rt) -> <fail>
+    where not([_, _] := <filter(?FArgOptional("animate", _, _) <+ ?FArgOptional("replace", _, _))> farg*)
+    with rules (
+           GetScreen : qid -> ExternalScreen(manno*, qid, [farg*, FArgOptional("replace", SimpleType(QId("mobl", "Bool")), False()),
+                                                                   FArgOptional("animate", SimpleType(QId("mobl", "String")), String("\"slide\""))], rt)
          )
 
   declare :
@@ -146,6 +155,12 @@ strategies // convert to externals
   function-to-external-method :
     SyncFunction(manno*, qid, farg*, rt, stat*) -> ExternalSyncMethod(manno*, qid, farg*, rt)
 
+  function-to-external-method :
+    StaticFunction(manno*, qid, farg*, rt, stat*) -> ExternalStaticMethod(manno*, qid, farg*, rt)
+
+  function-to-external-method :
+    StaticSyncFunction(manno*, qid, farg*, rt, stat*) -> ExternalStaticSyncMethod(manno*, qid, farg*, rt)
+
   definition-to-external :
     Function(manno*, qid, farg*, rt, stat*) -> ExternalFunction(manno*, qid, farg*, rt)
 
@@ -158,7 +173,7 @@ strategies // convert to externals
   definition-to-external :
     Screen(manno*, qid, farg*, rt, _) -> ExternalScreen(manno*, qid, [farg*, extrafarg*], rt)
     where extrafarg* := [FArgOptional("replace", SimpleType(QId("mobl", "Bool")), False()),
-    										 FArgOptional("animate", SimpleType(QId("mobl", "String")), String("\"slide\""))]
+                         FArgOptional("animate", SimpleType(QId("mobl", "String")), String("\"slide\""))]
 
   definition-to-external :
     Service(manno*, qid, selem*) -> ExternalType(manno*, qid, SimpleType(QId("mobl", "Object")), <filter(service-elem-to-external)> selem*)
@@ -171,6 +186,12 @@ strategies // convert to externals
 
   type-def-to-external :
     SyncFunction(manno*, x, farg*, rt, _) -> ExternalSyncMethod(manno*, x, farg*, rt)
+
+  type-def-to-external :
+    StaticFunction(manno*, x, farg*, rt, _) -> ExternalStaticMethod(manno*, x, farg*, rt)
+
+  type-def-to-external :
+    StaticSyncFunction(manno*, x, farg*, rt, _) -> ExternalStaticSyncMethod(manno*, x, farg*, rt)
 
   // For signatures we turn a webservice into an external type and resources into external methods
   service-elem-to-external :

@@ -83,8 +83,41 @@ rules
     SyncFunction(_, qid, _, SimpleType(QId("mobl", "void")), body) -> (stm, $[Return statement of function '[<pp-mobl-qid> qid]' should not return a value.])
     where [stm|_] := <collect(?Return(_))> body
 
+
+
+  constraint-error :
+    StaticFunction(_, qid, _, rt, body) -> (qid, $[Function '[<pp-mobl-qid> qid]' has no return statement.])
+    where not(SimpleType(QId("mobl", "void")) := rt)
+    where [] := <collect(?Return(_))> body
+
+  constraint-error :
+    StaticFunction(_, qid, _, rt, body) -> (stm, $[Return statement of function '[<pp-mobl-qid> qid]' should return expression of type [<pp-mobl-type> rt].])
+    where not(SimpleType(QId("mobl", "void")) := rt)
+    where [stm|_] := <collect(where(?Return(<id>); type-of; not(<type-compatible> (rt, <id>))))> body
+
+  constraint-error :
+    StaticSyncFunction(_, qid, _, rt, body) -> (qid, $[Function '[<pp-mobl-qid> qid]' has no return statement.])
+    where not(SimpleType(QId("mobl", "void")) := rt)
+    where [] := <collect(?Return(_))> body
+
+  constraint-error :
+    StaticSyncFunction(_, qid, _, rt, body) -> (stm, $[Return statement of function '[<pp-mobl-qid> qid]' should return expression of type [<pp-mobl-type> rt].])
+    where not(SimpleType(QId("mobl", "void")) := rt)
+    where [stm|_] := <collect(where(?Return(<id>); type-of; not(<type-compatible> (rt, <id>))))> body
+
+  constraint-error :
+    StaticFunction(_, qid, _, SimpleType(QId("mobl", "void")), body) -> (stm, $[Return statement of function '[<pp-mobl-qid> qid]' should not return a value.])
+    where [stm|_] := <collect(?Return(_))> body
+
+  constraint-error :
+    StaticSyncFunction(_, qid, _, SimpleType(QId("mobl", "void")), body) -> (stm, $[Return statement of function '[<pp-mobl-qid> qid]' should not return a value.])
+    where [stm|_] := <collect(?Return(_))> body
+
   constraint-error :
     e@AsyncCall(_){} -> (e, $[async call is only allowed as a top-level call in variable declarations in controls and screens.])
+
+  constraint-error :
+    VarDeclInferred(v, Null()) -> (v, $[When initializing a variable with null, you have to specify a type, e.g.: var [v] : String = null])
 
 rules
 
