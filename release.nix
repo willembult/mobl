@@ -142,6 +142,7 @@ let
         chmod -R a+w mobl
         mkdir -p mobl/utils
         cp -v `find $eclipse -name StrategoMix.def` mobl/utils/StrategoMix.def
+        export LOCALCLASSPATH="utils/js.jar"
       '';
     };
   };
