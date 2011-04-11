@@ -3,8 +3,8 @@ application demo
 import mobl::ui::generic
 import mobl::ui::generic::datepicker
 import mobl::ui::googlechart
+import mobl::ui::googlemap
 import mobl::location
-import mobl::maps
 
 entity Person {
   name : String
@@ -227,7 +227,7 @@ screen maps() {
   header("Your location") { backButton() }
   when(position != null) {
     label("Position: " + position.latitude + ", " + position.longitude)
-    map(position, zoom=15, width=320, height=400)
+    googleMap(position, zoom=15, height=window.innerHeight-120)
   } else {
     "Determining current location... (requires recent webkit or Firefox)"
   }

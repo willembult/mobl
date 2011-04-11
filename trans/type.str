@@ -14,6 +14,7 @@ strategies
   type-of-lvalue :
     s -> <type-of> Var(s)
     where is-string
+       <+ ?QId(_, _)
 
    type-of-lvalue :
      LFieldAccess(e, x) -> <type-of> FieldAccess(e, x)

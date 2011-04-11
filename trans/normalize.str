@@ -86,6 +86,12 @@ rules
     FunctionType(t*, rt) -> GenericType(QId("mobl", $[Function[n]]), [t*, rt])
     where n := <length> t*
 
+  normalize :
+    Indexer(e, e_idx) -> MethodCall(e, "get", [e_idx])
+
+  normalize :
+    Assignment(LIndexer(e, e_idx), e_ass) -> ExpStat(MethodCall(e, "set", [e_idx, e_ass]))
+
 rules
 
   normalize :
