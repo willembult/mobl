@@ -98,71 +98,79 @@ rules
     alltd(add-namespace)
 
   add-namespace :
-    SimpleType(qid) -> SimpleType(qid2)
+    SimpleType(qid) -> SimpleType(<alternatives(|alternatives)> qid2)
     where not(lookup-type-aux)
-        ; [qid2] := <filter({c, newid: ?c; <prefix-qid(|c)> qid; ?newid; <lookup-type-aux> SimpleType(<id>); !newid})> [<ModuleName>|<bagof-Imports>]
+        ; [qid2|alternatives] := <filter({c, newid: ?c; <prefix-qid(|c)> qid; ?newid; <lookup-type-aux> SimpleType(<id>); !newid})> [<ModuleName>|<bagof-Imports>]
 
   // Add namespace to possible type references which look like vars
   add-namespace :
-    Var(qid) -> Var(qid2)
+    Var(qid) -> Var(<alternatives(|alternatives)> qid2)
     where <is-string> qid
     where not(<lookup-type-aux> SimpleType(qid))
-        ; [qid2] := <filter({c, newid: ?c; <prefix-qid(|c)> qid; ?newid; <lookup-type-aux> SimpleType(<id>); !newid})> [<ModuleName>|<bagof-Imports>]
+        ; [qid2|alternatives] := <filter({c, newid: ?c; <prefix-qid(|c)> qid; ?newid; <lookup-type-aux> SimpleType(<id>); !newid})> [<ModuleName>|<bagof-Imports>]
 
   add-namespace :
-    Var(qid{}) -> Var(qid2)
+    Var(qid{}) -> Var(<alternatives(|alternatives)> qid2)
     where <is-string> qid
     where not(<lookup-control-aux> qid)
-        ; [qid2] := <filter({c, newid: ?c; <prefix-qid(|c)> qid; ?newid; lookup-control-aux; !newid})> [<ModuleName>|<bagof-Imports>]
+        ; [qid2|alternatives] := <filter({c, newid: ?c; <prefix-qid(|c)> qid; ?newid; lookup-control-aux; !newid})> [<ModuleName>|<bagof-Imports>]
 
   add-namespace :
-    Var(qid{}) -> Var(qid2)
+    Var(qid{}) -> Var(<alternatives(|alternatives)> qid2)
     where <is-string> qid
     where not(<lookup-function-aux> qid)
-        ; [qid2] := <filter({c, newid: ?c; <prefix-qid(|c)> qid; ?newid; lookup-function-aux; !newid})> [<ModuleName>|<bagof-Imports>]
+        ; [qid2|alternatives] := <filter({c, newid: ?c; <prefix-qid(|c)> qid; ?newid; lookup-function-aux; !newid})> [<ModuleName>|<bagof-Imports>]
 
   add-namespace :
-    Var(qid{}) -> Var(qid2)
+    Var(qid{}) -> Var(<alternatives(|alternatives)> qid2)
     where <is-string> qid
     where not(<lookup-global-var-aux> qid)
-        ; [qid2] := <filter({c, newid: ?c; <prefix-qid(|c)> qid; ?newid; lookup-global-var-aux; !newid})> [<ModuleName>|<bagof-Imports>]
+        ; [qid2|alternatives] := <filter({c, newid: ?c; <prefix-qid(|c)> qid; ?newid; lookup-global-var-aux; !newid})> [<ModuleName>|<bagof-Imports>]
 
   add-namespace :
-    Assignment(qid, e) -> Assignment(qid2, <add-namespace-all> e)
+    Assignment(qid, e) -> Assignment(<alternatives(|alternatives)> qid2, <add-namespace-all> e)
     where <is-string> qid
     where not(<lookup-global-var-aux> qid)
-        ; [qid2] := <filter({c, newid: ?c; <prefix-qid(|c)> qid; ?newid; lookup-global-var-aux; !newid})> [<ModuleName>|<bagof-Imports>]
+        ; [qid2|alternatives] := <filter({c, newid: ?c; <prefix-qid(|c)> qid; ?newid; lookup-global-var-aux; !newid})> [<ModuleName>|<bagof-Imports>]
 
   add-namespace :
-    GenericType(qid, t*) -> GenericType(qid2, t2*)
+    GenericType(qid, t*) -> GenericType(<alternatives(|alternatives)> qid2, t2*)
     where not(lookup-type-aux)
-        ; [qid2] := <filter({c, newid: ?c; <prefix-qid(|c)> qid; ?newid; <lookup-type-aux> GenericType(<id>, t*); !newid})> [<ModuleName>|<bagof-Imports>]
+        ; [qid2|alternatives] := <filter({c, newid: ?c; <prefix-qid(|c)> qid; ?newid; <lookup-type-aux> GenericType(<id>, t*); !newid})> [<ModuleName>|<bagof-Imports>]
         ; t2* := <alltd(add-namespace)> t*
 
   add-namespace :
-    CollectionCons(qid, t*, e*) -> CollectionCons(qid2, t2*, e2*)
+    CollectionCons(qid, t*, e*) -> CollectionCons(<alternatives(|alternatives)> qid2, t2*, e2*)
     where not(<lookup-type-aux> GenericType(qid, t*))
-        ; [qid2] := <filter({c, newid: ?c; <prefix-qid(|c)> qid; ?newid; <lookup-type-aux> GenericType(<id>, t*); !newid})> [<ModuleName>|<bagof-Imports>]
+        ; [qid2|alternatives] := <filter({c, newid: ?c; <prefix-qid(|c)> qid; ?newid; <lookup-type-aux> GenericType(<id>, t*); !newid})> [<ModuleName>|<bagof-Imports>]
         ; t2* := <alltd(add-namespace)> t*
         ; e2* := <alltd(add-namespace)> e*
 
   add-namespace :
-    Call(qid, e*) -> Call(qid2, e2*)
+    Call(qid, e*) -> Call(<alternatives(|alternatives)> qid2, e2*)
     where not(<lookup-function-aux> qid)
-        ; [qid2] := <filter({c, newid: ?c; <prefix-qid(|c)> qid; ?newid; lookup-function-aux; !newid})> [<ModuleName>|<bagof-Imports>]
+        ; [qid2|alternatives] := <filter({c, newid: ?c; <prefix-qid(|c)> qid; ?newid; lookup-function-aux; !newid})> [<ModuleName>|<bagof-Imports>]
         ; e2* := <alltd(add-namespace)> e*
 
   add-namespace :
-    Call(qid, e*) -> Call(qid2, e2*)
+    Call(qid, e*) -> Call(<alternatives(|alternatives)> qid2, e2*)
     where not(<lookup-screen-aux> qid)
-        ; [qid2] := <filter({c, newid: ?c; <prefix-qid(|c)> qid; ?newid; lookup-screen-aux; !newid})> [<ModuleName>|<bagof-Imports>]
+        ; [qid2|alternatives] := <filter({c, newid: ?c; <prefix-qid(|c)> qid; ?newid; lookup-screen-aux; !newid})> [<ModuleName>|<bagof-Imports>]
         ; e2* := <alltd(add-namespace)> e*
 
   add-namespace :
-    Call(qid, e*) -> Call(qid2, e2*)
+    Call(qid, e*) -> Call(<alternatives(|alternatives)> qid2, e2*)
     where not(<lookup-type-aux> SimpleType(qid))
-        ; [qid2] := <filter({c, newid: ?c; <prefix-qid(|c)> qid; ?newid; !SimpleType(newid); lookup-type-aux; !newid})> [<ModuleName>|<bagof-Imports>]
+        ; [qid2|alternatives] := <filter({c, newid: ?c; <prefix-qid(|c)> qid; ?newid; !SimpleType(newid); lookup-type-aux; !newid})> [<ModuleName>|<bagof-Imports>]
         ; e2* := <alltd(add-namespace)> e*
+
+  alternatives(|alt*) :
+    qid@QId(_, x) -> x{Alternatives([qid|alt*])}
+    where not([] := alt*)
+
+  alternatives(|alt*) :
+    t -> t
+    where [] := alt*
 
   prefix-qid(|qid) :
     qid2 -> QId(qid, qid2)

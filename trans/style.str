@@ -69,16 +69,16 @@ rules // resolve
     where <is-string> qid
 
   add-namespace :
-    Var(qid{}) -> Var(qid2)
+    Var(qid{}) -> Var(<alternatives(|alternatives)> qid2)
     where <is-string> qid
     where not(<lookup-style> qid)
-        ; [qid2] := <filter({c, newid: ?c; <prefix-qid(|c)> qid; ?newid; lookup-style; !newid})> [<ModuleName>|<bagof-Imports>]
+        ; [qid2|alternatives] := <filter({c, newid: ?c; <prefix-qid(|c)> qid; ?newid; lookup-style; !newid})> [<ModuleName>|<bagof-Imports>]
 
   add-namespace :
-    StyleMixinCall(qid, se*) -> StyleMixinCall(qid2, <add-namespace-all> se*)
+    StyleMixinCall(qid, se*) -> StyleMixinCall(<alternatives(|alternatives)> qid2, <add-namespace-all> se*)
     where <is-string> qid
     where not(<lookup-style-mixin> qid)
-        ; [qid2] := <filter({c, newid: ?c; <prefix-qid(|c)> qid; ?newid; lookup-style-mixin-aux; !newid})> [<ModuleName>|<bagof-Imports>]
+        ; [qid2|alternatives] := <filter({c, newid: ?c; <prefix-qid(|c)> qid; ?newid; lookup-style-mixin-aux; !newid})> [<ModuleName>|<bagof-Imports>]
 
 
 rules // lookup

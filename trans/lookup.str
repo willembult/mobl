@@ -247,3 +247,7 @@ strategies
     qid -> extern
     where ExternalVarDecl(qid, t) := <GetGlobalVar> qid
         ; extern := <origin-track-forced(\ ExternalVarDecl(qid, t) -> ExternalVarDecl(qid, <alltd(add-namespace)> t) \)>
+
+signature constructors
+
+  Alternatives : List(Alternatives) -> Term

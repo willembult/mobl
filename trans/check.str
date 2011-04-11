@@ -28,6 +28,9 @@ rules
     where all-names := <filter({?_#([manno*, <id>, _|_]); where([] := <filter(?WhenAnno(_))> manno*)})> def*
         ; qid := <find-duplicate> all-names
 
+  constraint-error :
+    t@qid{Alternatives(alt*)} -> (t, $[Name is ambiguous, could be: [<map(pp-mobl-qid); separate-by(|", ")> alt*]. Please pick one.])
+
   find-duplicate :
     [el|k] -> <find-duplicate(|el)> k
 
