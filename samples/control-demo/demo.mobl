@@ -172,6 +172,7 @@ function createBigList() : Collection<Person> {
   foreach(i in range(0, 40)) {
     lst.add(Person(name="Person " + i, age=i));
   }
+  log(lst);
   return lst;
 }
 
@@ -181,9 +182,11 @@ screen staged() {
     backButton()
   }
   control listCtrl(p : Person) {
-    label(p.name)
+    block {
+      label(p.name)
+    }
   }
-  stagedList(coll, listCtrl)
+  stagedList(coll order by age, listCtrl)
 }
 
 screen zoom() {
