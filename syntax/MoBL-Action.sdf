@@ -65,11 +65,11 @@ exports
     "false"                       -> LimitedSetExp {cons("False")}
     "null"                        -> LimitedSetExp {cons("Null")}
     "this"                        -> LimitedSetExp {cons("This")}
-    QId "(" {NamedExp ","}* ")"   -> LimitedSetExp {cons("Call")}
     "!" Exp                       -> Exp {cons("Not")}
 
     LimitedSetExp                 -> Exp
 
+    QId "(" {NamedExp ","}* ")"   -> LimitedExp {cons("Call")}
     QId                           -> LimitedExp {cons("Var")}
     "(" Exp ")"                   -> LimitedExp {cons("Brackets")}
 

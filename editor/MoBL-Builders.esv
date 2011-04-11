@@ -10,8 +10,8 @@ builders
 
 builders
 
-  provider : include/mobl.ctree
-  //provider : include/mobl.jar
+  //provider : include/mobl.ctree
+  provider : include/mobl.jar
 
   provider : include/mobl-java.jar
   provider : utils/js.jar

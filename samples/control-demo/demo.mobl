@@ -30,7 +30,6 @@ screen root() {
     item(onclick={ charts(); }) { "Charts" }
     item(onclick={ maps(); }) { "Maps" }
   }
-  link("jqdemo.html", target="_top") { "Demo of jQuery Mobile controls" }
 }
 
 screen buttons() {

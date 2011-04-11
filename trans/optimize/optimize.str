@@ -66,7 +66,7 @@ rules
               index-html-filename := html-filename
             end
           ; fp2 := <fopen> (index-html-filename, "w")
-          ; <fputs> (<generate-optimized-index-html(|[$[[<qid-to-path> mod-name].js], $[[<qid-to-path> mod-name].css], script-tag-js*, style-tag-css*], setting*)> ast, fp2)
+          ; <fputs> (<generate-optimized-index-html(|[script-tag-js*, style-tag-css*, $[[<qid-to-path> mod-name].js], $[[<qid-to-path> mod-name].css]], setting*)> ast, fp2)
           ; <fclose> fp2
           ; if <fetch(?OfflineSetting())> setting* then
               fp3 := <fopen <+ debug(!"Could not open file: "); fail> (manifest-filename, "w")
