@@ -41,6 +41,43 @@ strategies
            |}
            ; not([] := inits )
 
+  /*ui-lift :
+    VarDecl(x, t, e) -> <concat> [inits, [VarDecl(x, t, e2)]]
+    where <IsControlVar> x
+    where {| Elems
+           : e2 := <ui-lift-expression> e
+           ; inits := <bagof-Elems>
+           |}
+           ; not([] := inits)
+
+  ui-lift :
+    VarDeclInferred(x, e) -> <concat> [inits, [VarDeclInferred(x, e2)]]
+    where <IsControlVar> x
+    where {| Elems
+           : e2 := <ui-lift-expression> e
+           ; inits := <bagof-Elems>
+           |}
+           ; not([] := inits)
+
+  ui-lift :
+    DeriveDeclInferred(x, e) -> <concat> [inits, [DeriveDeclInferred(x, e2)]]
+    where <IsControlVar> x
+    where not(<string-starts-with(|"tmp")> x)
+    where {| Elems
+           : e2 := <ui-lift-expression> e
+           ; inits := <bagof-Elems>
+           |}
+           ; not([] := inits)
+
+  ui-lift :
+    DeriveDecl(x, t, e) -> <concat> [inits, [DeriveDecl(x, t, e2)]]
+    where <IsControlVar> x
+    where {| Elems
+           : e2 := <ui-lift-expression> e
+           ; inits := <bagof-Elems>
+           |}
+           ; not([] := inits)*/
+
   ui-lift-expression :
     NamedExp(x, e) -> NamedExp(x, <ui-lift-expression> e)
 

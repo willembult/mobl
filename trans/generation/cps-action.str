@@ -192,10 +192,6 @@ rules
                          [<cps-statements> stat*]]
 
   cps-exp(|stat*) :
-    e@EntityCons(_, _) -> $[var result__ = [<expression-to-js> e];
-                            [<cps-statements> stat*]]
-
-  cps-exp(|stat*) :
     e@Call(qid, _) -> $[var result__ = [<expression-to-js> e];
                         [<cps-statements> stat*]]
     where <lookup-type> SimpleType(qid)

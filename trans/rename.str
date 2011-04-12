@@ -23,6 +23,9 @@ strategies
            TypeOf   : y -> t
            VarLookup : y -> x
         )
+      ; if "control" := <RenameScope> then
+          rules ( IsControlVar : y )
+        end
 
   rename-local-function :
    Function(mannos, name, farg*, rt, body) -> name2

@@ -49,15 +49,20 @@ rules
           end
 
   editor-complete-proposal :
-    Var(COMPLETION(_)) -> [type*, var*, function*]
+    Var(COMPLETION(_)) -> [type*, var*, function*, global-var*, styles*]
     where var* := <CompletionVars>
     where type* := <get-all-types; map(type-name-to-proposal); flatten-list>
         ; function* := <get-all-functions; map(lookup-function; function-to-proposal); flatten-list>
+        ; global-var* := <get-all-global-vars; map(global-var-to-proposal); flatten-list>
+        ; styles* := <get-all-styles; map(global-var-to-proposal); flatten-list>
 
   editor-complete-proposal :
     QId(qid, COMPLETION(_)) -> [type*, function*]
     where type* := <get-all-types; filter(?QId(qid, <id>)); map(type-name-to-proposal); flatten-list>
         ; function* := <get-all-functions; filter(?QId(qid, _)); map(lookup-function; function-to-proposal-qid); flatten-list>
+
+  global-var-to-proposal :
+    QId(qid, x) -> [([<pp-mobl-qid> qid], ""), ([x], "")]
 
   function-to-proposal :
     f@ExternalFunction(_, qid@QId(_, x), args, _) -> [

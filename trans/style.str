@@ -90,6 +90,9 @@ rules // lookup
   lookup-style-aux :
     qid -> <GetStyle> qid
 
+  get-all-styles =
+    all-keys-GetStyle
+
   lookup-style-mixin =
       lookup-style-mixin-aux
    //<+ import-and-retry(lookup-style-mixin-aux|<id>)
