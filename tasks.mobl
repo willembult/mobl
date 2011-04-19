@@ -1,51 +1,35 @@
 application tasks
 
-resource taskicon.png
-
 import mobl::ui::generic
 
 entity Task {
-  name    : String (searchable)
-  done    : Bool
-  dueDate : DateTime
-}
-
-screen root() {
-  header("Todo") {
-    button("Add", onclick={
-      addTask();
-    })
-    button("Whatever", onclick={
-      var t = Task(name="Whatever");
-      add(t);
-    })
-  }
-  var phrase = ""
-  searchBox(phrase)
-  group {
-    list(task in Task.searchPrefix(phrase) where done == false) {
-      item {
-        checkBox(task.done, label=task.name)
-        contextMenu() {
-          button("Remove", onclick={
-            remove(task);
-          })
-        }
-      }
-    }
-  }
+  name : String (searchable)
 }
 
 screen addTask() {
-  var newTask = Task(done = false, dueDate=now())
+  var t = Task()
   header("Add") {
-    backButton("Back", onclick={ screen return; })
+    button("Done", onclick={
+      add(t);
+      screen return;
+    })
   }
   group {
-    item { textField(newTask.name, placeholder="Task name") }
+    item { textField(t.name) }
   }
-  button("Add", onclick={
-    add(newTask);
-    screen return;
-  })
+}
+
+screen root() {
+  var phrase = ""
+  header("Tasks") {
+    button("Add", onclick={
+      addTask();
+    })
+  }
+  searchBox(phrase)
+  group {
+    list(t in Task.searchPrefix(phrase)) {
+      item { label(t.name) }
+    }
+  }
 }

@@ -58,6 +58,12 @@ strategies
     where [] := <filter(?InverseAnno(_))> anno*
         ; rules ( OneToOne :+= (SimpleType(ent), x, t) )
 
+  property-to-js(|ent) :
+    Property(_, x, t@SimpleType(_), anno*) -> <fail>
+    where <is-entity-type> t
+    where [InverseAnno(prop)] := <filter(?InverseAnno(_))> anno*
+        ; rules ( OneToOne :+= (SimpleType(ent), x, t, prop) )
+
   method-to-js(|ent) :
     fn@SyncFunction(_, x, _, _, _) -> $[[<qid-to-js> ent].prototype.[x] = [<function-to-js-exp> fn];]
 
@@ -76,6 +82,10 @@ strategies
 
   one-to-one-to-js :
     (SimpleType(from), field, SimpleType(to)) -> <emit> $[[<qid-to-js> from].hasOne('[field]', [<qid-to-js> to]);
+]
+
+  one-to-one-to-js :
+    (SimpleType(from), field, SimpleType(to), inverse) -> <emit> $[[<qid-to-js> from].hasOne('[field]', [<qid-to-js> to], '[inverse]');
 ]
 
   searchable-to-js :
