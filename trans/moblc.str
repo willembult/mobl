@@ -37,6 +37,7 @@ strategies
     ; cwd := <getcwd>
     ; rules ( ProjectPath       := cwd )
     ; setting* := <get-configuration>
+    ; <filter(\ StyleVarSetting(StyleVar(x), e) -> <id>  where rules ( StyleVar : x -> e ) \)> setting*
     ; if <fetch-elem(?StdLibSetting(stdlib-p))> setting* then
          stdlib-path := <path-to-string> stdlib-p
       else

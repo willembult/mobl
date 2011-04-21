@@ -26,6 +26,7 @@ rules
   // each a list of (term, message) tuples or simply (message) terms.
   editor-analyze:
     (ast, path, project-path) -> (ast2, errors, warnings, notes)
+    where not(Configuration(_) := ast)
     with
       // Ensure all dynamic rules are properly scoped
       try(dr-scope-all-end)
@@ -47,6 +48,9 @@ rules
         end
       ; warnings := <collect-all(constraint-warning, conc)> ast2
       ; notes    := <collect-all(constraint-note, conc)> ast2
+
+  editor-analyze:
+    (ast@Configuration(_), path, project-path) -> (ast, [], [], [])
 
   // Prints the abstract syntax ATerm of a selection.
   generate-aterm:

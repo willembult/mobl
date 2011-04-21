@@ -22,3 +22,6 @@ exports
 
     "offline"                        -> Setting {cons("OfflineSetting")}
     "debug"                          -> Setting {cons("DebugSetting")}
+    "loadingHTML" STRING             -> Setting {cons("LoadingHtmlSetting")}
+
+    "style" StyleVar "=" StyleExp    -> Setting {cons("StyleVarSetting")}

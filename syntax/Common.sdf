@@ -10,7 +10,7 @@ exports
     [a-zA-Z\_\$][a-zA-Z0-9\_]* -> ID
     [a-zA-Z\_\$][a-zA-Z0-9\_\-]* -> HTMLID
     %% "-"? [0-9]+            -> INT
-    [a-zA-Z\_\$\*\.][a-zA-Z0-9\_\-\.\*]* -> FILENAME
+    [a-zA-Z\_\$\%\.][a-zA-Z0-9\_\-\.\%]* -> FILENAME
 
   lexical syntax
     "-"? FloatDigits
@@ -24,7 +24,9 @@ exports
     "."                    -> FloatDigits  {reject}
 
     "\"" StringChar* "\"" -> STRING
+    "\"\"\"" StringChar2* "\"\"\"" -> STRING
     ~[\"\n]               -> StringChar
+    ~[\0]                 -> StringChar2
     "\\\""                -> StringChar
 
     [\ \t\n\r] -> LAYOUT

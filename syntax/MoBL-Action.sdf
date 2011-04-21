@@ -4,6 +4,7 @@ imports
   Common
   MoBL
   MoBL-UI
+  MoBL-String
 
 exports
 
@@ -58,7 +59,7 @@ exports
     FunctionDef                                 -> Statement
 
   context-free syntax %% Expressions
-
+    %%StringQuotation               -> LimitedSetExp {cons("String")}
     STRING                        -> LimitedSetExp {cons("String")}
     NUMBER                        -> LimitedSetExp {cons("Num")}
     "true"                        -> LimitedSetExp {cons("True")}

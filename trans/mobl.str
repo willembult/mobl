@@ -40,6 +40,16 @@ strategies
     where not(<file-exists> filename)
         ; [path|_] := <filter(\ p -> <concat-strings> [p, "/", filename] \; file-exists)> <IncludePaths>
 
+  /*resolve-file =
+    string-tokenize(|<explode-string> "/")
+    ; where(
+       last
+       ; ?wildcard
+       ; string-replace(|"%", "")
+       ; not(?wildcard))
+    ; drop-last; separate-by(|"/"); concat-strings
+    ; (?"" <+ resolve-file)
+    ; <concat-strings> [<id>, "/", wildcard]*/
 
 strategies
 

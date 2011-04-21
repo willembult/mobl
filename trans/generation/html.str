@@ -21,8 +21,7 @@ strategies
     </head>
     <body>
     <div id="mobl-loading">
-      Loading... <img src="data:image/gif;base64,R0lGODlhCgAKAJEDAMzMzP9mZv8AAP///yH/C05FVFNDQVBFMi4wAwEAAAAh+QQFAAADACwAAAAACgAKAAACF5wncgaAGgJzJ647cWua4sOBFEd62VEAACH5BAUAAAMALAEAAAAIAAMAAAIKnBM2IoMDAFMQFAAh+QQFAAADACwAAAAABgAGAAACDJwHMBGofKIRItJYAAAh+QQFAAADACwAAAEAAwAIAAACChxgOBPBvpYQYxYAIfkEBQAAAwAsAAAEAAYABgAAAgoEhmPJHOGgEGwWACH5BAUAAAMALAEABwAIAAMAAAIKBIYjYhOhRHqpAAAh+QQFAAADACwEAAQABgAGAAACDJwncqi7EQYAA0p6CgAh+QQJAAADACwHAAEAAwAIAAACCpRmoxoxvQAYchQAOw==" width="10" height="10">
-      <p>(If this message still shows after a few seconds, probably something went wrong. Does your browser support Javascript?)</p>
+      [loading-html]
     </div>
     <script src="js/jquery-1.4.min.js" type="application/x-javascript" charset="utf-8"></script>
     <script src="js/persistence.js" type="application/x-javascript" charset="utf-8"></script>
@@ -63,6 +62,21 @@ strategies
        ; <filter(?DatabaseSetting(dbname))> setting*
        ; <filter(?IconSetting(icon))> setting*
        ; html-manifest := <fetch(?OfflineSetting()); !$[manifest="[<qid-to-path> qid].manifest"] <+ !""> setting*
+       ; loading-html := <filter(?LoadingHtmlSetting(html)); ?[LoadingHtmlSetting(<string-to-html>)|_] <+ !$[Loading... <img src="data:image/gif;base64,R0lGODlhCgAKAJEDAMzMzP9mZv8AAP///yH/C05FVFNDQVBFMi4wAwEAAAAh+QQFAAADACwAAAAACgAKAAACF5wncgaAGgJzJ647cWua4sOBFEd62VEAACH5BAUAAAMALAEAAAAIAAMAAAIKnBM2IoMDAFMQFAAh+QQFAAADACwAAAAABgAGAAACDJwHMBGofKIRItJYAAAh+QQFAAADACwAAAEAAwAIAAACChxgOBPBvpYQYxYAIfkEBQAAAwAsAAAEAAYABgAAAgoEhmPJHOGgEGwWACH5BAUAAAMALAEABwAIAAMAAAIKBIYjYhOhRHqpAAAh+QQFAAADACwEAAQABgAGAAACDJwncqi7EQYAA0p6CgAh+QQJAAADACwHAAEAAwAIAAACCpRmoxoxvQAYchQAOw==" width="10" height="10"><p>(If this message still shows after a few seconds, probably something went wrong. Does your browser support Javascript?)</p>]> setting*
+
+
+  string-to-html =
+    where(not(string-starts-with(|"\"\"\"")))
+    ; un-double-quote
+    ; unescape
+
+  string-to-html =
+    where(string-starts-with(|"\"\"\""))
+    ; string-replace(|"\n", "\\n")
+    ; string-replace(|"\"\"\"", "")
+    ; string-replace(|"\"", "\\\"")
+    ; unescape
+
 
   generate-chrome-manifest(|res*, setting*) :
     Application(qid, _) -> $[

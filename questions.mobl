@@ -1,8 +1,5 @@
 application questions
 
-title "Questions"
-database "questions"
-
 import mobl
 import mobl::ui::ios
 

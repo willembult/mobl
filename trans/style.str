@@ -158,6 +158,7 @@ rules // style
 
   capture-style-config :
     StyleVarDecl(StyleVar(x), e) -> <id>
+    where not(<StyleVar> x)
     where rules ( StyleVar : x -> e )
 
   floorS = string-tokenize(|<explode-string> "."); Hd

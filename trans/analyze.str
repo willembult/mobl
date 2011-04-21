@@ -16,6 +16,7 @@ imports
   generation/server
   generation/css
   sync-analysis
+  util
 
 rules
 
@@ -92,7 +93,10 @@ rules
     qid -> <id>
     where not(ServerContext)
     where path := <resolve-file> <concat-strings> [<qid-to-path> qid, ".mobl"]
-        ; if not(<Compiled> qid <+ <is-newer> (<concat-strings; guarantee-extension(|"js")> [<OutputPath>, "/", <qid-to-path> qid], path)) then
+        ; path-js := <concat-strings; guarantee-extension(|"js")> [<OutputPath>, "/", <qid-to-path> qid]
+        ; if not(<Compiled> qid
+                <+ (<is-newer> (path-js, path)
+                    ; not(<file-exists> <get-configuration-filename>) <+ <is-newer> (path-js, <get-configuration-filename>))) then
             <parse-file> path
             ; compile
           end

@@ -86,8 +86,6 @@ rules
     SyncFunction(_, qid, _, SimpleType(QId("mobl", "void")), body) -> (stm, $[Return statement of function '[<pp-mobl-qid> qid]' should not return a value.])
     where [stm|_] := <collect(?Return(_))> body
 
-
-
   constraint-error :
     StaticFunction(_, qid, _, rt, body) -> (qid, $[Function '[<pp-mobl-qid> qid]' has no return statement.])
     where not(SimpleType(QId("mobl", "void")) := rt)
@@ -121,6 +119,10 @@ rules
 
   constraint-error :
     VarDeclInferred(v, Null()) -> (v, $[When initializing a variable with null, you have to specify a type, e.g.: var [v] : String = null])
+
+  constraint-error :
+    Application(_, _) -> (e, $[screen return statements are only allowed within screen definitions.])
+    where [e|_] := <collect(?ScreenReturn() <+ ?ScreenReturn(_) <+ ?Screen(_, _, _, _, _) <+ ?FArgOptional(_, _, _)); remove-all(?Screen(_, _, _, _, _) <+ ?FArgOptional(_, _, _))>
 
 rules
 

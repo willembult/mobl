@@ -275,6 +275,15 @@ rules // Expressions
 
   exp-to-js :
     String(s) -> s
+    where not(<string-starts-with(|"\"\"\"")> s)
+
+  exp-to-js =
+    ?String(<id>)
+    ; where(string-starts-with(|"\"\"\""))
+    ; string-replace(|"\n", "\\n")
+    ; string-replace(|"\"\"\"", "")
+    ; string-replace(|"\"", "\\\"")
+    ; <concat-strings> ["\"", <id>, "\""]
 
   exp-to-js :
     Num(n) -> n

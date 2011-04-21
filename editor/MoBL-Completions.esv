@@ -169,3 +169,9 @@ completions
 
   completion template : Setting =
     "database " <"mydb"> (blank)
+
+  completion template : Setting =
+    "loadingHTML " <"""Loading"""> (blank)
+
+  completion template : Setting =
+    "style $" <baseColor> " = rgb(100, 100, 100)" (blank)

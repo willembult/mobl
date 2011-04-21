@@ -36,6 +36,7 @@ rules
     ; if not(<fetch-elem(?ReleaseOutputSetting(release-output-path))> setting*) then
         release-output-path := $["www.release"]
       end
+    ; <filter(\ StyleVarSetting(StyleVar(x), e) -> <id>  where rules ( StyleVar : x -> e ) \)> setting*
     ; rules(
         IncludePaths      := [<ProjectPath>, stdlib-path, path*]
         OutputPath        := $[[<ProjectPath>]/[<un-double-quote> output-path]]
@@ -46,12 +47,14 @@ rules
 
   get-configuration :
     _ -> setting*
-    where filename := $[[<ProjectPath; string-replace(|"\\", "/")>]/config.mobl]
+    where filename := <get-configuration-filename>
     where <file-exists> filename
     with Configuration(setting*) := <parse-file <+ !Configuration([])> filename
 
   get-configuration :
     _ -> []
-    where filename := $[[<ProjectPath; string-replace(|"\\", "/")>]/config.mobl]
+    where filename := <get-configuration-filename>
     where not(<file-exists> filename)
 
+  get-configuration-filename :
+    _ -> $[[<ProjectPath; string-replace(|"\\", "/")>]/config.mobl]
