@@ -1,5 +1,0 @@
-module ui
-
-mixin mobl::ui::generic
-
-//style $baseColor = $baseColorGreen

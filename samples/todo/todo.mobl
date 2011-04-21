@@ -39,7 +39,7 @@ screen root() {
   var phrase = ""
   searchBox(phrase)
   group {
-    list(t in Task.search(phrase)) {
+    list(t in Task.searchPrefix(phrase)) {
       item {
         checkBox(t.done, label=t.name)
         contextMenu {
