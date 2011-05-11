@@ -1,7 +1,7 @@
 { nixpkgs ? /etc/nixos/nixpkgs
 , mobl ? { outPath = ./.; rev = 1234; }
-, moblPlugin ? { outPath = ../plugin ; rev = 1234; }
-, hydraConfig ? { outPath = ../../../src/hydra-config ; rev = 1234; }
+, moblPlugin ? { outPath = ../mobl-plugin ; rev = 1234; }
+, hydraConfig ? { outPath = ../hydra-config ; rev = 1234; }
 }: 
 let
   pkgs = import nixpkgs { system = "x86_64-linux" ; };
@@ -33,6 +33,8 @@ let
         sha256 = "1dcki0sip6a9ng220px1n4dwfx6b7kdslkix1ld1r2apjnx6xz4n";
       } ;
   }; 
+
+  eclipseFun = import "${hydraConfig}/eclipse.nix" pkgs ;
 
   moblc = app :
     pkgs.stdenv.mkDerivation {
@@ -147,6 +149,18 @@ let
         export LOCALCLASSPATH="utils/js.jar"
       '';
     };
+
+    installTest = eclipseFun {
+      name = "eclipse-mobl-install-test";
+      src =  pkgs.fetchurl {
+        url = http://download.springsource.com/release/ECLIPSE/helios/SR1/eclipse-SDK-3.6.1-linux-gtk.tar.gz ;
+        sha256 = "0s48rjaswi8m5gan1zlqvfwb4l06x5nslkq41wpkrbyj9ka8gh4x";
+      };
+      updatesites = [ "file://${jobs.updatesite}/site" ];
+      installIUs = [ "org.mobl_lang.feature.feature.group" ];
+      dontInstall = true;
+    };
+
   };
 
 in jobs
