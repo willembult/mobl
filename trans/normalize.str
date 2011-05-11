@@ -37,6 +37,16 @@ rules
     IfNoElse(e, block) -> If(e, block, Block([]))
 
   normalize :
+    If(e, stm, block) -> If(e, Block([stm]), block)
+    where not(Block(_) := stm)
+
+  normalize :
+    If(e, block, stm) -> If(e, block, Block([stm]))
+    where not(Block(_) := stm)
+        ; not(If(_, _, _) := stm)
+        ; not(IfNoElse(_, _) := stm)
+
+  normalize :
     WhenNoElse(e, block) -> When(e, block, [])
 
   normalize :

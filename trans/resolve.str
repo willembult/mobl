@@ -72,6 +72,10 @@ strategies
     where <is-string> x
 
   add-tl-namespace :
+    ExternalVarDecl(x, t) -> ExternalVarDecl(QId(<ModuleName>, x), t)
+    where <is-string> x
+
+  add-tl-namespace :
     VarDecl(x, t, e) -> VarDecl(QId(<ModuleName>, x), t, e)
     where <is-string> x
 

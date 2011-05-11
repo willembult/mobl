@@ -292,6 +292,11 @@ rules
     where not(type-of)
 
   constraint-error :
+    t@LFieldAccess(e, x) -> (t, $[Property [x] not defined on type [<pp-mobl-type> typ]])
+    where typ := <type-of> e
+    where not(type-of)
+
+  constraint-error :
     t@Call(qid{}, arg*) -> (t, $[Function [<pp-mobl-qid> qid] not defined])
     where <map(type-of)> arg*
     where not(type-of)
