@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
 <project name="MoBL" default="all">
-
   <!-- Key input modules -->
   <property name="sdfmodule" value="MoBL" />
   <property name="esvmodule" value="MoBL" />
   <property name="strmodule" value="mobl" />
+  <property name="externaljar" value="utils/js.jar" />
   <property name="metasdfmodule" value="Stratego-MoBL"/>
 
   <!-- Project directories -->
