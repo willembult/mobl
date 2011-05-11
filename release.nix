@@ -150,15 +150,17 @@ let
       '';
     };
 
-    installTest = eclipseFun {
-      name = "eclipse-mobl-install-test";
-      src =  pkgs.fetchurl {
-        url = http://download.springsource.com/release/ECLIPSE/helios/SR1/eclipse-SDK-3.6.1-linux-gtk.tar.gz ;
-        sha256 = "0s48rjaswi8m5gan1zlqvfwb4l06x5nslkq41wpkrbyj9ka8gh4x";
+    tests = {
+      install = eclipseFun {
+        name = "eclipse-mobl-install-test";
+        src =  pkgs.fetchurl {
+          url = http://download.springsource.com/release/ECLIPSE/helios/SR1/eclipse-SDK-3.6.1-linux-gtk.tar.gz ;
+          sha256 = "0s48rjaswi8m5gan1zlqvfwb4l06x5nslkq41wpkrbyj9ka8gh4x";
+        };
+        updatesites = [ "file://${jobs.updatesite}/site" ];
+        installIUs = [ "org.mobl_lang.feature.feature.group" ];
+        dontInstall = true;
       };
-      updatesites = [ "file://${jobs.updatesite}/site" ];
-      installIUs = [ "org.mobl_lang.feature.feature.group" ];
-      dontInstall = true;
     };
 
   };
