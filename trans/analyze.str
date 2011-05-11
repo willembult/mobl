@@ -35,7 +35,8 @@ rules
        ; rename-all
        ; add-namespace-all
        ; analyze-sync
-       ; declare-all
+       //; declare-all
+       //; debug
        |}
 
   analyze =
