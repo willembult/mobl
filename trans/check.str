@@ -79,7 +79,7 @@ rules
     where [stm|_] := <collect(where(?Return(<id>); type-of; not(<type-compatible> (rt, <id>))))> body
 
   constraint-error :
-    t@SyncFunction(_, qid, _, rt, body) -> (t, $[Don't use sync functions, just write functions.])
+    t@SyncFunction(manno*, qid, farg*, rt, body) -> <constraint-error> Function(manno*, qid, farg*, rt, body)
 
   constraint-error :
     Function(_, qid, _, SimpleType(QId("mobl", "void")), body) -> (stm, $[Return statement of function '[<pp-mobl-qid> qid]' should not return a value.])
@@ -100,7 +100,7 @@ rules
     where [stm|_] := <collect(where(?Return(<id>); type-of; not(<type-compatible> (rt, <id>))))> body
 
   constraint-error :
-    t@StaticSyncFunction(_, qid, _, rt, body) -> (t, $[Don't write sync functions, just write functions.])
+    t@StaticSyncFunction(manno*, qid, farg*, rt, body) -> <constraint-error> StaticFunction(manno*, qid, farg*, rt, body)
 
   constraint-error :
     StaticFunction(_, qid, _, SimpleType(QId("mobl", "void")), body) -> (stm, $[Return statement of function '[<pp-mobl-qid> qid]' should not return a value.])
