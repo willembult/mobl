@@ -16,7 +16,7 @@ public class deltree_0_0 extends Strategy {
         String path = uglify_0_0.getStringFromTerm(current);
         try {
             delete(context.getIOAgent().openFile(path));
-        } catch(IOException e) {
+        } catch (IOException e) {
             context.getIOAgent().printError(e.getMessage());
             return null;
         }

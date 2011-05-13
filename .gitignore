@@ -3,6 +3,6 @@ www/*.html
 *.generated.esv
 .DS_Store
 .cache
-
+build.generated.xml
 *.class
 /java/fileserver.jar
