@@ -100,7 +100,9 @@ exports
     "async" "(" {Exp ","}* ")"   -> Exp {cons("AsyncCall"), prefer}
 
     "{" Statement* "}"             -> Exp {cons("Callback")}
-    "control" "{" ScreenElem* "}" -> Exp {cons("AnonymousControl")}
+    "control" "(" {FArg ","}* ")" "{" ScreenElem* "}" -> Exp {cons("AnonymousControl")}
+    "function" "(" {FArg ","}* ")" "{" Statement* "}" -> Exp {cons("AnonymousFunctionNoReturnType")}
+    "function" "(" {FArg ","}* ")" ":" Type "{" Statement* "}" -> Exp {cons("AnonymousFunction")}
 
     ID "=" Exp                  -> PropVal {cons("PropVal")}
 
