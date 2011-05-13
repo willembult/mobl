@@ -137,6 +137,15 @@ strategies
        ; args := <filter(farg-to-js); <concat> [<id>, ["callback"]]; separate-by(!", "); concat-strings> farg*
        ; stats2 := <cps-list-all-expressions; <concat> [<id>, [$[if(callback && callback.apply) callback(); return;]]]; cps-statements <+ debug(!"Could not translate to stats: "); fail> stats
 
+  function-to-js-exp :
+    AnonymousFunction(farg*, rt, stats) ->
+    $[function([args]) {
+        var __this = this;
+        [stats2]
+      }]
+    where not(ServerContext)
+    with args := <filter(farg-to-js); <concat> [<id>, ["callback"]]; separate-by(!", "); concat-strings> farg*
+       ; stats2 := <cps-list-all-expressions; <concat> [<id>, [$[if(callback && callback.apply) callback(); return;]]]; cps-statements <+ debug(!"Could not translate to stats: "); fail> stats
 
   function-to-js-exp :
     StaticSyncFunction(_, qid, farg*, rt, stat*) ->
@@ -409,15 +418,23 @@ rules // Expressions
 
 
   exp-to-js :
-    AnonymousControl(elems) -> $[function(elements, callback) {
-                                    var [root] = $("<span>");
-                                    [body]
-                                  }]
+    AnonymousControl(farg*, elems) ->
+    $[function([fargs]) {
+        var [root] = $("<span>");
+        var subs__ = new mobl.CompSubscription();
+        [body]
+        return subs__;
+      }]
     with {| InControl
           : rules ( InControl := 1 )
           ; root := <newname> "root"
+          ; fargs :=  <filter(farg-to-js); <concat> [<id>, ["elements", "callback"]]; separate-by(!", "); concat-strings> farg*
           ; body := <elems-to-js-callback(|root)> elems
           |}
+
+  exp-to-js :
+    AnonymousFunction(farg*, rt, stat*) -> <function-to-js-exp>
+
 
 strategies
 

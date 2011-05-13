@@ -34,6 +34,9 @@ rules
     StaticSyncFunctionNoReturnType(manno*, name, farg*, stat*) -> StaticSyncFunction(manno*, name, farg*, SimpleType(QId("mobl", "void")), stat*)
 
   normalize :
+    AnonymousFunctionNoReturnType(farg*, stat*) -> AnonymousFunction(farg*, SimpleType(QId("mobl", "void")), stat*)
+
+  normalize :
     IfNoElse(e, block) -> If(e, block, Block([]))
 
   normalize :

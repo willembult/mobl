@@ -78,20 +78,19 @@ strategies
            |}
            ; not([] := inits)*/
 
-  ui-lift-expression :
-    NamedExp(x, e) -> NamedExp(x, <ui-lift-expression> e)
-
   ui-lift-expression =
-    ?Var(_)
+    \ NamedExp(x, e) -> NamedExp(x, <ui-lift-expression> e) \
+    <+ ?Var(_)
+    <+ ?FieldAccess(_, _)
+    <+ ?Num(_)
+    <+ ?String(_)
+    <+ ?True()
+    <+ ?False()
+    <+ ?Null()
+    <+ ui-lift-exp
 
-  ui-lift-expression =
-    ?FieldAccess(_, _)
-
-  ui-lift-expression :
+  ui-lift-exp :
     e -> Var(<rename-ref-var> (newvar, <type-of> e))
-    where not(?Var(_))
-        ; not(?FieldAccess(_, _))
-        ; not(?NamedExp(_, _))
-        ; newvar := <newname> "tmp"
+    where newvar := <newname> "tmp"
         ; rules ( IsRefVar : newvar )
         ; rules ( Elems :+= DeriveDeclInferred(newvar, e) )

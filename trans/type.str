@@ -59,7 +59,10 @@ strategies
     AsyncCall([e|_]) -> <type-of> e
 
   eq-type-of :
-    AnonymousControl(_) -> SimpleType(QId("mobl", "Control"))
+    AnonymousControl(farg*, _) -> <fargs-to-control-type> farg*
+
+  eq-type-of :
+    AnonymousFunction(farg*, rt, _) -> <fargs-to-function-type> [farg*, FArg("returnType", rt)]
 
   eq-type-of :
     Tuple(fst, rest*) -> GenericType(QId("mobl", $[Tuple[n]]), t*)
@@ -95,6 +98,11 @@ strategies
   eq-type-of :
     Call(qid, e*) -> rt
     where rt@SimpleType(QId("mobl", "Callback")) := <type-of> Var(qid)
+
+  eq-type-of :
+    Call(qid, e*) -> <last> t*
+    where GenericType(QId(_, fn), t*) := <type-of> Var(qid)
+        ; <string-starts-with(|"Function")> fn
 
   eq-type-of :
     EntityCons(t, _) -> t

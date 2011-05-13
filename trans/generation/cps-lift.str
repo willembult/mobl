@@ -249,7 +249,8 @@ strategies
   is-sync = ?String(_)
   is-sync = ?Var(_)
   is-sync = ?Callback(_)
-  is-sync = ?AnonymousControl(_)
+  is-sync = ?AnonymousControl(_, _)
+  is-sync = ?AnonymousFunction(_, _, _)
   is-sync = ?This()
 
   is-sync =

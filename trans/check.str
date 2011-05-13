@@ -64,26 +64,29 @@ rules
     where [] := <collect(?Return(_))> body
 
   constraint-error :
+    t@AnonymousFunction(farg*, rt, body) -> (t, $[Anonymous function has no return statement.])
+    where not(SimpleType(QId("mobl", "void")) := rt)
+    where [] := <collect(?Return(_))> body
+
+  constraint-error :
     Function(_, qid, _, rt, body) -> (stm, $[Return statement of function '[<pp-mobl-qid> qid]' should return expression of type [<pp-mobl-type> rt].])
     where not(SimpleType(QId("mobl", "void")) := rt)
     where [stm|_] := <collect(where(?Return(<id>); type-of; not(<type-compatible> (rt, <id>))))> body
 
   constraint-error :
-    SyncFunction(_, qid, _, rt, body) -> (qid, $[Function '[<pp-mobl-qid> qid]' has no return statement.])
-    where not(SimpleType(QId("mobl", "void")) := rt)
-    where [] := <collect(?Return(_))> body
-
-  constraint-error :
-    SyncFunction(_, qid, _, rt, body) -> (stm, $[Return statement of function '[<pp-mobl-qid> qid]' should return expression of type [<pp-mobl-type> rt].])
+    t@AnonymousFunction(farg*, rt, body) -> (stm, $[Return statement of anonymous function should return expression of type [<pp-mobl-type> rt].])
     where not(SimpleType(QId("mobl", "void")) := rt)
     where [stm|_] := <collect(where(?Return(<id>); type-of; not(<type-compatible> (rt, <id>))))> body
+
+  constraint-error :
+    t@SyncFunction(_, qid, _, rt, body) -> (t, $[Don't use sync functions, just write functions.])
 
   constraint-error :
     Function(_, qid, _, SimpleType(QId("mobl", "void")), body) -> (stm, $[Return statement of function '[<pp-mobl-qid> qid]' should not return a value.])
     where [stm|_] := <collect(?Return(_))> body
 
   constraint-error :
-    SyncFunction(_, qid, _, SimpleType(QId("mobl", "void")), body) -> (stm, $[Return statement of function '[<pp-mobl-qid> qid]' should not return a value.])
+    t@AnonymousFunction(farg*, SimpleType(QId("mobl", "void")), body) -> (stm, $[Return statement of anonymous function should not return a value.])
     where [stm|_] := <collect(?Return(_))> body
 
   constraint-error :
@@ -97,21 +100,10 @@ rules
     where [stm|_] := <collect(where(?Return(<id>); type-of; not(<type-compatible> (rt, <id>))))> body
 
   constraint-error :
-    StaticSyncFunction(_, qid, _, rt, body) -> (qid, $[Function '[<pp-mobl-qid> qid]' has no return statement.])
-    where not(SimpleType(QId("mobl", "void")) := rt)
-    where [] := <collect(?Return(_))> body
-
-  constraint-error :
-    StaticSyncFunction(_, qid, _, rt, body) -> (stm, $[Return statement of function '[<pp-mobl-qid> qid]' should return expression of type [<pp-mobl-type> rt].])
-    where not(SimpleType(QId("mobl", "void")) := rt)
-    where [stm|_] := <collect(where(?Return(<id>); type-of; not(<type-compatible> (rt, <id>))))> body
+    t@StaticSyncFunction(_, qid, _, rt, body) -> (t, $[Don't write sync functions, just write functions.])
 
   constraint-error :
     StaticFunction(_, qid, _, SimpleType(QId("mobl", "void")), body) -> (stm, $[Return statement of function '[<pp-mobl-qid> qid]' should not return a value.])
-    where [stm|_] := <collect(?Return(_))> body
-
-  constraint-error :
-    StaticSyncFunction(_, qid, _, SimpleType(QId("mobl", "void")), body) -> (stm, $[Return statement of function '[<pp-mobl-qid> qid]' should not return a value.])
     where [stm|_] := <collect(?Return(_))> body
 
   constraint-error :

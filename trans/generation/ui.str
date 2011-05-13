@@ -145,7 +145,7 @@ rules
        ; controlcall := <concat-strings> ["subs__.addSub((", <expression-to-js> e, ")(", args, "));"]
 
   hide-anon-controls =
-    alltd(\ AnonymousControl(_) -> Null() \)
+    alltd(\ AnonymousControl(_, _) -> Null() \)
     ; alltd(\ Callback(_) -> Null() \)
 
   find-watchable-expressions =

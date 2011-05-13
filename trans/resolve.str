@@ -168,6 +168,13 @@ rules
         ; [qid2|alternatives] := <filter({c, newid: ?c; <prefix-qid(|c)> qid; ?newid; !SimpleType(newid); lookup-type-aux; !newid})> [<ModuleName>|<bagof-Imports>]
         ; e2* := <alltd(add-namespace)> e*
 
+  add-namespace :
+    Call(qid, e*) -> Call(<alternatives(|alternatives)> qid2, e2*)
+    where <is-string> qid
+    where not(<lookup-global-var-aux> qid)
+        ; [qid2|alternatives] := <filter({c, newid: ?c; <prefix-qid(|c)> qid; ?newid; lookup-global-var-aux; !newid})> [<ModuleName>|<bagof-Imports>]
+        ; e2* := <alltd(add-namespace)> e*
+
   alternatives(|alt*) :
     qid@QId(_, x) -> x{Alternatives([qid|alt*])}
     where not([] := alt*)

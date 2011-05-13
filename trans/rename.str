@@ -194,6 +194,13 @@ rules
          //; qid2 := <rename-local-function> f
 
   rename :
+    f@AnonymousFunction(farg*, rt, body) -> AnonymousFunction(farg2*, rt, body2)
+    with action-scope(
+           farg2* := <map(rename-farg)> farg*
+           ; body2 := <prename-functions; rename-all> body
+         )
+
+  rename :
     f@SyncFunction(manno*, qid, farg*, rt, body) -> SyncFunction(manno*, qid, farg2*, rt, body2)
     with action-scope(
            farg2* := <map(rename-farg)> farg*
@@ -237,8 +244,11 @@ rules
          )
 
   rename :
-    AnonymousControl(body) -> AnonymousControl(body2)
-    with control-scope(body2 := <rename-all> body)
+    AnonymousControl(farg*, body) -> AnonymousControl(farg2*, body2)
+    with control-scope(
+           farg2* := <map(rename-ref-farg)> farg*
+           ; body2 := <rename-all> body
+         )
 
 strategies
 
