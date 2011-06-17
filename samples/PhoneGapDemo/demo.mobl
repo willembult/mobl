@@ -1,0 +1,127 @@
+application demo
+
+import mobl::ui::generic
+import phonegap::camera
+import phonegap::contact
+import phonegap::accelerometer
+import phonegap::compass
+import phonegap::notification
+
+screen root() {
+  header("PhoneGap")
+  group {
+    item(onclick={ cameraDemo(); }) { "Camera" }
+    item(onclick={ contactDemo(); }) { "Contacts" }
+    item(onclick={ accelerometerDemo(); }) { "Accelerometer" }
+    item(onclick={ compassDemo(); }) { "Compass" }
+    item(onclick={ notificationDemo(); }) { "Notifications" }
+  }
+}
+
+screen cameraDemo() {
+  var currentImage = $data(images/no-photo.jpg)
+  header("Camera") {
+    backButton()
+  }
+  button("Camera", onclick={
+    currentImage = Camera.takePicture();
+  })
+  button("Library", onclick={
+    currentImage = Camera.pickPictureFromLibrary();
+  })
+  block {
+    image(currentImage, width=200)
+  }
+}
+
+screen contactDemo() {
+  header("Contacts") {
+    backButton()
+  }
+  group {
+    list(contact in Contact.find(["displayName", "emails"])) {
+      item { label(contact.displayName) }
+    }
+  }
+}
+
+screen accelerometerDemo() {
+  var acc : Acceleration = null
+  var watchId = -1
+  header("Accelerometer") {
+    backButton(onclick={
+      Accelerometer.clearWatch(watchId);
+      screen return;
+    })
+  }
+  when(acc) {
+    table {
+      row {
+        headerCol { "X: "}
+        col { label(acc.x) }
+      }
+      row {
+        headerCol { "Y: "}
+        col { label(acc.y) }
+      }
+      row {
+        headerCol { "Z: "}
+        col { label(acc.z) }
+      }
+      row {
+        headerCol { "timestamp "}
+        col { label(acc.timestamp) }
+      }
+    }
+  } else {
+    "Getting data, hang on."
+  }
+
+  script {
+    watchId = Accelerometer.watchAcceleration(function(a : Acceleration) {
+      acc = a;
+    }, function() {
+      log("Fail");
+    }, frequency=100);
+  }
+}
+
+screen compassDemo() {
+  var value = -1
+  var watchId = -1
+  header("Compass") {
+    backButton(onclick={
+      Compass.clearWatch(watchId);
+      screen return;
+    })
+  }
+
+  label(value)
+  block { label(watchId) }
+
+  script {
+    watchId = Compass.watchHeading(function(val : Num) {
+      value = val;
+    }, function() {
+      log("Fail");
+    }, frequency=100);
+  }
+}
+
+screen notificationDemo() {
+  header("Notifications") {
+    backButton()
+  }
+  button("Alert", onclick={
+    Notification.alert("Hello there", title="A Message", buttonName="OK");
+  })
+  button("Confirm", onclick={
+    alert("So you are " + Notification.confirm("What are you?", buttons=["Male", "Female"]));
+  })
+  button("Beep", onclick={
+    Notification.beep(3);
+  })
+  button("Vibrate", onclick={
+    Notification.vibrate(500);
+  })
+}

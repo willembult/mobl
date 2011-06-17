@@ -47,10 +47,7 @@ strategies
     <script type="application/x-javascript" charset="utf-8">
     mobl.icon = "[<<path-to-string> icon <+ !"img/default-icon.png">]";
     $(function(){
-      persistence.schemaSync(function(tx) {
-        if(persistence.loadFromLocalStorage) {
-          persistence.loadFromLocalStorage();
-        }
+      mobl.initDb(function() {
         $("#mobl-loading").remove();
         mobl.call("[<qid-to-js> qid].root", $[$mobl.ref(false), mobl.ref("none")$]$, function() {});
       });

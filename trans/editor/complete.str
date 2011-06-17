@@ -41,12 +41,29 @@ rules
   editor-complete-proposal :
     FieldAccess(e, COMPLETION(_)) -> [prop*, method*]
     where t := <type-of> e
-        ; method* := <get-all-methods; map(\ meth@c#([_, x, args|_]) -> (<concat> [[x, "("], <filter(?FArg(<id>, _)); separate-by(!", ")> args, [")"]], <get-doc> meth) \)> t
+        ; method* := <get-all-methods; map(method-to-proposal <+ debug(!"Fail method: "); fail); flatten-list> t
         ; if GenericType(QId("mobl", "Type"), _) := t then
             prop* := []
           else
             prop* := <get-all-properties; map(\ prop@Property(_, x, _, _) -> ([x], <get-doc> prop) \)> t
           end
+
+  method-to-proposal :
+    f@ExternalMethod(_, x, args, _) -> [
+      (<concat> [[x, "("], fargs, [")"]], <get-doc> f),
+      (<concat> [[x, "("], fargs2, [")"]], <get-doc> f)
+    ]
+    with fargs := <filter(?FArg(_, _); farg-to-proposal); separate-by(!", ")> args
+    with fargs2 := <map(farg-to-proposal); separate-by(!", ")> args
+
+  method-to-proposal :
+    ExternalSyncMethod(manno*, x, args, rt) -> <method-to-proposal> ExternalMethod(manno*, x, args, rt)
+
+  method-to-proposal :
+    ExternalStaticSyncMethod(manno*, x, args, rt) -> <method-to-proposal> ExternalMethod(manno*, x, args, rt)
+
+  method-to-proposal :
+    ExternalStaticMethod(manno*, x, args, rt) -> <method-to-proposal> ExternalMethod(manno*, x, args, rt)
 
   editor-complete-proposal :
     Var(COMPLETION(_)) -> [type*, var*, function*, global-var*, styles*]
